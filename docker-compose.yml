@@ -1,0 +1,18 @@
+version: "3"
+services:
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./cert:/cert/
+    ports:
+      - 0.0.0.0:80:80
+      - 0.0.0.0:8623:443
+    environment:
+      TZ: "Asia/Tokyo"
+    restart: always
+
+  backend:
+    build: ./backend
+    ports:
+      - 0.0.0.0:5000:5000
+    restart: always
