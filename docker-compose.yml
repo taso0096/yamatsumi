@@ -11,9 +11,10 @@ services:
     restart: always
 
   db:
-    image: postgres:latest
+    build: ./db
     environment:
       POSTGRES_PASSWORD: postgres
+    restart: always
 
   backend:
     build: ./backend
