@@ -24,8 +24,13 @@ services:
 
   backend:
     build: ./backend
+    command: bash -c "./build.sh && python manage.py runserver 0.0.0.0:5000"
+    volumes:
+      - ./backend:/opt/yamatsumi/backend
     ports:
       - 0.0.0.0:5000:5000
     depends_on:
       - db
+    environment:
+      TZ: "Asia/Tokyo"
     restart: always
