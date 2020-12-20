@@ -11,6 +11,7 @@
     "@mdi/font": "^3.6.95",
     "aframe": "^1.0.4",
     "core-js": "^3.6.5",
+    "js-cookie": "^2.2.1",
     "jsonschema": "^1.4.0",
     "roboto-fontface": "*",
     "socket.io-client": "^2.3.1",
