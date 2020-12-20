@@ -7,6 +7,9 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 import './mixins/utility';
 
+import Notifications from 'vue-notification';
+import velocity from 'velocity-animate';
+
 import 'aframe';
 
 Vue.config.productionTip = false;
@@ -29,6 +32,8 @@ Vue.config.ignoredElements = [
   'a-image',
   'a-triangle'
 ];
+
+Vue.use(Notifications, { velocity });
 
 new Vue({
   router,
