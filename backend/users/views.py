@@ -10,7 +10,7 @@ User = get_user_model()
 def return_user_data(user):
     response_data = {
         'username': user.username,
-        'is_superuser': user.is_superuser,
+        'isSuperuser': user.is_superuser,
     }
     return response_data
 
