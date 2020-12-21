@@ -19,13 +19,13 @@ const mutations = {
     Cookies.remove('accessToken');
   },
   UPDATE_AUTH_STATE(state, { accessToken, username, isSuperuser }) {
+    axios.interceptors.request.eject(state.interceptorId);
     Object.assign(state, defaultState);
     Cookies.remove('accessToken');
     state.isLoaded = true;
     if (accessToken) {
       state.isAuthed = true;
       Cookies.set('accessToken', accessToken);
-      axios.interceptors.request.eject(state.interceptorId);
       state.interceptorId = axios.interceptors.request.use(config => {
         config.headers.Authorization = `JWT ${accessToken}`;
         return config;

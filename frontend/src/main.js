@@ -10,6 +10,9 @@ import './mixins/utility';
 import Notifications from 'vue-notification';
 import velocity from 'velocity-animate';
 
+import Cookies from 'js-cookie';
+import axios from '@/axios/index';
+
 import 'aframe';
 
 Vue.config.productionTip = false;
@@ -35,9 +38,38 @@ Vue.config.ignoredElements = [
 
 Vue.use(Notifications, { velocity });
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app');
+const createApp = async() => {
+  new Vue({
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
+  }).$mount('#app');
+  const accessToken = Cookies.get('accessToken');
+  if (!accessToken) {
+    store.dispatch('updateAuthState', {});
+  } else {
+    await axios
+      .get('/users/verify',
+        {
+          headers: {
+            Authorization: `JWT ${accessToken}`
+          }
+        }
+      )
+      .then(res => {
+        store.dispatch('updateAuthState', {
+          accessToken,
+          ...res.data
+        });
+        if (router.app._route.name === 'Login') {
+          router.push(router.app._route.query.redirect || { name: 'Home' });
+        }
+      })
+      .catch(() => {
+        store.dispatch('updateAuthState', {});
+      });
+  }
+};
+
+createApp();
