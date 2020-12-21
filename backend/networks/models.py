@@ -1,3 +1,15 @@
 from django.db import models
+from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 
-# Create your models here.
+import uuid
+
+User = settings.AUTH_USER_MODEL
+
+
+class Network(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    data = JSONField(default={})
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
