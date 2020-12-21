@@ -13,3 +13,6 @@ class Network(models.Model):
     data = JSONField(default={})
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.data.get('label')) or str(self.data.get('id')) or self.id
