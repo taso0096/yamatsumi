@@ -82,6 +82,7 @@
               v-if="!tab.requiresAuth || (!tab.requiresSuperuser || $_userData.isSuperuser) && $_userData.isAuthed"
               :key="tab.title"
               :to="tab.route"
+              class="mb-2"
             >
               <v-list-item-icon>
                 <v-icon size="20">{{ tab.icon }}</v-icon>
@@ -89,6 +90,9 @@
               <v-list-item-title>{{ tab.title }}</v-list-item-title>
             </v-list-item>
           </template>
+          <v-divider class="my-2" />
+          <div class="subtitle-2 ml-1">©YAMATSUMI</div>
+          <div class="subtitle-2 ml-1">Develop by <a href="https://github.com/taso0096" target="_blank">@taso0096</a></div>
         </v-list>
       </v-sheet>
     </v-navigation-drawer>
