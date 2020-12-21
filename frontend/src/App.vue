@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <router-view/>
     <notifications
       group="app"
       animation-type="velocity"
@@ -32,13 +31,96 @@
       </template>
     </notifications>
 
+    <v-navigation-drawer
+      v-if="$route.name !== 'Logout'"
+      v-model="appDrawer"
+      app
+      clipped
+      floating
+      mobile-breakpoint="960"
+      color="transparent"
+      width="300"
+    >
+      <v-sheet
+        v-if="$_userData.isAuthed"
+        rounded="lg"
+        class="ma-3 mr-0"
+      >
+        <v-list
+          color="transparent"
+          class="py-0"
+        >
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ $_userData.username }}</v-list-item-title>
+              <v-list-item-subtitle v-if="$_userData.isSuperuser">superuser</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-sheet>
+      <v-sheet
+        v-if="$_userData.isLoaded"
+        rounded="lg"
+        class="ma-3 mr-0"
+      >
+        <v-list
+          nav
+          dense
+          color="transparent"
+        >
+          <v-list-item
+            v-if="!$_userData.isAuthed"
+            :to="{ name: 'Login' }"
+          >
+            <v-list-item-icon>
+              <v-icon size="20">mdi-login</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item>
+          <template v-for="tab in drawerTabs">
+            <v-list-item
+              v-if="!tab.requiresAuth || (!tab.requiresSuperuser || $_userData.isSuperuser) && $_userData.isAuthed"
+              :key="tab.title"
+              :to="tab.route"
+            >
+              <v-list-item-icon>
+                <v-icon size="20">{{ tab.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ tab.title }}</v-list-item-title>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-sheet>
+    </v-navigation-drawer>
+
+    <v-app-bar
+      app
+      clipped-left
+      clipped-right
+      color="white"
+      elevation="0"
+    >
+      <v-app-bar-nav-icon
+        v-if="$route.name !== 'Logout'"
+        @click="appDrawer = !appDrawer"
+      />
+
+      <v-toolbar-title>
+        <span>YAMATSUMI</span>
+      </v-toolbar-title>
+    </v-app-bar>
+
+    <v-main>
+      <v-container>
+        <router-view />
+      </v-container>
+    </v-main>
   </v-app>
 </template>
 
 <style lang="scss">
-body {
-  margin: 0;
-  background: #00022d;
+.v-main {
+  background: #F3F4F6;
 }
 .vue-notification-group {
     width: auto !important;
@@ -53,3 +135,30 @@ body {
     }
   }
 </style>
+
+<script>
+export default {
+  name: 'App',
+  data: () => ({
+    appDrawer: window.innerWidth >= 960,
+    drawerTabs: [
+      {
+        title: 'Visualize',
+        icon: 'mdi-logout',
+        route: {
+          name: 'Visualize'
+        },
+        requiresAuth: true
+      },
+      {
+        title: 'Logout',
+        icon: 'mdi-logout',
+        route: {
+          name: 'Logout'
+        },
+        requiresAuth: true
+      }
+    ]
+  })
+}
+</script>
