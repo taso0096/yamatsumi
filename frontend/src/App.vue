@@ -143,10 +143,10 @@ export default {
     appDrawer: window.innerWidth >= 960,
     drawerTabs: [
       {
-        title: 'Visualize',
-        icon: 'mdi-logout',
+        title: 'Network',
+        icon: 'mdi-wan',
         route: {
-          name: 'Visualize'
+          name: 'Network'
         },
         requiresAuth: true
       },

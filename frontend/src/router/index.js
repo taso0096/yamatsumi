@@ -4,6 +4,7 @@ import store from '@/store';
 
 import Login from '@/views/Login.vue';
 import Logout from '@/views/Logout.vue';
+import Network from '@/views/Network.vue';
 import Visualize from '@/views/Visualize.vue';
 
 Vue.use(VueRouter);
@@ -20,6 +21,14 @@ const routes = [
     component: Logout
   },
   {
+    path: '/network',
+    name: 'Network',
+    component: Network,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/visualize',
     name: 'Visualize',
     component: Visualize,
@@ -29,7 +38,7 @@ const routes = [
   },
   {
     path: '*',
-    redirect: '/login'
+    redirect: '/network'
   }
 ];
 
@@ -43,12 +52,12 @@ router.beforeEach((to, from, next) => {
   const userData = store.state.userData;
   if (to.matched.some(record => !record.meta.requiresAuth) || ((to.matched.some(record => !record.meta.requiresSuperuser) || userData.isSuperuser) && userData.isAuthed)) {
     if ((to.name === 'Login' && userData.isAuthed)) {
-      next({ name: 'Visualize' });
+      next({ name: 'Network' });
     } else {
       next();
     }
   } else if (userData.isAuthed) {
-    next({ name: 'Visualize' });
+    next({ name: 'Network' });
   } else {
     next({
       name: 'Login',

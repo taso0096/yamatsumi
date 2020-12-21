@@ -63,7 +63,7 @@ const createApp = async() => {
           ...res.data
         });
         if (router.app._route.name === 'Login') {
-          router.push(router.app._route.query.redirect || { name: 'Home' });
+          router.push(router.app._route.query.redirect || { name: 'Network' });
         }
       })
       .catch(() => {

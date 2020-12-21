@@ -113,7 +113,7 @@ export default {
               ...res.data
             });
             this.$_pushNotice('ログインに成功しました。', 'success');
-            this.$router.push(this.$route.query.redirect || { name: 'Visualize' });
+            this.$router.push(this.$route.query.redirect || { name: 'Network' });
             console.log(res.data);
           })
           .catch(() => {
