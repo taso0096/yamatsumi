@@ -25,7 +25,7 @@ const actions = {
     if (state.isConnected) {
       return false;
     }
-    const socket = await io.connect(`ws://${location.hostname}:5000`);
+    const socket = await io.connect(process.env.VUE_APP_API_BASE_URL);
     socket.status = null;
     socket.on('connect', () => {
       console.log('CONNECT');
