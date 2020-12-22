@@ -82,6 +82,7 @@
               v-if="!tab.requiresAuth || (!tab.requiresSuperuser || $_userData.isSuperuser) && $_userData.isAuthed"
               :key="tab.title"
               :to="tab.route"
+              exact
               class="mb-2"
             >
               <v-list-item-icon>
@@ -115,7 +116,11 @@
     </v-app-bar>
 
     <v-main>
-      <v-container>
+      <v-container
+        :style="{
+          height: $route.name === 'Visualize' && '100%'
+        }"
+      >
         <router-view />
       </v-container>
     </v-main>

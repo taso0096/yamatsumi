@@ -34,6 +34,7 @@ export default {
     const networkValidate = validate(network, networkSchema);
     if (!networkValidate.valid) {
       console.error('JSON Schema Validate ERROR', networkValidate.errors);
+      this.$_pushNotice('JSONのバリデーションに失敗しました。', 'error');
       return;
     }
     if (!network.layers.length) {

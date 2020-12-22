@@ -9,7 +9,7 @@
       >
         <template v-slot:[`item.label`]="{ item }">
           <router-link
-            :to="{ name: 'Visualize', params: { id: item.data.id } }"
+            :to="{ name: 'Visualize', params: { id: item.id } }"
             class="text-decoration-none"
           >
             {{ item.data.label || item.data.id }}
@@ -72,7 +72,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
-          this.$_pushNotice('ネットワークの読み込みに失敗しました。', 'error');
+          this.$_pushNotice('ネットワーク一覧の取得に失敗しました。', 'error');
         });
       this.isLoading.getNetworks = false;
     }
