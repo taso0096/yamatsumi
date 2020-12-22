@@ -50,7 +50,7 @@ const createApp = async() => {
     store.dispatch('updateAuthState', {});
   } else {
     await axios
-      .get('/users/verify',
+      .get('/users/verify/',
         {
           headers: {
             Authorization: `JWT ${accessToken}`

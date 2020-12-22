@@ -84,7 +84,7 @@ export default {
       this.isLoadingLogin = true;
       const loginForm = this.loginForm;
       const accessToken = await axios
-        .post('/users/login', loginForm, {
+        .post('/users/login/', loginForm, {
           validateStatus: status => {
             return status < 500;
           }
@@ -102,7 +102,7 @@ export default {
         });
       if (accessToken) {
         await axios
-          .get('/users/verify', {
+          .get('/users/verify/', {
             headers: {
               Authorization: `JWT ${accessToken}`
             }
