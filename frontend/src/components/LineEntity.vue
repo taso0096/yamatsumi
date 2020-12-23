@@ -7,7 +7,8 @@ export default {
   name: 'LineEntity',
   data: () => ({
     animationFunctions: {},
-    lineGroup: null
+    lineGroup: null,
+    frame: 0
   }),
   async mounted() {
     this.lineGroup = document.querySelector('#line-group').object3D;
@@ -18,7 +19,11 @@ export default {
   },
   methods: {
     animationRender() {
+      this.frame++;
       requestAnimationFrame(() => this.animationRender());
+      if (this.frame%3 === 0) {
+        return;
+      }
       for (const func of Object.values(this.animationFunctions)) {
         func();
       }
@@ -61,7 +66,7 @@ export default {
         sourceP.z + diffP.z*4/5
       ));
       points.push(targetP);
-      const linePoints = new THREE.CatmullRomCurve3(points).getPoints(30);
+      const linePoints = new THREE.CatmullRomCurve3(points).getPoints(15);
       const path = new THREE.CatmullRomCurve3(linePoints.slice(0, this.lineLength));
       const geometry = new THREE.TubeBufferGeometry(path, 20, 0.01);
       const material = new THREE.MeshBasicMaterial({ color });
