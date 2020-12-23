@@ -31,8 +31,9 @@ export default {
     network: {}
   }),
   async mounted() {
+    const networkId = this.$route.params.networkId;
     this.network = await axios
-      .get(`/networks/${this.$route.params.networkId}/`)
+      .get(`/networks/${networkId}/`)
       .then(res => res.data.data)
       .catch(err => {
         console.log(err);
@@ -43,7 +44,7 @@ export default {
       return;
     }
     const routingTable = this.network.routingTable;
-    this.socket = await this.$store.dispatch('connectSocket');
+    this.socket = await this.$store.dispatch('connectSocket', networkId);
     this.socket.on('send_packet', data => {
       const srcNode = data.srcIsGlobal ? '.internet-nodes' : `#node-${Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))]}`;
       const dstNode = data.dstIsGlobal ? '.internet-nodes' : `#node-${Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))]}`;

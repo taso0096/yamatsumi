@@ -21,11 +21,15 @@ const actions = {
   async resetSocket({ commit }) {
     await commit('RESET_SOCKET');
   },
-  async connectSocket({ commit }) {
+  async connectSocket({ commit }, networkId) {
     if (state.isConnected) {
       return false;
     }
-    const socket = await io.connect(process.env.VUE_APP_API_BASE_URL);
+    const socket = await io.connect(process.env.VUE_APP_SOCKETIO_BASE_URL, {
+      query: {
+        network_id: networkId
+      }
+    });
     socket.status = null;
     socket.on('connect', () => {
       console.log('CONNECT');
