@@ -29,7 +29,7 @@ const routes = [
     }
   },
   {
-    path: '/network/:id',
+    path: '/network/:networkId',
     name: 'Visualize',
     component: Visualize,
     meta: {

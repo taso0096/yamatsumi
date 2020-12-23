@@ -9,10 +9,10 @@
       >
         <template v-slot:[`item.label`]="{ item }">
           <router-link
-            :to="{ name: 'Visualize', params: { id: item.id } }"
+            :to="{ name: 'Visualize', params: { networkId: item.networkId } }"
             class="text-decoration-none"
           >
-            {{ item.data.label || item.data.id }}
+            {{ item.data.label || item.networkId }}
           </router-link>
         </template>
         <template v-slot:[`item.layers`]="{ item }">

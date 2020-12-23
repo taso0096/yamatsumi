@@ -32,7 +32,7 @@ export default {
   }),
   async mounted() {
     this.network = await axios
-      .get(`/networks/${this.$route.params.id}/`)
+      .get(`/networks/${this.$route.params.networkId}/`)
       .then(res => res.data.data)
       .catch(err => {
         console.log(err);
