@@ -52,6 +52,9 @@ export default {
       const dstNode = data.dstIsGlobal ? '.internet-nodes' : dstNodeId ? `#node-${dstNodeId}` : '.intranet-nodes';
       this.$refs.lineEntity.emit1(srcNode, dstNode);
     });
+    this.socket.on('notice', data => {
+      this.$_pushNotice(data.text, data.type);
+    });
   },
   beforeDestroy() {
     if (this.socket.status === 'connect') {
