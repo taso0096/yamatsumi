@@ -57,20 +57,6 @@ export default {
       }
     }
     this.isValidNetwork = true;
-    AFRAME.registerComponent('look-center', {
-      schema: {
-        parentSelector: { type: 'string' }
-      },
-      init: function() {
-        const targetEl = document.querySelector(this.data.parentSelector);
-        const targetPosition = targetEl?.object3D.getWorldPosition(new THREE.Vector3());
-        if (targetPosition) {
-          targetPosition.y = this.el.object3D.getWorldPosition(new THREE.Vector3()).y;
-        }
-        this.el.object3D.lookAt(targetPosition || new THREE.Vector3(0, 0, 0));
-        this.el.firstElementChild.object3D.rotation.set(0, Math.PI, 0);
-      }
-    });
   }
 };
 </script>
