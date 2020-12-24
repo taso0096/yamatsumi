@@ -5,7 +5,8 @@
       :key="node.id"
       :id="`node-${node.id}`"
       :class="{
-        'internet-nodes': isInternetNode(node)
+        'internet-nodes': isInternetNode(node),
+        'intranet-nodes': isIntranetNode(node)
       }"
       :position="node.position"
       :rotation="layer.layoutOptions && layer.layoutOptions.shape === 'square' && '0 180 0'"
@@ -78,6 +79,9 @@ export default {
     },
     isInternetNode(node) {
       return node.nodeOptions?.type === 'internet';
+    },
+    isIntranetNode(node) {
+      return node.nodeOptions?.type === 'intranet';
     },
     calcPosition(shape = 'circle') {
       const calcFunctions = {
