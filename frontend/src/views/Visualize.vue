@@ -52,7 +52,10 @@ export default {
     });
   },
   beforeDestroy() {
-    this.socket.off('send_packet');
+    if (this.socket.status === 'connect') {
+      this.socket.off('send_packet');
+      this.$store.dispatch('resetSocket');
+    }
   }
 };
 </script>
