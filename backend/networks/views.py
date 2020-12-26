@@ -31,7 +31,7 @@ class NetworksView(GenericAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         loads_data = json.loads(data)
         network_data = {
-            'network_id': loads_data.get('id'),
+            'network_id': loads_data['id'],
             'user': request.user,
             'data': loads_data
         }
@@ -48,8 +48,18 @@ class NetworkDetailView(GenericAPIView):
         network = Network.objects.get(pk=network_id)
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        network.data = json.loads(data)
-        network.save()
+        loads_data = json.loads(data)
+        if network_id == loads_data['id']:
+            network.data = loads_data
+            network.save()
+        else:
+            network_data = {
+                'network_id': loads_data['id'],
+                'user': network.user,
+                'data': loads_data
+            }
+            network.delete()
+            network = Network.objects.create(**network_data)
         return Response(data=return_network_data(network), status=status.HTTP_200_OK)
 
     def delete(self, request, network_id):
