@@ -12,18 +12,8 @@
             :to="{ name: 'Visualize', params: { networkId: item.networkId } }"
             class="text-decoration-none"
           >
-            {{ item.data.label || item.networkId }}
+            {{ item.label || item.networkId }}
           </router-link>
-        </template>
-        <template v-slot:[`item.layers`]="{ item }">
-          <div>
-            {{ (item.data.layers || []).length }}
-          </div>
-        </template>
-        <template v-slot:[`item.nodes`]="{ item }">
-          <div>
-            {{ Object.keys(item.data.routingTable || {}).length }}
-          </div>
         </template>
         <template v-slot:[`item.updatedAt`]="{ item }">
           <div>
@@ -49,8 +39,8 @@ export default {
   data: () => ({
     headers: [
       { text: 'Label', value: 'label', sortable: false },
-      { text: 'Layers', value: 'layers', sortable: false, align: 'center' },
-      { text: 'Nodes', value: 'nodes', sortable: false, align: 'center' },
+      { text: 'Layers', value: 'layerCount', sortable: false, align: 'center' },
+      { text: 'Nodes', value: 'nodeCount', sortable: false, align: 'center' },
       { text: 'Username', value: 'username', sortable: false, align: 'center' },
       { text: 'UpdatedAt', value: 'updatedAt', align: 'center' }
     ],

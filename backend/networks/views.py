@@ -10,6 +10,19 @@ import json
 def return_network_data(network):
     response_data = {
         'networkId': network.network_id,
+        'label': network.data.get('label'),
+        'username': network.user.username,
+        'layerCount': len(network.data.get('layers') or []),
+        'nodeCount': len(network.data.get('routingTable') or {}),
+        'createdAt': network.created_at,
+        'updatedAt': network.updated_at
+    }
+    return response_data
+
+
+def return_network_detail_data(network):
+    response_data = {
+        'networkId': network.network_id,
         'username': network.user.username,
         'data': network.data,
         'createdAt': network.created_at,
@@ -42,7 +55,7 @@ class NetworksView(GenericAPIView):
 class NetworkDetailView(GenericAPIView):
     def get(self, request, network_id):
         network = Network.objects.get(pk=network_id)
-        return Response(data=return_network_data(network), status=status.HTTP_200_OK)
+        return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
 
     def put(self, request, network_id):
         network = Network.objects.get(pk=network_id)
@@ -60,7 +73,7 @@ class NetworkDetailView(GenericAPIView):
             }
             network.delete()
             network = Network.objects.create(**network_data)
-        return Response(data=return_network_data(network), status=status.HTTP_200_OK)
+        return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
 
     def delete(self, request, network_id):
         Network.objects.filter(pk=network_id).delete()
