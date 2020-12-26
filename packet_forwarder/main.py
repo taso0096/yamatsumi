@@ -4,6 +4,8 @@ import ipaddress
 import json
 import threading
 
+from config import SOCKETIO_HOST, NETWORK_ID, INTERFACES
+
 
 class SocketIOClient:
     def __init__(self, host, network_id):
@@ -69,10 +71,10 @@ class Scapy:
 
 
 if __name__ == '__main__':
-    sio_client = SocketIOClient('http://localhost:5000', 'macbook_network')
+    sio_client = SocketIOClient(SOCKETIO_HOST, NETWORK_ID)
     sio_client.connect()
 
-    for iface in ['en0']:
+    for iface in INTERFACES:
         scapy = Scapy(iface)
         scapy.send_packet = sio_client.send_packet
         thread = threading.Thread(target=scapy.start)
