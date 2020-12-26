@@ -44,13 +44,51 @@ export default {
       return;
     }
     const routingTable = this.network.routingTable;
+    const lineColor = new Map([
+      [22, {
+        service: 'ssh',
+        color: '#ff0000'
+      }],
+      [53, {
+        service: 'dns',
+        color: '#2ecc71'
+      }],
+      [80, {
+        service: 'web',
+        color: '#3498db'
+      }],
+      [443, {
+        service: 'web',
+        color: '#3498db'
+      }],
+      [8623, {
+        service: 'yamatsumi',
+        color: '#3498db'
+      }],
+      [445, {
+        service: 'ntlm',
+        color: '#f1c40f'
+      }],
+      [3389, {
+        service: 'r_d',
+        color: '#f36bff'
+      }],
+      [5432, {
+        service: 'db',
+        color: '#cdffb5'
+      }]
+    ]);
     this.socket = await this.$store.dispatch('connectSocket', networkId);
     this.socket.on('packet', data => {
       const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))];
       const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))];
       const srcNode = data.srcIsGlobal ? '.internet-nodes' : srcNodeId ? `#node-${srcNodeId}` : '.intranet-nodes';
       const dstNode = data.dstIsGlobal ? '.internet-nodes' : dstNodeId ? `#node-${dstNodeId}` : '.intranet-nodes';
-      this.$refs.lineEntity.emit1(srcNode, dstNode);
+      const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
+      if (['ssh', 'ntlm', 'r_d'].includes(port?.service)) {
+        console.log(`${port.service}: ${srcNode === '#node-else' ? data.srcIP : srcNode} -> ${dstNode === '#node-else' ? data.dstIP : dstNode}`);
+      }
+      this.$refs.lineEntity.emit1(srcNode, dstNode, port?.color || '#fff');
     });
     this.socket.on('notice', data => {
       this.$_pushNotice(data.text, data.type);
