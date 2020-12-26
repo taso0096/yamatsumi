@@ -1,8 +1,6 @@
 <template>
   <a-scene embedded>
-    <a-camera position='0 1.5 5'>
-      <a-cursor color='#888' />
-    </a-camera>
+    <a-camera position='0 1.5 5' />
     <a-sky color='#00022d' />
     <a-entity oculus-touch-controls="hand: left"></a-entity>
     <a-entity oculus-touch-controls="hand: right"></a-entity>
