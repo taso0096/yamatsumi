@@ -10,20 +10,17 @@ export default {
     lineGroup: null,
     frame: 0
   }),
-  async mounted() {
-    this.lineGroup = document.querySelector('#line-group').object3D;
-    requestAnimationFrame(() => this.animationRender());
-  },
   computed: {
     lineLength: () => 3
   },
+  async mounted() {
+    this.lineGroup = document.querySelector('#line-group').object3D;
+    setInterval(() => {
+      this.animationRender();
+    }, 20);
+  },
   methods: {
     animationRender() {
-      this.frame++;
-      requestAnimationFrame(() => this.animationRender());
-      if (this.frame%3 === 0) {
-        return;
-      }
       for (const func of Object.values(this.animationFunctions)) {
         func();
       }
