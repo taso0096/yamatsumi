@@ -45,7 +45,7 @@ export default {
     }
     const routingTable = this.network.routingTable;
     this.socket = await this.$store.dispatch('connectSocket', networkId);
-    this.socket.on('send_packet', data => {
+    this.socket.on('packet', data => {
       const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))];
       const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))];
       const srcNode = data.srcIsGlobal ? '.internet-nodes' : srcNodeId ? `#node-${srcNodeId}` : '.intranet-nodes';
@@ -58,7 +58,8 @@ export default {
   },
   beforeDestroy() {
     if (this.socket.status === 'connect') {
-      this.socket.off('send_packet');
+      this.socket.off('packet');
+      this.socket.off('notice');
       this.$store.dispatch('resetSocket');
     }
   }

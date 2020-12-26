@@ -16,7 +16,7 @@ class SocketIOClient:
         self.sio.connect(f'{self.host}?network_id={self.network_id}&is_forwarder=true')
 
     def send_packet(self, data):
-        self.sio.emit('send_packet', json.dumps({
+        self.sio.emit('packet', json.dumps({
             'network_id': self.network_id,
             'packet': data
         }))

@@ -39,7 +39,7 @@ def disconnect(sid):
 
 
 @sio.event
-def send_packet(sid, message):
-    data = json.loads(message)
-    if (packet := data.get('packet')) and (network_id := data.get('network_id')):
-        sio.emit('send_packet', packet, room=network_id)
+def packet(sid, data):
+    loads_data = json.loads(data)
+    if (packet := loads_data.get('packet')) and (network_id := loads_data.get('network_id')):
+        sio.emit('packet', packet, room=network_id)
