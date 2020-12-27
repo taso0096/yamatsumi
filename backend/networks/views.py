@@ -36,7 +36,7 @@ class NetworksView(GenericAPIView):
         networks = Network.objects.all()
         reponse_data = []
         for network in networks:
-            reponse_data.append(return_network_data(network))
+            reponse_data.insert(0, return_network_data(network))
         return Response(data=reponse_data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
