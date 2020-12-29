@@ -1,6 +1,19 @@
 <template>
   <div>
     <v-sheet rounded="lg">
+      <v-row class="mx-1">
+        <v-col class="col-12 col-sm-4">
+          <v-text-field
+            v-model="searchWord"
+            append-icon="mdi-magnify"
+            label="Search"
+            hide-details
+            clearable
+            @click:append="searchNetwork"
+            @keyup.enter="searchNetwork"
+          />
+        </v-col>
+      </v-row>
       <v-data-table
         :headers="headers"
         :items="networks"
@@ -47,16 +60,27 @@ export default {
     networks: [],
     isLoading: {
       getNetworks: false
-    }
+    },
+    searchWord: ''
   }),
-  async mounted() {
-    await this.getNetworks();
+  watch: {
+    $route() {
+      this.getNetworks();
+    }
+  },
+  mounted() {
+    this.getNetworks();
   },
   methods: {
     async getNetworks() {
       this.isLoading.getNetworks = true;
+      this.searchWord = this.$route.query.search;
       await axios
-        .get('/networks/')
+        .get('/networks/', {
+          params: {
+            search: this.searchWord
+          }
+        })
         .then(res => {
           this.networks = res.data;
         })
@@ -65,6 +89,17 @@ export default {
           this.$_pushNotice('ネットワーク一覧の取得に失敗しました。', 'error');
         });
       this.isLoading.getNetworks = false;
+    },
+    searchNetwork() {
+      if (this.searchWord === this.$route.query.search) {
+        this.getNetworks();
+        return;
+      }
+      this.$router.push({
+        query: {
+          search: this.searchWord
+        }
+      });
     }
   }
 }
