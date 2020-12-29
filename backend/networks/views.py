@@ -10,10 +10,10 @@ import json
 def return_network_data(network):
     response_data = {
         'networkId': network.network_id,
-        'label': network.data.get('label'),
+        'label': network.label,
         'username': network.user.username,
-        'layerCount': len(network.data.get('layers') or []),
-        'nodeCount': len(network.data.get('routingTable') or {}),
+        'layerCount': len(network.layers),
+        'nodeCount': len(network.routing_table),
         'createdAt': network.created_at,
         'updatedAt': network.updated_at
     }
@@ -21,10 +21,19 @@ def return_network_data(network):
 
 
 def return_network_detail_data(network):
+    data = {
+        'id': network.network_id,
+        'label': network.label,
+        'desc': network.desc,
+        'version': network.version,
+        'routingTable': network.routing_table,
+        'layers': network.layers
+    }
+    data = {k: data[k] for k in data if data[k]}
     response_data = {
         'networkId': network.network_id,
         'username': network.user.username,
-        'data': network.data,
+        'data': data,
         'createdAt': network.created_at,
         'updatedAt': network.updated_at
     }
@@ -46,7 +55,11 @@ class NetworksView(GenericAPIView):
         network_data = {
             'network_id': loads_data['id'],
             'user': request.user,
-            'data': loads_data
+            'label': loads_data.get('label'),
+            'desc': loads_data.get('desc'),
+            'version': loads_data.get('version'),
+            'routing_table': loads_data.get('routingTable'),
+            'layers': loads_data['layers']
         }
         network = Network.objects.create(**network_data)
         return Response(data=return_network_data(network), status=status.HTTP_201_CREATED)
@@ -62,15 +75,20 @@ class NetworkDetailView(GenericAPIView):
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         loads_data = json.loads(data)
+        network_data = {
+            'network_id': loads_data['id'],
+            'user': network.user,
+            'label': loads_data.get('label'),
+            'desc': loads_data.get('desc'),
+            'version': loads_data.get('version'),
+            'routing_table': loads_data.get('routingTable'),
+            'layers': loads_data['layers']
+        }
         if network_id == loads_data['id']:
-            network.data = loads_data
+            for key, value in network_data.items():
+                setattr(network, key, value)
             network.save()
         else:
-            network_data = {
-                'network_id': loads_data['id'],
-                'user': network.user,
-                'data': loads_data
-            }
             network.delete()
             network = Network.objects.create(**network_data)
         return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
