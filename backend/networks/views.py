@@ -1,6 +1,7 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Q
 
 from .models import Network
 
@@ -42,7 +43,10 @@ def return_network_detail_data(network):
 
 class NetworksView(GenericAPIView):
     def get(self, request, *args, **kwargs):
-        networks = Network.objects.all()
+        search_word = request.GET.get('search')
+        networks = Network.objects.all() if not search_word else Network.objects.filter(
+            Q(network_id__icontains=search_word) | Q(label__icontains=search_word)
+        )
         reponse_data = []
         for network in networks:
             reponse_data.insert(0, return_network_data(network))
