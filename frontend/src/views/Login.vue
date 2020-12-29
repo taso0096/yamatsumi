@@ -2,7 +2,7 @@
   <v-card
     v-if="$route.query.redirect && !$_userData.isLoaded"
     flat
-    color="rgba(0, 0, 0, 0)"
+    color="transparent"
   >
     <v-card-text class="text-center">
       <div class="body-1 mb-3">
@@ -16,7 +16,8 @@
   </v-card>
   <v-card
     v-else
-    outlined
+    flat
+    rounded="lg"
     max-width="500"
   >
     <v-card-title>
