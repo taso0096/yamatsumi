@@ -1,18 +1,28 @@
 <template>
-  <a-scene embedded>
-    <a-camera position='0 1.5 5' />
-    <a-sky color='#00022d' />
-    <a-entity oculus-touch-controls="hand: left"></a-entity>
-    <a-entity oculus-touch-controls="hand: right"></a-entity>
+  <div class="visualize">
+    <a-scene embedded>
+      <a-camera position='0 1.5 5' />
+      <a-sky color='#00022d' />
+      <a-entity oculus-touch-controls="hand: left"></a-entity>
+      <a-entity oculus-touch-controls="hand: right"></a-entity>
 
-    <network-entity v-if="Object.keys(network).length" :network="network" />
-    <line-entity ref="lineEntity" />
-  </a-scene>
+      <network-entity v-if="Object.keys(network).length" :network="network" />
+      <line-entity ref="lineEntity" />
+    </a-scene>
+    <network-editor :network="network" />
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.visualize {
+  height: 100%;
+}
+</style>
 
 <script>
 import NetworkEntity from '@/components/Network/BaseNetworkEntity.vue';
 import LineEntity from '@/components/LineEntity.vue';
+import NetworkEditor from '@/components/NetworkEditor.vue';
 
 import axios from '@/axios';
 
@@ -20,7 +30,8 @@ export default {
   name: 'Home',
   components: {
     NetworkEntity,
-    LineEntity
+    LineEntity,
+    NetworkEditor
   },
   data: () => ({
     socket: {
