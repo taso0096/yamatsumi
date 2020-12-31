@@ -17,7 +17,7 @@
   <v-card
     v-else
     flat
-    rounded="lg"
+    tile
     max-width="500"
   >
     <v-card-title>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-sheet rounded="lg">
+    <v-sheet>
       <v-row class="mx-1">
         <v-col class="col-12 col-sm-4">
           <v-text-field

@@ -41,61 +41,51 @@
       color="transparent"
       width="300"
     >
-      <v-sheet
+      <v-list
         v-if="$_userData.isAuthed"
-        rounded="lg"
-        class="ma-3 mr-0"
+        color="white"
+        class="ma-3 mr-0 py-0"
       >
-        <v-list
-          color="transparent"
-          class="py-0"
-        >
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>{{ $_userData.username }}</v-list-item-title>
-              <v-list-item-subtitle v-if="$_userData.isSuperuser">superuser</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-sheet>
-      <v-sheet
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>{{ $_userData.username }}</v-list-item-title>
+            <v-list-item-subtitle v-if="$_userData.isSuperuser">superuser</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-list
         v-if="$_userData.isLoaded"
-        rounded="lg"
-        class="ma-3 mr-0"
+        color="white"
+        class="ma-3 mr-0 py-0"
       >
-        <v-list
-          nav
-          dense
-          color="transparent"
+        <v-list-item
+          v-if="!$_userData.isAuthed"
+          :to="{ name: 'Login' }"
         >
+          <v-list-item-icon>
+            <v-icon size="20">mdi-login</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Login</v-list-item-title>
+        </v-list-item>
+        <template v-for="tab in drawerTabs">
           <v-list-item
-            v-if="!$_userData.isAuthed"
-            :to="{ name: 'Login' }"
+            v-if="!tab.requiresAuth || (!tab.requiresSuperuser || $_userData.isSuperuser) && $_userData.isAuthed"
+            :key="tab.title"
+            :to="tab.route"
+            exact
           >
             <v-list-item-icon>
-              <v-icon size="20">mdi-login</v-icon>
+              <v-icon size="20">{{ tab.icon }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Login</v-list-item-title>
+            <v-list-item-title>{{ tab.title }}</v-list-item-title>
           </v-list-item>
-          <template v-for="tab in drawerTabs">
-            <v-list-item
-              v-if="!tab.requiresAuth || (!tab.requiresSuperuser || $_userData.isSuperuser) && $_userData.isAuthed"
-              :key="tab.title"
-              :to="tab.route"
-              exact
-              class="mb-2"
-            >
-              <v-list-item-icon>
-                <v-icon size="20">{{ tab.icon }}</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>{{ tab.title }}</v-list-item-title>
-            </v-list-item>
-          </template>
-          <v-divider class="my-2" />
-          <div class="subtitle-2 ml-1">©YAMATSUMI</div>
-          <div class="subtitle-2 ml-1">Develop by <a href="https://github.com/taso0096" target="_blank">@taso0096</a></div>
-        </v-list>
-      </v-sheet>
+        </template>
+        <v-divider />
+        <div class="py-3 pl-4">
+          <div class="subtitle-2">©YAMATSUMI</div>
+          <div class="subtitle-2">Develop by <a href="https://github.com/taso0096" target="_blank">@taso0096</a></div>
+        </div>
+      </v-list>
     </v-navigation-drawer>
 
     <v-app-bar
