@@ -1,21 +1,65 @@
 <template>
   <div class="visualize">
+    <v-navigation-drawer
+      v-model="editDrawer"
+      app
+      clipped
+      floating
+      right
+      mobile-breakpoint="960"
+      color="transparent"
+      width="600"
+      class="pt-3 pr-3"
+    >
+      <network-editor :network="network" />
+    </v-navigation-drawer>
+
+    <v-card
+      tile
+      flat
+      :loading="!Object.keys(network).length"
+    >
+      <v-card-title>
+        <span v-if="!Object.keys(network).length">Loading</span>
+        <span v-else-if="!network.data">Network ID "{{ $route.params.networkId }}" does not exist.</span>
+        <template v-else>
+          <span>{{ network.data.label }}</span>
+          <span class="mx-2">-</span>
+          <span>{{ network.username }}</span>
+          <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(network.updatedAt) }}</span>
+          <v-btn
+            icon
+            small
+            @click="editDrawer = !editDrawer"
+          >
+            <v-icon v-if="!editDrawer">mdi-settings</v-icon>
+            <v-icon v-else>mdi-arrow-right</v-icon>
+          </v-btn>
+        </template>
+      </v-card-title>
+    </v-card>
+
     <a-scene embedded>
       <a-camera position='0 1.5 5' />
       <a-sky color='#00022d' />
       <a-entity oculus-touch-controls="hand: left"></a-entity>
       <a-entity oculus-touch-controls="hand: right"></a-entity>
 
-      <network-entity v-if="Object.keys(network).length" :network="network" />
-      <line-entity ref="lineEntity" />
+      <template v-if="network.data">
+        <network-entity :network="network.data" />
+        <line-entity ref="lineEntity" />
+      </template>
     </a-scene>
-    <network-editor :network="network" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .visualize {
   height: 100%;
+
+  a-scene {
+    height: calc(100% - 64px);
+  }
 }
 </style>
 
@@ -34,6 +78,7 @@ export default {
     NetworkEditor
   },
   data: () => ({
+    editDrawer: false,
     socket: {
       status: null
     },
@@ -43,16 +88,15 @@ export default {
     const networkId = this.$route.params.networkId;
     this.network = await axios
       .get(`/networks/${networkId}/`)
-      .then(res => res.data.data)
+      .then(res => res.data)
       .catch(err => {
         console.log(err);
-        this.$_pushNotice('ネットワーク情報の取得に失敗しました。', 'error');
-        return false;
+        return { loaded: true };
       });
-    if (!this.network.id) {
+    if (!this.network.data) {
       return;
     }
-    const routingTable = this.network.routingTable;
+    const routingTable = this.network.data.routingTable;
     const lineColor = new Map([
       [22, {
         service: 'ssh',
