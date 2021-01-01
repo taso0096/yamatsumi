@@ -61,25 +61,26 @@
           </v-btn>
         </v-card-title>
         <v-expand-transition>
-          <v-card-text v-show="showAll.details">
-            <v-text-field
-              v-model="network.id"
-              label="ID *"
-              :rules="[rules.required]"
-            />
-            <v-text-field
-              v-model="network.label"
-              label="Label"
-            />
-            <v-text-field
-              v-model="network.version"
-              label="Version"
-            />
-            <v-textarea
-              v-model="network.desc"
-              label="Description"
-            />
-          </v-card-text>
+          <div v-show="showAll.details">
+            <v-card-text>
+              <v-text-field
+                v-model="network.id"
+                label="ID"
+              />
+              <v-text-field
+                v-model="network.label"
+                label="Label"
+              />
+              <v-text-field
+                v-model="network.version"
+                label="Version"
+              />
+              <v-textarea
+                v-model="network.desc"
+                label="Description"
+              />
+            </v-card-text>
+          </div>
         </v-expand-transition>
       </v-card>
 
@@ -102,49 +103,95 @@
           </v-btn>
         </v-card-title>
         <v-expand-transition>
-          <v-card-text v-show="showAll.routingTable">
-            <div
-              v-for="(node, i) in routingTableArray"
-              :key="`node-${i}`"
-            >
-              <v-text-field
-                v-model="node[0]"
-                :label="`Node ID - ${i + 1}`"
-                hide-details
-              />
-              <v-combobox
-                v-model="node[1]"
-                :label="`IP addresses (${node[0]})`"
-                hide-selected
-                multiple
-                append-icon=""
+          <div v-show="showAll.routingTable">
+            <v-card-text>
+              <div
+                v-if="!routingTableArray.length"
+                class="mb-4"
               >
-                <template v-slot:selection="{ attrs, item, parent, selected }">
-                  <v-chip
-                    v-bind="attrs"
-                    :input-value="selected"
-                    label
-                    small
+                <span>No data available</span>
+              </div>
+              <div
+                v-else
+                v-for="(node, i) in routingTableArray"
+                :key="`node-${i}`"
+                class="d-flex mb-5"
+              >
+                <div class="network-editor__routing-table-field">
+                  <v-text-field
+                    v-model="node[0]"
+                    :label="`Node ID (${i + 1})`"
+                    hide-details
+                  />
+                  <v-combobox
+                    v-model="node[1]"
+                    :label="`IP addresses (${node[0] || i + 1})`"
+                    hide-selected
+                    single-line
+                    hide-details
+                    multiple
+                    append-icon=""
+                    class="pt-0"
                   >
-                    <span>
-                      {{ item }}
-                    </span>
-                    <v-icon
-                      v-if="editMode"
-                      small
-                      class="ml-2"
-                      @click="parent.selectItem(item)"
-                    >mdi-close</v-icon>
-                  </v-chip>
-                </template>
-              </v-combobox>
-            </div>
-          </v-card-text>
+                    <template v-slot:selection="{ attrs, item, parent, selected }">
+                      <v-chip
+                        v-bind="attrs"
+                        :input-value="selected"
+                        label
+                        small
+                        color="grey lighten-3"
+                      >
+                        <span>{{ item }}</span>
+                        <v-icon
+                          v-if="editMode"
+                          small
+                          class="ml-2"
+                          @click="parent.selectItem(item)"
+                        >mdi-close</v-icon>
+                      </v-chip>
+                    </template>
+                  </v-combobox>
+                </div>
+                <div
+                  v-if="editMode"
+                  class="d-flex align-center ml-3"
+                >
+                  <v-btn
+                    icon
+                    small
+                    @click="deleteRoutingTable(i)"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </div>
+              </div>
+              <div
+                v-if="editMode"
+                class="text-center mb-4"
+              >
+                <v-btn
+                  fab
+                  depressed
+                  small
+                  color="primary"
+                  @click="addRoutingTable"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </div>
+            </v-card-text>
+          </div>
         </v-expand-transition>
       </v-card>
     </v-form>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.network-editor__routing-table-field {
+  width: 100%;
+}
+</style>
 
 <script>
 export default {
@@ -164,14 +211,17 @@ export default {
     },
     routingTableArray: []
   }),
-  computed: {
-    rules: () => ({
-      required: v => !!v || 'Required.'
-    })
-  },
   mounted() {
     for (const key in this.network.routingTable) {
       this.routingTableArray.push([key, this.network.routingTable[key]]);
+    }
+  },
+  methods: {
+    addRoutingTable() {
+      this.routingTableArray.push(['', []]);
+    },
+    deleteRoutingTable(i) {
+      this.routingTableArray.splice(i, 1);
     }
   }
 }
