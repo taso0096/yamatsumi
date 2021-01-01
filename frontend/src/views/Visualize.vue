@@ -11,7 +11,10 @@
       width="600"
       class="pt-3 pr-3"
     >
-      <network-editor :network="network" />
+      <network-editor
+        v-if="originalNetwork.id"
+        :network="network.data"
+      />
     </v-navigation-drawer>
 
     <v-card
@@ -23,7 +26,7 @@
         <span v-if="!Object.keys(network).length">Loading</span>
         <span v-else-if="!network.data">Network ID "{{ $route.params.networkId }}" does not exist.</span>
         <template v-else>
-          <span>{{ network.data.label }}</span>
+          <span>{{ network.data.label || network.data.id }}</span>
           <span class="mx-2">-</span>
           <span>{{ network.username }}</span>
           <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(network.updatedAt) }}</span>
@@ -45,7 +48,7 @@
       <a-entity oculus-touch-controls="hand: left"></a-entity>
       <a-entity oculus-touch-controls="hand: right"></a-entity>
 
-      <template v-if="network.data">
+      <template v-if="originalNetwork.id">
         <network-entity :network="network.data" />
         <line-entity ref="lineEntity" />
       </template>
@@ -82,6 +85,7 @@ export default {
     socket: {
       status: null
     },
+    originalNetwork: {},
     network: {}
   }),
   async mounted() {
@@ -96,6 +100,7 @@ export default {
     if (!this.network.data) {
       return;
     }
+    this.originalNetwork = JSON.parse(JSON.stringify(this.network.data));
     const routingTable = this.network.data.routingTable;
     const lineColor = new Map([
       [22, {
