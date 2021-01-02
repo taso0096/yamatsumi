@@ -62,7 +62,7 @@
         </v-card-title>
         <v-expand-transition>
           <div v-show="showAll.details">
-            <v-card-text>
+            <v-card-text class="pt-0">
               <v-text-field
                 v-model="network.id"
                 label="ID"
@@ -104,7 +104,7 @@
         </v-card-title>
         <v-expand-transition>
           <div v-show="showAll.routingTable">
-            <v-card-text>
+            <v-card-text class="pt-0">
               <div
                 v-if="!routingTableArray.length"
                 class="mb-4"
@@ -184,50 +184,10 @@
         </v-expand-transition>
       </v-card>
 
-      <v-card
-        tile
-        flat
-        class="mb-3"
-      >
-        <v-card-title class="font-weight-regular">
-          <span>Layers</span>
-          <v-spacer />
-          <v-btn
-            icon
-            small
-            @click="showAll.layers = !showAll.layers"
-          >
-            <v-icon>
-              {{ showAll.layers ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-            </v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-expand-transition>
-          <div v-show="showAll.layers">
-            <v-card-text>
-              <div
-                v-if="!network.layers.length"
-                class="mb-4"
-              >
-                <span>No data available</span>
-              </div>
-              <div
-                v-if="editMode"
-                class="text-center mb-4"
-              >
-                <v-btn
-                  fab
-                  depressed
-                  small
-                  color="primary"
-                >
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              </div>
-            </v-card-text>
-          </div>
-        </v-expand-transition>
-      </v-card>
+      <layers-card
+        :layers="network.layers"
+        :editMode="editMode"
+      />
     </v-form>
   </div>
 </template>
@@ -239,8 +199,13 @@
 </style>
 
 <script>
+import LayersCard from './LayersCard.vue';
+
 export default {
   name: 'NetworkEditor',
+  components: {
+    LayersCard
+  },
   props: {
     network: {
       type: Object,
@@ -251,9 +216,7 @@ export default {
     editMode: false,
     showAll: {
       details: true,
-      routingTable: false,
-      layers: false,
-      layer: []
+      routingTable: false
     },
     routingTableArray: []
   }),
@@ -261,9 +224,6 @@ export default {
     for (const key in this.network.routingTable) {
       this.routingTableArray.push([key, this.network.routingTable[key]]);
     }
-    this.network.layers.forEach(() => {
-      this.showAll.layer.push(false);
-    });
   },
   methods: {
     addRoutingTable() {
