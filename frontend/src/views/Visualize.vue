@@ -69,7 +69,7 @@
 <script>
 import NetworkEntity from '@/components/Network/BaseNetworkEntity.vue';
 import LineEntity from '@/components/LineEntity.vue';
-import NetworkEditor from '@/components/NetworkEditor.vue';
+import NetworkEditor from '@/components/NetworkEditor/NetworkEditor.vue';
 
 import axios from '@/axios';
 

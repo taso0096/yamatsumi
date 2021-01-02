@@ -183,6 +183,51 @@
           </div>
         </v-expand-transition>
       </v-card>
+
+      <v-card
+        tile
+        flat
+        class="mb-3"
+      >
+        <v-card-title class="font-weight-regular">
+          <span>Layers</span>
+          <v-spacer />
+          <v-btn
+            icon
+            small
+            @click="showAll.layers = !showAll.layers"
+          >
+            <v-icon>
+              {{ showAll.layers ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+            </v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-expand-transition>
+          <div v-show="showAll.layers">
+            <v-card-text>
+              <div
+                v-if="!network.layers.length"
+                class="mb-4"
+              >
+                <span>No data available</span>
+              </div>
+              <div
+                v-if="editMode"
+                class="text-center mb-4"
+              >
+                <v-btn
+                  fab
+                  depressed
+                  small
+                  color="primary"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </div>
+            </v-card-text>
+          </div>
+        </v-expand-transition>
+      </v-card>
     </v-form>
   </div>
 </template>
@@ -207,7 +252,8 @@ export default {
     showAll: {
       details: true,
       routingTable: false,
-      layers: false
+      layers: false,
+      layer: []
     },
     routingTableArray: []
   }),
@@ -215,6 +261,9 @@ export default {
     for (const key in this.network.routingTable) {
       this.routingTableArray.push([key, this.network.routingTable[key]]);
     }
+    this.network.layers.forEach(() => {
+      this.showAll.layer.push(false);
+    });
   },
   methods: {
     addRoutingTable() {
