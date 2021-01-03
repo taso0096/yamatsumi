@@ -81,7 +81,7 @@ import NetworkEditor from '@/components/NetworkEditor/NetworkEditor.vue';
 import axios from '@/axios';
 
 export default {
-  name: 'Home',
+  name: 'Visualize',
   components: {
     NetworkEntity,
     LineEntity,

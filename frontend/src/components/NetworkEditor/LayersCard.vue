@@ -199,7 +199,7 @@
       class="ml-3 mb-3"
     >
       <v-card-title class="font-weight-regular">
-        <span>{{ object.label ? `${object.label} (${object.id})` : object.id }}</span>
+        <span>{{ object.label || object.id }}</span>
       </v-card-title>
       <v-card-text class="pt-0">
         <v-card
@@ -245,138 +245,155 @@
                   </v-col>
                 </v-row>
 
-                <div v-if="editMode || node.nodeOptions">
-                  <span class="subtitle-1 grey--text text--darken-1">Node Options</span>
-                </div>
-                <div
-                  v-if="editMode && !node.nodeOptions"
-                  class="text-center mb-4"
-                >
-                  <v-btn
-                    tile
-                    depressed
-                    small
-                    color="primary"
-                    @click="addNodeOptions(node)"
+                <v-row>
+                  <v-col class="py-0">
+                    <v-switch
+                      label="Group Node"
+                      inset
+                      hide-details
+                      :input-value="!!node.nodes"
+                      class="mt-0 mb-3"
+                      @change="updateGroupNode($event, node, i)"
+                    />
+                  </v-col>
+                </v-row>
+
+                <template v-if="!node.nodes">
+                  <div v-if="editMode || node.nodeOptions">
+                    <span class="subtitle-1 grey--text text--darken-1">Node Options</span>
+                  </div>
+                  <div
+                    v-if="editMode && !node.nodeOptions"
+                    class="text-center mb-4"
                   >
-                    <span>Add Node Options</span>
-                  </v-btn>
-                </div>
-                <template v-else-if="node.nodeOptions">
-                  <v-row>
+                    <v-btn
+                      tile
+                      depressed
+                      small
+                      color="primary"
+                      @click="addNodeOptions(node)"
+                    >
+                      <span>Add Node Options</span>
+                    </v-btn>
+                  </div>
+                  <template v-else-if="node.nodeOptions">
+                    <v-row>
+                      <v-col class="py-0">
+                        <v-select
+                          v-model="node.nodeOptions.type"
+                          label="Type"
+                          :items="nodeTypes"
+                        />
+                      </v-col>
+                      <v-col class="py-0">
+                        <v-text-field
+                          v-model="node.nodeOptions.size"
+                          label="Size"
+                          type="number"
+                          min="0"
+                        />
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col class="py-0">
+                        <v-text-field
+                          v-model="node.nodeOptions.nodeColor"
+                          label="Node Color"
+                        />
+                      </v-col>
+                      <v-col class="py-0">
+                        <v-text-field
+                          v-model="node.nodeOptions.labelColor"
+                          label="Label Color"
+                        />
+                      </v-col>
+                    </v-row>
+                  </template>
+                </template>
+
+                <template v-else>
+                  <div v-if="editMode || node.layoutOptions">
+                    <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
+                  </div>
+                  <div
+                    v-if="editMode && !node.layoutOptions"
+                    class="text-center mb-4"
+                  >
+                    <v-btn
+                      tile
+                      depressed
+                      small
+                      color="primary"
+                      @click="addLayoutOptions(node)"
+                    >
+                      <span>Add Layout Options</span>
+                    </v-btn>
+                  </div>
+                  <v-row v-else-if="node.layoutOptions">
                     <v-col class="py-0">
                       <v-select
-                        v-model="node.nodeOptions.type"
-                        label="Type"
-                        :items="nodeTypes"
+                        v-model="node.layoutOptions.shape"
+                        label="Shape"
+                        :items="layoutShapes"
                       />
                     </v-col>
                     <v-col class="py-0">
                       <v-text-field
-                        v-model="node.nodeOptions.size"
-                        label="Size"
+                        v-model="node.layoutOptions.scale"
+                        label="Scale"
+                        type="number"
+                        min="0"
+                      />
+                    </v-col>
+                    <v-col class="py-0">
+                      <v-text-field
+                        v-model="node.layoutOptions.fixedDistance"
+                        label="Fixed Distance"
                         type="number"
                         min="0"
                       />
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col class="py-0">
-                      <v-text-field
-                        v-model="node.nodeOptions.nodeColor"
-                        label="Node Color"
-                      />
-                    </v-col>
-                    <v-col class="py-0">
-                      <v-text-field
-                        v-model="node.nodeOptions.labelColor"
-                        label="Label Color"
-                      />
-                    </v-col>
-                  </v-row>
+
+                  <div>
+                    <span class="subtitle-1 grey--text text--darken-1">Nodes</span>
+                  </div>
+                  <div
+                    v-if="!(node.nodes || []).length"
+                    class="mb-4"
+                  >
+                    <span>No data available</span>
+                  </div>
+                  <div
+                    v-else
+                    class="text-center mb-4"
+                  >
+                    <v-btn
+                      tile
+                      depressed
+                      small
+                      color="secondary"
+                      @click="pushMenu(i + 1, node)"
+                    >
+                      <span>Show {{ node.nodes.length }} Nodes</span>
+                      <v-icon>mdi-chevron-right</v-icon>
+                    </v-btn>
+                  </div>
+                  <div
+                    v-if="editMode && !(node.nodes || []).length"
+                    class="text-center mb-4"
+                  >
+                    <v-btn
+                      tile
+                      depressed
+                      small
+                      color="primary"
+                      @click="addNode(i, node.nodes)"
+                    >
+                      <span>Add Node</span>
+                    </v-btn>
+                  </div>
                 </template>
-
-                <div v-if="editMode || node.layoutOptions">
-                  <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
-                </div>
-                <div
-                  v-if="editMode && !node.layoutOptions"
-                  class="text-center mb-4"
-                >
-                  <v-btn
-                    tile
-                    depressed
-                    small
-                    color="primary"
-                    @click="addLayoutOptions(node)"
-                  >
-                    <span>Add Layout Options</span>
-                  </v-btn>
-                </div>
-                <v-row v-else-if="node.layoutOptions">
-                  <v-col class="py-0">
-                    <v-select
-                      v-model="node.layoutOptions.shape"
-                      label="Shape"
-                      :items="layoutShapes"
-                    />
-                  </v-col>
-                  <v-col class="py-0">
-                    <v-text-field
-                      v-model="node.layoutOptions.scale"
-                      label="Scale"
-                      type="number"
-                      min="0"
-                    />
-                  </v-col>
-                  <v-col class="py-0">
-                    <v-text-field
-                      v-model="node.layoutOptions.fixedDistance"
-                      label="Fixed Distance"
-                      type="number"
-                      min="0"
-                    />
-                  </v-col>
-                </v-row>
-
-                <div>
-                  <span class="subtitle-1 grey--text text--darken-1">Nodes</span>
-                </div>
-                <div
-                  v-if="!(node.nodes || []).length"
-                  class="mb-4"
-                >
-                  <span>No data available</span>
-                </div>
-                <div
-                  v-else
-                  class="text-center mb-4"
-                >
-                  <v-btn
-                    tile
-                    depressed
-                    small
-                    color="secondary"
-                    @click="pushMenu(i + 1, node)"
-                  >
-                    <span>Show {{ node.nodes.length }} Nodes</span>
-                    <v-icon>mdi-chevron-right</v-icon>
-                  </v-btn>
-                </div>
-                <div
-                  v-if="editMode && !(node.nodes || []).length"
-                  class="text-center mb-4"
-                >
-                  <v-btn
-                    tile
-                    depressed
-                    small
-                    color="primary"
-                    @click="addNode(i, [], node)"
-                  >
-                    <span>Add Node</span>
-                  </v-btn>
-                </div>
               </v-card-text>
             </div>
           </v-expand-transition>
@@ -454,20 +471,27 @@ export default {
         nodes: []
       });
     },
-    addNode(menuIndex, nodes, group) {
-      const node = {
-        id: `node${nodes.length + 1}`,
-        label: '',
-        parentId: ''
-      };
+    addNode(menuIndex, nodes) {
       if (nodes.length) {
         this.showAll.detailMenus[menuIndex].push(false);
       }
-      if (group) {
-        this.$set(group, 'nodes', [node]);
+      nodes.push({
+        id: `node${nodes.length + 1}`,
+        label: '',
+        parentId: ''
+      });
+    },
+    updateGroupNode(val, node, index) {
+      if (val) {
+        this.$set(node, 'nodes', []);
+        this.$delete(node, 'nodeOptions');
         return;
       }
-      nodes.push(node);
+      this.$delete(node, 'nodes');
+      this.$delete(node, 'layoutOptions');
+      if (node.id === this.detailMenus[index + 1].id) {
+        this.detailMenus.splice(index + 1);
+      }
     },
     addLayoutOptions(layer) {
       this.$set(layer, 'layoutOptions', {
