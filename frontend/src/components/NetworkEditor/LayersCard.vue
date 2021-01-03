@@ -216,6 +216,14 @@
     >
       <v-card-title class="font-weight-regular">
         <span>{{ object.label || object.id }}</span>
+        <v-spacer />
+        <v-btn
+          icon
+          small
+          @click="closeMenu(i)"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text class="pt-0">
         <div
@@ -552,6 +560,9 @@ export default {
       }
       array.splice(delIndex, 1);
       showAll.splice(delIndex, 1);
+    },
+    closeMenu(index) {
+      this.detailMenus.splice(index);
     }
   }
 }
