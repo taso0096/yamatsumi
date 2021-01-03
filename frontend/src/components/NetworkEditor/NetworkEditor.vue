@@ -161,7 +161,7 @@
                     small
                     @click="deleteRoutingTable(i)"
                   >
-                    <v-icon>mdi-close</v-icon>
+                    <v-icon color="error">mdi-delete-outline</v-icon>
                   </v-btn>
                 </div>
               </div>

@@ -30,145 +30,161 @@
             >
               <span>No data available</span>
             </div>
-            <v-card
+            <div
               v-else
               v-for="(layer, i) in layers"
               :key="`layer-${i}`"
-              outlined
-              class="mb-4"
+              class="d-flex mb-4"
             >
-              <v-card-title class="subtitle-1">
-                <span>{{ layer.label || layer.id }}</span>
-                <v-spacer />
+              <v-card
+                outlined
+                width="100%"
+              >
+                <v-card-title class="subtitle-1">
+                  <span>{{ layer.label || layer.id }}</span>
+                  <v-spacer />
+                  <v-btn
+                    icon
+                    small
+                    @click="showAll.layers.splice(i, 1, !showAll.layers[i])"
+                  >
+                    <v-icon>
+                      {{ showAll.layers[i] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                    </v-icon>
+                  </v-btn>
+                </v-card-title>
+                <v-expand-transition>
+                  <div v-show="showAll.layers[i]">
+                    <v-card-text class="pt-0">
+                      <v-row>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="layer.id"
+                            label="Layer ID"
+                          />
+                        </v-col>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="layer.label"
+                            label="Layer Label"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="layer.depth"
+                            label="Depth"
+                            type="number"
+                          />
+                        </v-col>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="layer.fixedDepth"
+                            label="Fixed Depth"
+                            type="number"
+                          />
+                        </v-col>
+                      </v-row>
+
+                      <div v-if="editMode || layer.layoutOptions">
+                        <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
+                      </div>
+                      <div
+                        v-if="editMode && !layer.layoutOptions"
+                        class="text-center mb-4"
+                      >
+                        <v-btn
+                          tile
+                          depressed
+                          small
+                          color="primary"
+                          @click="addLayoutOptions(layer)"
+                        >
+                          <span>Add Layout Options</span>
+                        </v-btn>
+                      </div>
+                      <v-row v-else-if="layer.layoutOptions">
+                        <v-col class="py-0">
+                          <v-select
+                            v-model="layer.layoutOptions.shape"
+                            label="Shape"
+                            :items="layoutShapes"
+                          />
+                        </v-col>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="layer.layoutOptions.scale"
+                            label="Scale"
+                            type="number"
+                            min="0"
+                          />
+                        </v-col>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="layer.layoutOptions.fixedDistance"
+                            label="Fixed Distance"
+                            type="number"
+                            min="0"
+                          />
+                        </v-col>
+                      </v-row>
+
+                      <div>
+                        <span class="subtitle-1 grey--text text--darken-1">Nodes</span>
+                      </div>
+                      <div
+                        v-if="!layer.nodes.length"
+                        class="mb-4"
+                      >
+                        <span>No data available</span>
+                      </div>
+                      <div
+                        v-else
+                        class="text-center"
+                      >
+                        <v-btn
+                          tile
+                          depressed
+                          small
+                          color="secondary"
+                          @click="pushMenu(0, layer)"
+                        >
+                          <span>Show {{ layer.nodes.length }} Nodes</span>
+                          <v-icon>mdi-chevron-right</v-icon>
+                        </v-btn>
+                      </div>
+                      <div
+                        v-if="editMode && !layer.nodes.length"
+                        class="text-center mb-4"
+                      >
+                        <v-btn
+                          tile
+                          depressed
+                          small
+                          color="primary"
+                          @click="addNode(undefined, layer.nodes)"
+                        >
+                          <span>Add Node</span>
+                        </v-btn>
+                      </div>
+                    </v-card-text>
+                  </div>
+                </v-expand-transition>
+              </v-card>
+              <div
+                v-if="editMode"
+                class="d-flex align-center ml-3"
+              >
                 <v-btn
                   icon
                   small
-                  @click="showAll.layers.splice(i, 1, !showAll.layers[i])"
+                  @click="deleteIndex(layers, showAll.layers, i)"
                 >
-                  <v-icon>
-                    {{ showAll.layers[i] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-                  </v-icon>
+                  <v-icon color="error">mdi-delete-outline</v-icon>
                 </v-btn>
-              </v-card-title>
-              <v-expand-transition>
-                <div v-show="showAll.layers[i]">
-                  <v-card-text class="pt-0">
-                    <v-row>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="layer.id"
-                          label="Layer ID"
-                        />
-                      </v-col>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="layer.label"
-                          label="Layer Label"
-                        />
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="layer.depth"
-                          label="Depth"
-                          type="number"
-                        />
-                      </v-col>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="layer.fixedDepth"
-                          label="Fixed Depth"
-                          type="number"
-                        />
-                      </v-col>
-                    </v-row>
-
-                    <div v-if="editMode || layer.layoutOptions">
-                      <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
-                    </div>
-                    <div
-                      v-if="editMode && !layer.layoutOptions"
-                      class="text-center mb-4"
-                    >
-                      <v-btn
-                        tile
-                        depressed
-                        small
-                        color="primary"
-                        @click="addLayoutOptions(layer)"
-                      >
-                        <span>Add Layout Options</span>
-                      </v-btn>
-                    </div>
-                    <v-row v-else-if="layer.layoutOptions">
-                      <v-col class="py-0">
-                        <v-select
-                          v-model="layer.layoutOptions.shape"
-                          label="Shape"
-                          :items="layoutShapes"
-                        />
-                      </v-col>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="layer.layoutOptions.scale"
-                          label="Scale"
-                          type="number"
-                          min="0"
-                        />
-                      </v-col>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="layer.layoutOptions.fixedDistance"
-                          label="Fixed Distance"
-                          type="number"
-                          min="0"
-                        />
-                      </v-col>
-                    </v-row>
-
-                    <div>
-                      <span class="subtitle-1 grey--text text--darken-1">Nodes</span>
-                    </div>
-                    <div
-                      v-if="!layer.nodes.length"
-                      class="mb-4"
-                    >
-                      <span>No data available</span>
-                    </div>
-                    <div
-                      v-else
-                      class="text-center"
-                    >
-                      <v-btn
-                        tile
-                        depressed
-                        small
-                        color="secondary"
-                        @click="pushMenu(0, layer)"
-                      >
-                        <span>Show {{ layer.nodes.length }} Nodes</span>
-                        <v-icon>mdi-chevron-right</v-icon>
-                      </v-btn>
-                    </div>
-                    <div
-                      v-if="editMode && !layer.nodes.length"
-                      class="text-center mb-4"
-                    >
-                      <v-btn
-                        tile
-                        depressed
-                        small
-                        color="primary"
-                        @click="addNode(undefined, layer.nodes)"
-                      >
-                        <span>Add Node</span>
-                      </v-btn>
-                    </div>
-                  </v-card-text>
-                </div>
-              </v-expand-transition>
-            </v-card>
+              </div>
+            </div>
             <div
               v-if="editMode"
               class="text-center mb-4"
@@ -202,202 +218,218 @@
         <span>{{ object.label || object.id }}</span>
       </v-card-title>
       <v-card-text class="pt-0">
-        <v-card
+        <div
           v-for="(node, j) in object.nodes"
           :key="`node-${j}`"
-          outlined
-          class="mb-4"
+          class="d-flex mb-4"
         >
-          <v-card-title class="subtitle-1">
-            <span>{{ node.label || node.id }}</span>
-            <v-spacer />
-            <v-btn
-              icon
-              small
-              @click="showAll.detailMenus[i].splice(j, 1, !showAll.detailMenus[i][j])"
-            >
-              <v-icon>
-                {{ showAll.detailMenus[i][j] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-              </v-icon>
-            </v-btn>
-          </v-card-title>
-          <v-expand-transition>
-            <div v-show="showAll.detailMenus[i][j]">
-              <v-card-text class="py-0">
-                <v-row>
-                  <v-col class="py-0">
-                    <v-text-field
-                      v-model="node.id"
-                      label="Node ID"
-                    />
-                  </v-col>
-                  <v-col class="py-0">
-                    <v-text-field
-                      v-model="node.label"
-                      label="Node Label"
-                    />
-                  </v-col>
-                  <v-col class="py-0">
-                    <v-text-field
-                      v-model="node.parentId"
-                      label="Parent Node ID"
-                    />
-                  </v-col>
-                </v-row>
+          <v-card
+            outlined
+            width="100%"
+          >
+            <v-card-title class="subtitle-1">
+              <span>{{ node.label || node.id }}</span>
+              <v-spacer />
+              <v-btn
+                icon
+                small
+                @click="showAll.detailMenus[i].splice(j, 1, !showAll.detailMenus[i][j])"
+              >
+                <v-icon>
+                  {{ showAll.detailMenus[i][j] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                </v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-expand-transition>
+              <div v-show="showAll.detailMenus[i][j]">
+                <v-card-text class="py-0">
+                  <v-row>
+                    <v-col class="py-0">
+                      <v-text-field
+                        v-model="node.id"
+                        label="Node ID"
+                      />
+                    </v-col>
+                    <v-col class="py-0">
+                      <v-text-field
+                        v-model="node.label"
+                        label="Node Label"
+                      />
+                    </v-col>
+                    <v-col class="py-0">
+                      <v-text-field
+                        v-model="node.parentId"
+                        label="Parent Node ID"
+                      />
+                    </v-col>
+                  </v-row>
 
-                <v-row>
-                  <v-col class="py-0">
-                    <v-switch
-                      label="Group Node"
-                      inset
-                      hide-details
-                      :input-value="!!node.nodes"
-                      class="mt-0 mb-3"
-                      @change="updateGroupNode($event, node, i)"
-                    />
-                  </v-col>
-                </v-row>
+                  <v-row>
+                    <v-col class="py-0">
+                      <v-switch
+                        label="Group Node"
+                        inset
+                        hide-details
+                        :input-value="!!node.nodes"
+                        class="mt-0 mb-3"
+                        @change="updateGroupNode($event, node, i + 1)"
+                      />
+                    </v-col>
+                  </v-row>
 
-                <template v-if="!node.nodes">
-                  <div v-if="editMode || node.nodeOptions">
-                    <span class="subtitle-1 grey--text text--darken-1">Node Options</span>
-                  </div>
-                  <div
-                    v-if="editMode && !node.nodeOptions"
-                    class="text-center mb-4"
-                  >
-                    <v-btn
-                      tile
-                      depressed
-                      small
-                      color="primary"
-                      @click="addNodeOptions(node)"
+                  <template v-if="!node.nodes">
+                    <div v-if="editMode || node.nodeOptions">
+                      <span class="subtitle-1 grey--text text--darken-1">Node Options</span>
+                    </div>
+                    <div
+                      v-if="editMode && !node.nodeOptions"
+                      class="text-center mb-4"
                     >
-                      <span>Add Node Options</span>
-                    </v-btn>
-                  </div>
-                  <template v-else-if="node.nodeOptions">
-                    <v-row>
+                      <v-btn
+                        tile
+                        depressed
+                        small
+                        color="primary"
+                        @click="addNodeOptions(node)"
+                      >
+                        <span>Add Node Options</span>
+                      </v-btn>
+                    </div>
+                    <template v-else-if="node.nodeOptions">
+                      <v-row>
+                        <v-col class="py-0">
+                          <v-select
+                            v-model="node.nodeOptions.type"
+                            label="Type"
+                            :items="nodeTypes"
+                          />
+                        </v-col>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="node.nodeOptions.size"
+                            label="Size"
+                            type="number"
+                            min="0"
+                          />
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="node.nodeOptions.nodeColor"
+                            label="Node Color"
+                          />
+                        </v-col>
+                        <v-col class="py-0">
+                          <v-text-field
+                            v-model="node.nodeOptions.labelColor"
+                            label="Label Color"
+                          />
+                        </v-col>
+                      </v-row>
+                    </template>
+                  </template>
+
+                  <template v-else>
+                    <div v-if="editMode || node.layoutOptions">
+                      <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
+                    </div>
+                    <div
+                      v-if="editMode && !node.layoutOptions"
+                      class="text-center mb-4"
+                    >
+                      <v-btn
+                        tile
+                        depressed
+                        small
+                        color="primary"
+                        @click="addLayoutOptions(node)"
+                      >
+                        <span>Add Layout Options</span>
+                      </v-btn>
+                    </div>
+                    <v-row v-else-if="node.layoutOptions">
                       <v-col class="py-0">
                         <v-select
-                          v-model="node.nodeOptions.type"
-                          label="Type"
-                          :items="nodeTypes"
+                          v-model="node.layoutOptions.shape"
+                          label="Shape"
+                          :items="layoutShapes"
                         />
                       </v-col>
                       <v-col class="py-0">
                         <v-text-field
-                          v-model="node.nodeOptions.size"
-                          label="Size"
+                          v-model="node.layoutOptions.scale"
+                          label="Scale"
+                          type="number"
+                          min="0"
+                        />
+                      </v-col>
+                      <v-col class="py-0">
+                        <v-text-field
+                          v-model="node.layoutOptions.fixedDistance"
+                          label="Fixed Distance"
                           type="number"
                           min="0"
                         />
                       </v-col>
                     </v-row>
-                    <v-row>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="node.nodeOptions.nodeColor"
-                          label="Node Color"
-                        />
-                      </v-col>
-                      <v-col class="py-0">
-                        <v-text-field
-                          v-model="node.nodeOptions.labelColor"
-                          label="Label Color"
-                        />
-                      </v-col>
-                    </v-row>
+
+                    <div>
+                      <span class="subtitle-1 grey--text text--darken-1">Nodes</span>
+                    </div>
+                    <div
+                      v-if="!(node.nodes || []).length"
+                      class="mb-4"
+                    >
+                      <span>No data available</span>
+                    </div>
+                    <div
+                      v-else
+                      class="text-center mb-4"
+                    >
+                      <v-btn
+                        tile
+                        depressed
+                        small
+                        color="secondary"
+                        @click="pushMenu(i + 1, node)"
+                      >
+                        <span>Show {{ node.nodes.length }} Nodes</span>
+                        <v-icon>mdi-chevron-right</v-icon>
+                      </v-btn>
+                    </div>
+                    <div
+                      v-if="editMode && !(node.nodes || []).length"
+                      class="text-center mb-4"
+                    >
+                      <v-btn
+                        tile
+                        depressed
+                        small
+                        color="primary"
+                        @click="addNode(i, node.nodes)"
+                      >
+                        <span>Add Node</span>
+                      </v-btn>
+                    </div>
                   </template>
-                </template>
-
-                <template v-else>
-                  <div v-if="editMode || node.layoutOptions">
-                    <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
-                  </div>
-                  <div
-                    v-if="editMode && !node.layoutOptions"
-                    class="text-center mb-4"
-                  >
-                    <v-btn
-                      tile
-                      depressed
-                      small
-                      color="primary"
-                      @click="addLayoutOptions(node)"
-                    >
-                      <span>Add Layout Options</span>
-                    </v-btn>
-                  </div>
-                  <v-row v-else-if="node.layoutOptions">
-                    <v-col class="py-0">
-                      <v-select
-                        v-model="node.layoutOptions.shape"
-                        label="Shape"
-                        :items="layoutShapes"
-                      />
-                    </v-col>
-                    <v-col class="py-0">
-                      <v-text-field
-                        v-model="node.layoutOptions.scale"
-                        label="Scale"
-                        type="number"
-                        min="0"
-                      />
-                    </v-col>
-                    <v-col class="py-0">
-                      <v-text-field
-                        v-model="node.layoutOptions.fixedDistance"
-                        label="Fixed Distance"
-                        type="number"
-                        min="0"
-                      />
-                    </v-col>
-                  </v-row>
-
-                  <div>
-                    <span class="subtitle-1 grey--text text--darken-1">Nodes</span>
-                  </div>
-                  <div
-                    v-if="!(node.nodes || []).length"
-                    class="mb-4"
-                  >
-                    <span>No data available</span>
-                  </div>
-                  <div
-                    v-else
-                    class="text-center mb-4"
-                  >
-                    <v-btn
-                      tile
-                      depressed
-                      small
-                      color="secondary"
-                      @click="pushMenu(i + 1, node)"
-                    >
-                      <span>Show {{ node.nodes.length }} Nodes</span>
-                      <v-icon>mdi-chevron-right</v-icon>
-                    </v-btn>
-                  </div>
-                  <div
-                    v-if="editMode && !(node.nodes || []).length"
-                    class="text-center mb-4"
-                  >
-                    <v-btn
-                      tile
-                      depressed
-                      small
-                      color="primary"
-                      @click="addNode(i, node.nodes)"
-                    >
-                      <span>Add Node</span>
-                    </v-btn>
-                  </div>
-                </template>
-              </v-card-text>
-            </div>
-          </v-expand-transition>
-        </v-card>
+                </v-card-text>
+              </div>
+            </v-expand-transition>
+          </v-card>
+          <div
+            v-if="editMode"
+            class="d-flex align-center ml-3"
+          >
+            <v-btn
+              icon
+              small
+              @click="deleteIndex(object.nodes, showAll.detailMenus[i], j, i + 1)"
+            >
+              <v-icon color="error">mdi-delete-outline</v-icon>
+            </v-btn>
+          </div>
+        </div>
         <div
           v-if="editMode"
           class="text-center mb-4"
@@ -481,7 +513,7 @@ export default {
         parentId: ''
       });
     },
-    updateGroupNode(val, node, index) {
+    updateGroupNode(val, node, nextIndex) {
       if (val) {
         this.$set(node, 'nodes', []);
         this.$delete(node, 'nodeOptions');
@@ -489,8 +521,8 @@ export default {
       }
       this.$delete(node, 'nodes');
       this.$delete(node, 'layoutOptions');
-      if (node.id === this.detailMenus[index + 1].id) {
-        this.detailMenus.splice(index + 1);
+      if (node.id === this.detailMenus[nextIndex].id) {
+        this.detailMenus.splice(nextIndex);
       }
     },
     addLayoutOptions(layer) {
@@ -508,11 +540,18 @@ export default {
         labelColor: '#fff'
       });
     },
-    pushMenu(index, object) {
-      this.showAll.detailMenus.splice(index);
+    pushMenu(nextIndex, object) {
+      this.showAll.detailMenus.splice(nextIndex);
       this.showAll.detailMenus.push([...Array(object.nodes.length)].map(() => false));
-      this.detailMenus.splice(index);
+      this.detailMenus.splice(nextIndex);
       this.detailMenus.push(object);
+    },
+    deleteIndex(array, showAll, delIndex, nextMenuIndex = 0) {
+      if (array[delIndex].id === this.detailMenus[nextMenuIndex]?.id) {
+        this.detailMenus.splice(nextMenuIndex);
+      }
+      array.splice(delIndex, 1);
+      showAll.splice(delIndex, 1);
     }
   }
 }
