@@ -41,59 +41,68 @@
       color="transparent"
       width="300"
     >
-      <v-list
-        v-if="$_userData.isAuthed"
-        color="white"
-        class="ma-3 mr-0 py-0"
-      >
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $_userData.username }}</v-list-item-title>
-            <v-list-item-subtitle v-if="$_userData.isSuperuser">superuser</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-      <v-list
-        v-if="$_userData.isLoaded"
-        color="white"
-        class="ma-3 mr-0 py-0"
-      >
-        <v-list-item
-          v-if="!$_userData.isAuthed"
-          :to="{ name: 'Login' }"
+      <v-sheet class="ma-3 mr-0">
+        <v-list
+          v-if="$_userData.isAuthed"
+          class="py-0"
         >
-          <v-list-item-icon>
-            <v-icon size="20">mdi-login</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Login</v-list-item-title>
-        </v-list-item>
-        <template v-for="tab in drawerTabs">
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ $_userData.username }}</v-list-item-title>
+              <v-list-item-subtitle v-if="$_userData.isSuperuser">superuser</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-sheet>
+      <v-sheet class="ma-3 mr-0">
+        <v-list
+          v-if="$_userData.isLoaded"
+          class="py-0"
+        >
           <v-list-item
-            v-if="!tab.requiresAuth || (!tab.requiresSuperuser || $_userData.isSuperuser) && $_userData.isAuthed"
-            :key="tab.title"
-            :to="tab.route"
-            exact
+            v-if="!$_userData.isAuthed"
+            :to="{ name: 'Login' }"
           >
             <v-list-item-icon>
-              <v-icon size="20">{{ tab.icon }}</v-icon>
+              <v-icon size="20">mdi-login</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>{{ tab.title }}</v-list-item-title>
+            <v-list-item-title>Login</v-list-item-title>
           </v-list-item>
-        </template>
-        <v-divider />
-        <div class="py-3 pl-4">
-          <div class="subtitle-2">©YAMATSUMI</div>
-          <div class="subtitle-2">Develop by <a href="https://github.com/taso0096" target="_blank">@taso0096</a></div>
-        </div>
-      </v-list>
+          <template v-for="tab in drawerTabs">
+            <v-list-item
+              v-if="!tab.requiresAuth || (!tab.requiresSuperuser || $_userData.isSuperuser) && $_userData.isAuthed"
+              :key="tab.title"
+              :to="tab.route"
+              exact
+            >
+              <v-list-item-icon>
+                <v-icon size="20">{{ tab.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ tab.title }}</v-list-item-title>
+            </v-list-item>
+          </template>
+          <v-divider />
+          <div class="py-3 pl-4">
+            <v-switch
+              v-model="$vuetify.theme.dark"
+              label="Dark Mode"
+              inset
+              hide-details
+              class="mt-0 mb-3"
+            />
+            <div class="subtitle-2">©YAMATSUMI</div>
+            <div class="subtitle-2">Develop by <a href="https://github.com/taso0096" target="_blank">@taso0096</a></div>
+          </div>
+        </v-list>
+      </v-sheet>
     </v-navigation-drawer>
 
     <v-app-bar
       app
       clipped-left
       clipped-right
-      color="white"
-      elevation="0"
+      :color="$vuetify.theme.dark ? '#1e1e1e' : 'white'"
+      flat
     >
       <v-app-bar-nav-icon
         v-if="$route.name !== 'Logout'"
@@ -105,7 +114,11 @@
       </v-toolbar-title>
     </v-app-bar>
 
-    <v-main>
+    <v-main
+      :style="{
+        background: $vuetify.theme.dark ? '#000' : '#f5f5f5'
+      }"
+    >
       <v-container
         :style="{
           height: $route.name === 'Visualize' && '100%'
@@ -118,9 +131,6 @@
 </template>
 
 <style lang="scss">
-.v-main {
-  background: #F3F4F6;
-}
 .vue-notification-group {
     width: auto !important;
 
@@ -159,7 +169,17 @@ export default {
       }
     ]
   }),
+  watch: {
+    '$vuetify.theme.dark'(val) {
+      if (val) {
+        localStorage.setItem('darkMode', val);
+      } else {
+        localStorage.removeItem('darkMode');
+      }
+    }
+  },
   mounted() {
+    this.$vuetify.theme.dark = !!localStorage.getItem('darkMode');
     AFRAME.registerComponent('look-center', {
       schema: {
         parentSelector: { type: 'string' }

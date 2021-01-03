@@ -139,7 +139,7 @@
                         :input-value="selected"
                         label
                         small
-                        color="grey lighten-3"
+                        :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3'"
                       >
                         <span>{{ item }}</span>
                         <v-icon

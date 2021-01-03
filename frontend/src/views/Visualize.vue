@@ -42,17 +42,24 @@
       </v-card-title>
     </v-card>
 
-    <a-scene embedded>
-      <a-camera position='0 1.5 5' />
-      <a-sky color='#00022d' />
-      <a-entity oculus-touch-controls="hand: left"></a-entity>
-      <a-entity oculus-touch-controls="hand: right"></a-entity>
+    <v-card
+      tile
+      outlined
+      width="100%"
+      height="calc(100% - 64px)"
+    >
+      <a-scene embedded>
+        <a-camera position='0 1.5 5' />
+        <a-sky color='#000' />
+        <a-entity oculus-touch-controls="hand: left"></a-entity>
+        <a-entity oculus-touch-controls="hand: right"></a-entity>
 
-      <template v-if="originalNetwork.id">
-        <network-entity :network="network.data" />
-        <line-entity ref="lineEntity" />
-      </template>
-    </a-scene>
+        <template v-if="originalNetwork.id">
+          <network-entity :network="network.data" />
+          <line-entity ref="lineEntity" />
+        </template>
+      </a-scene>
+    </v-card>
   </div>
 </template>
 
@@ -61,7 +68,7 @@
   height: 100%;
 
   a-scene {
-    height: calc(100% - 64px);
+    height: 100%;
   }
 }
 </style>
