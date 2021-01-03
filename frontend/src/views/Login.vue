@@ -92,13 +92,13 @@ export default {
         })
         .then(res => {
           if (res.status !== 200) {
-            this.$_pushNotice('ユーザ名またはパスワードが違います。', 'error');
+            this.$_pushNotice('Username or Password is incorrect.', 'error');
             return false;
           }
           return res.data.token;
         })
         .catch(async() => {
-          this.$_pushNotice('エラーが発生しました。', 'error');
+          this.$_pushNotice('An error occurred.', 'error');
           return false;
         });
       if (accessToken) {
@@ -113,13 +113,12 @@ export default {
               accessToken,
               ...res.data
             });
-            this.$_pushNotice('ログインに成功しました。', 'success');
             this.$router.push(this.$route.query.redirect || { name: 'Network' });
             console.log(res.data);
           })
           .catch(() => {
             this.$store.dispatch('updateAuthState', {});
-            this.$_pushNotice('エラーが発生しました。', 'error');
+            this.$_pushNotice('An error occurred.', 'error');
           });
       }
       this.isLoadingLogin = false;

@@ -227,6 +227,13 @@
       </v-card-title>
       <v-card-text class="pt-0">
         <div
+          v-if="!object.nodes.length"
+          class="mb-4"
+        >
+          <span>No data available</span>
+        </div>
+        <div
+          v-else
           v-for="(node, j) in object.nodes"
           :key="`node-${j}`"
           class="d-flex mb-4"
