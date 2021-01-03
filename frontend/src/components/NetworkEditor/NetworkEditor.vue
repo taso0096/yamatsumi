@@ -117,41 +117,46 @@
                 :key="`node-${i}`"
                 class="d-flex mb-5"
               >
-                <div class="network-editor__routing-table-field">
-                  <v-text-field
-                    v-model="node[0]"
-                    :label="`Node ID (${i + 1})`"
-                    hide-details
-                  />
-                  <v-combobox
-                    v-model="node[1]"
-                    :label="`IP addresses (${node[0] || i + 1})`"
-                    hide-selected
-                    single-line
-                    hide-details
-                    multiple
-                    append-icon=""
-                    class="pt-0"
-                  >
-                    <template v-slot:selection="{ attrs, item, parent, selected }">
-                      <v-chip
-                        v-bind="attrs"
-                        :input-value="selected"
-                        label
-                        small
-                        :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3'"
-                      >
-                        <span>{{ item }}</span>
-                        <v-icon
-                          v-if="editMode"
+                <v-card
+                  outlined
+                  width="100%"
+                >
+                  <v-card-text>
+                    <v-text-field
+                      v-model="node[0]"
+                      :label="`Node ID (${i + 1})`"
+                      hide-details
+                    />
+                    <v-combobox
+                      v-model="node[1]"
+                      :label="`IP addresses (${node[0] || i + 1})`"
+                      hide-selected
+                      single-line
+                      hide-details
+                      multiple
+                      append-icon=""
+                      class="pt-0"
+                    >
+                      <template v-slot:selection="{ attrs, item, parent, selected }">
+                        <v-chip
+                          v-bind="attrs"
+                          :input-value="selected"
+                          label
                           small
-                          class="ml-2"
-                          @click="parent.selectItem(item)"
-                        >mdi-close</v-icon>
-                      </v-chip>
-                    </template>
-                  </v-combobox>
-                </div>
+                          :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3'"
+                        >
+                          <span>{{ item }}</span>
+                          <v-icon
+                            v-if="editMode"
+                            small
+                            class="ml-2"
+                            @click="parent.selectItem(item)"
+                          >mdi-close</v-icon>
+                        </v-chip>
+                      </template>
+                    </v-combobox>
+                  </v-card-text>
+                </v-card>
                 <div
                   v-if="editMode"
                   class="d-flex align-center ml-3"
@@ -170,13 +175,13 @@
                 class="text-center mb-4"
               >
                 <v-btn
-                  fab
+                  tile
                   depressed
                   small
                   color="primary"
                   @click="addRoutingTable"
                 >
-                  <v-icon>mdi-plus</v-icon>
+                  <span>Add Routing</span>
                 </v-btn>
               </div>
             </v-card-text>
@@ -191,12 +196,6 @@
     </v-form>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.network-editor__routing-table-field {
-  width: 100%;
-}
-</style>
 
 <script>
 import LayersCard from './LayersCard.vue';
