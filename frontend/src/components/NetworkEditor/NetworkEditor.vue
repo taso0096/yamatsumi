@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="network-editor">
     <v-card
       tile
       flat
-      class="mb-3"
+      class="network-editor__title-header mt-3"
     >
       <v-card-title>
         <span>Network JSON</span>
@@ -41,7 +41,10 @@
       </v-card-title>
     </v-card>
 
-    <v-form :readonly="!editMode">
+    <v-form
+      :readonly="!editMode"
+      class="network-editor__form"
+    >
       <v-card
         tile
         flat
@@ -196,6 +199,24 @@
     </v-form>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.network-editor {
+  height: calc(100% - 64px - 12px);
+  margin-top: calc(64px + 12px);
+
+  .network-editor__title-header {
+    position: absolute;
+    top: 0;
+    width: calc(100% - 12px);
+    z-index: 1;
+  }
+  .network-editor__form {
+    height: 100%;
+    overflow: scroll;
+  }
+}
+</style>
 
 <script>
 import LayersCard from './LayersCard.vue';
