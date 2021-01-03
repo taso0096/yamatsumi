@@ -65,11 +65,11 @@
             <v-card-text class="pt-0">
               <v-text-field
                 v-model="network.id"
-                label="ID"
+                label="Network ID"
               />
               <v-text-field
                 v-model="network.label"
-                label="Label"
+                label="Network Label"
               />
               <v-text-field
                 v-model="network.version"
