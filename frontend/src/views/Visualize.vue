@@ -114,7 +114,7 @@ export default {
       visualize: JSON.parse(JSON.stringify(this.networkData.data)),
       edit: JSON.parse(JSON.stringify(this.networkData.data))
     };
-    this.$refs.networkEntity.setNetwork(this.network.visualize);
+    this.$refs.networkEntity.set(this.network.visualize);
     const routingTable = this.network.original.routingTable;
     const lineColor = new Map([
       [22, {
