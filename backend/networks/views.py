@@ -55,7 +55,10 @@ class NetworksView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        loads_data = json.loads(data)
+        try:
+            loads_data = json.loads(data)
+        except Exception:
+            loads_data = data
         network_data = {
             'network_id': loads_data['id'],
             'user': request.user,
@@ -78,7 +81,10 @@ class NetworkDetailView(GenericAPIView):
         network = Network.objects.get(pk=network_id)
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        loads_data = json.loads(data)
+        try:
+            loads_data = json.loads(data)
+        except Exception:
+            loads_data = data
         network_data = {
             'network_id': loads_data['id'],
             'user': network.user,
