@@ -73,14 +73,14 @@
                       <v-row>
                         <v-col class="py-0">
                           <v-text-field
-                            v-model="layer.depth"
+                            v-model.number="layer.depth"
                             label="Depth"
                             type="number"
                           />
                         </v-col>
                         <v-col class="py-0">
                           <v-text-field
-                            v-model="layer.fixedDepth"
+                            v-model.number="layer.fixedDepth"
                             label="Fixed Depth"
                             type="number"
                           />
@@ -114,7 +114,7 @@
                         </v-col>
                         <v-col class="py-0">
                           <v-text-field
-                            v-model="layer.layoutOptions.scale"
+                            v-model.number="layer.layoutOptions.scale"
                             label="Scale"
                             type="number"
                             min="0"
@@ -122,7 +122,7 @@
                         </v-col>
                         <v-col class="py-0">
                           <v-text-field
-                            v-model="layer.layoutOptions.fixedDistance"
+                            v-model.number="layer.layoutOptions.fixedDistance"
                             label="Fixed Distance"
                             type="number"
                             min="0"
@@ -321,7 +321,7 @@
                         </v-col>
                         <v-col class="py-0">
                           <v-text-field
-                            v-model="node.nodeOptions.size"
+                            v-model.number="node.nodeOptions.size"
                             label="Size"
                             type="number"
                             min="0"
@@ -373,7 +373,7 @@
                       </v-col>
                       <v-col class="py-0">
                         <v-text-field
-                          v-model="node.layoutOptions.scale"
+                          v-model.number="node.layoutOptions.scale"
                           label="Scale"
                           type="number"
                           min="0"
@@ -381,7 +381,7 @@
                       </v-col>
                       <v-col class="py-0">
                         <v-text-field
-                          v-model="node.layoutOptions.fixedDistance"
+                          v-model.number="node.layoutOptions.fixedDistance"
                           label="Fixed Distance"
                           type="number"
                           min="0"

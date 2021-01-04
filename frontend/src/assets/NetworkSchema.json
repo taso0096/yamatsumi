@@ -90,7 +90,7 @@
           "depth": {
             "title": "深度",
             "description": "一つ上のレイヤーからの深度",
-            "type": "number",
+            "type": ["number", "string"],
             "default": 1,
             "examples": [
               1
@@ -99,7 +99,7 @@
           "fixedDepth": {
             "title": "絶対深度",
             "description": "一番上のレイヤーからの深度",
-            "type": "number"
+            "type": ["number", "string"]
           },
           "layoutOptions": {
             "$id": "layoutOptions",
@@ -124,7 +124,7 @@
               "scale": {
                 "title": "倍率",
                 "description": "ノード数依存の半径や1辺の長さに掛ける倍率",
-                "type": "number",
+                "type": ["number", "string"],
                 "minimum": 0,
                 "default": 1,
                 "examples": [
@@ -134,7 +134,7 @@
               "fixedDistance": {
                 "title": "絶対距離",
                 "description": "半径または1辺の長さ(ノード数に依存しない固定値)",
-                "type": "number",
+                "type": ["number", "string"],
                 "minimum": 0,
                 "examples": [
                   1
@@ -199,7 +199,7 @@
                     "size": {
                       "title": "ノードサイズ",
                       "description": "ノードサイズ",
-                      "type": "number",
+                      "type": ["number", "string"],
                       "minimum": 0,
                       "default": 1,
                       "examples": [
