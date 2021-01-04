@@ -60,7 +60,7 @@ export default {
       this.notParentNodes = this.layer.nodes.filter(n => !n.parentId);
       const hasParentNodes = this.layer.nodes.filter(n => n.parentId);
       this.calcPosition(this.layer.layoutOptions?.shape);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await this.$_sleep(1000);
       hasParentNodes.forEach((node, i) => {
         const parentEl = document.querySelector(`#node-${node.parentId}`);
         const LayerEntityConstructor = Vue.extend(LayerEntity);

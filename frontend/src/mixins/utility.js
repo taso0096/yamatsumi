@@ -8,6 +8,9 @@ Vue.mixin({
     })
   },
   methods: {
+    $_sleep(msec) {
+      return new Promise(resolve => setTimeout(resolve, msec));
+    },
     $_pushNotice(text, type, icon, group = 'app') {
       this.$notify({
         group,
