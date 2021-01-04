@@ -12,8 +12,8 @@
       class="pt-3 pr-3"
     >
       <network-editor
-        v-if="originalNetwork.id"
-        :network="network.data"
+        v-if="network.edit.id"
+        :network="network.edit"
       />
     </v-navigation-drawer>
 
@@ -23,13 +23,13 @@
       :loading="!Object.keys(network).length"
     >
       <v-card-title>
-        <span v-if="!Object.keys(network).length">Loading</span>
-        <span v-else-if="!network.data">Network ID "{{ $route.params.networkId }}" does not exist.</span>
+        <span v-if="!Object.keys(networkData).length">Loading</span>
+        <span v-else-if="!network.original.id">Network ID "{{ $route.params.networkId }}" does not exist.</span>
         <template v-else>
-          <span>{{ network.data.label || network.data.id }}</span>
+          <span>{{ network.original.label || network.original.id }}</span>
           <span class="mx-2">-</span>
-          <span>{{ network.username }}</span>
-          <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(network.updatedAt) }}</span>
+          <span>{{ networkData.username }}</span>
+          <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(networkData.updatedAt) }}</span>
           <v-btn
             icon
             small
@@ -54,10 +54,8 @@
         <a-entity oculus-touch-controls="hand: left"></a-entity>
         <a-entity oculus-touch-controls="hand: right"></a-entity>
 
-        <template v-if="originalNetwork.id">
-          <network-entity :network="network.data" />
-          <line-entity ref="lineEntity" />
-        </template>
+        <network-entity ref="networkEntity" />
+        <line-entity ref="lineEntity" />
       </a-scene>
     </v-card>
   </div>
@@ -92,23 +90,32 @@ export default {
     socket: {
       status: null
     },
-    originalNetwork: {},
-    network: {}
+    networkData: {},
+    network: {
+      original: {},
+      visualize: {},
+      edit: {}
+    }
   }),
   async mounted() {
     const networkId = this.$route.params.networkId;
-    this.network = await axios
+    this.networkData = await axios
       .get(`/networks/${networkId}/`)
       .then(res => res.data)
       .catch(err => {
         console.log(err);
         return { loaded: true };
       });
-    if (!this.network.data) {
+    if (!this.networkData.data) {
       return;
     }
-    this.originalNetwork = JSON.parse(JSON.stringify(this.network.data));
-    const routingTable = this.network.data.routingTable;
+    this.network = {
+      original: JSON.parse(JSON.stringify(this.networkData.data)),
+      visualize: JSON.parse(JSON.stringify(this.networkData.data)),
+      edit: JSON.parse(JSON.stringify(this.networkData.data))
+    };
+    this.$refs.networkEntity.setNetwork(this.network.visualize);
+    const routingTable = this.network.original.routingTable;
     const lineColor = new Map([
       [22, {
         service: 'ssh',

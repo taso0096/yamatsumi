@@ -20,43 +20,42 @@ export default {
   components: {
     LayerEntity
   },
-  props: {
-    network: {
-      type: Object
-    }
-  },
   data: () => ({
+    network: {},
     isValidNetwork: false,
     totalDepth: 0
   }),
-  mounted() {
-    const network = this.network;
-    const networkValidate = validate(network, networkSchema);
-    if (!networkValidate.valid) {
-      console.error('JSON Schema Validate ERROR', networkValidate.errors);
-      this.$_pushNotice('JSONのバリデーションに失敗しました。', 'error');
-      return;
-    }
-    if (!network.layers.length) {
-      return;
-    }
-    if (!network.layers[0].fixedDepth) {
-      this.totalDepth = network.layers[0].depth || 0;
-      network.layers[0].fixedDepth = this.totalDepth;
-    }
-    for (const layer of network.layers.slice(1)) {
-      if (!layer.fixedDepth) {
-        this.totalDepth -= 1.5*(layer.depth || 1);
-        layer.fixedDepth = this.totalDepth;
-      } else {
-        if (layer.fixedDepth > this.totalDepth) {
-          console.warn(`FixedDepth is larger than totalDepth. (layerId: ${layer.id})`);
+  methods: {
+    setNetwork(network) {
+      const networkValidate = validate(network, networkSchema);
+      if (!networkValidate.valid) {
+        console.error('JSON Schema Validate ERROR', networkValidate.errors);
+        this.$_pushNotice('JSONのバリデーションに失敗しました。', 'error');
+        return false;
+      }
+      if (!network.layers.length) {
+        return false;
+      }
+      if (!network.layers[0].fixedDepth) {
+        this.totalDepth = network.layers[0].depth || 0;
+        network.layers[0].fixedDepth = this.totalDepth;
+      }
+      for (const layer of network.layers.slice(1)) {
+        if (!layer.fixedDepth) {
+          this.totalDepth -= 1.5*(layer.depth || 1);
+          layer.fixedDepth = this.totalDepth;
         } else {
-          this.totalDepth = layer.fixedDepth;
+          if (layer.fixedDepth > this.totalDepth) {
+            console.warn(`FixedDepth is larger than totalDepth. (layerId: ${layer.id})`);
+          } else {
+            this.totalDepth = layer.fixedDepth;
+          }
         }
       }
+      this.network = network;
+      this.isValidNetwork = true;
+      return true;
     }
-    this.isValidNetwork = true;
   }
 };
 </script>
