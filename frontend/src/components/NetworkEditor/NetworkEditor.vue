@@ -9,12 +9,12 @@
         <span>Network JSON</span>
         <v-spacer />
         <v-btn
-          v-if="!editMode"
+          v-if="!mode.edit"
           color="warning"
           depressed
           tile
           small
-          @click="editMode = true"
+          @click="mode.edit = true"
         >
           <span>Edit</span>
         </v-btn>
@@ -24,16 +24,29 @@
             tile
             small
             class="mr-2"
-            @click="editMode = false"
+            @click="cancelEdit"
           >
             <span>Cancel</span>
+          </v-btn>
+          <v-btn
+            color="info"
+            depressed
+            :outlined="mode.preview"
+            tile
+            small
+            class="mr-3"
+            @click="previewNetwork"
+          >
+            <span v-if="!mode.preview">Preview</span>
+            <span v-else>Original</span>
           </v-btn>
           <v-btn
             color="primary"
             depressed
             tile
             small
-            @click="editMode = false"
+            :loading="isLoadingSave"
+            @click="saveNetwork"
           >
             <span>Save</span>
           </v-btn>
@@ -42,7 +55,7 @@
     </v-card>
 
     <v-form
-      :readonly="!editMode"
+      :readonly="!mode.edit || mode.preview"
       class="network-editor__form"
     >
       <v-card
@@ -150,7 +163,7 @@
                         >
                           <span>{{ item }}</span>
                           <v-icon
-                            v-if="editMode"
+                            v-if="mode.edit && !mode.preview"
                             small
                             class="ml-2"
                             @click="parent.selectItem(item)"
@@ -161,7 +174,7 @@
                   </v-card-text>
                 </v-card>
                 <div
-                  v-if="editMode"
+                  v-if="mode.edit && !mode.preview"
                   class="d-flex align-center ml-3"
                 >
                   <v-btn
@@ -174,7 +187,7 @@
                 </div>
               </div>
               <div
-                v-if="editMode"
+                v-if="mode.edit && !mode.preview"
                 class="text-center mb-4"
               >
                 <v-btn
@@ -194,7 +207,7 @@
 
       <layers-card
         :layers="network.layers"
-        :editMode="editMode"
+        :editMode="mode.edit && !mode.preview"
       />
     </v-form>
   </div>
@@ -219,6 +232,8 @@
 </style>
 
 <script>
+import axios from '@/axios';
+
 import LayersCard from './LayersCard.vue';
 
 export default {
@@ -230,15 +245,23 @@ export default {
     network: {
       type: Object,
       required: true
+    },
+    copyNetwork: {
+      type: Function,
+      required: true
     }
   },
   data: () => ({
-    editMode: false,
+    mode: {
+      edit: false,
+      preview: false
+    },
     showAll: {
       details: true,
       routingTable: false
     },
-    routingTableArray: []
+    routingTableArray: [],
+    isLoadingSave: false
   }),
   mounted() {
     for (const key in this.network.routingTable) {
@@ -251,6 +274,47 @@ export default {
     },
     deleteRoutingTable(i) {
       this.routingTableArray.splice(i, 1);
+    },
+    cancelEdit() {
+      this.mode.edit = false;
+      this.mode.preview = false;
+      this.copyNetwork('original', 'edit');
+      this.copyNetwork('original', 'visualize');
+    },
+    previewNetwork() {
+      this.mode.preview = !this.mode.preview;
+      if (this.mode.preview) {
+        this.copyNetwork('edit', 'visualize');
+        return;
+      }
+      this.copyNetwork('original', 'visualize');
+    },
+    async saveNetwork() {
+      this.isLoadingSave = true;
+      const networkId = this.$route.params.networkId;
+      await axios
+        .put(`/networks/${networkId}/`, {
+          data: this.network
+        })
+        .then(() => {
+          this.copyNetwork('edit', 'visualize');
+          this.copyNetwork('edit', 'original');
+          this.cancelEdit();
+          this.$_pushNotice('Saved the Network', 'success');
+          if (this.network.id !== networkId) {
+            this.$router.push({
+              name: 'Visualize',
+              params: {
+                networkId: this.network.id
+              }
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          this.$_pushNotice('An error occurred.', 'error');
+        });
+      this.isLoadingSave = false;
     }
   }
 }

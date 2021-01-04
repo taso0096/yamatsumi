@@ -14,6 +14,7 @@
       <network-editor
         v-if="network.edit.id"
         :network="network.edit"
+        :copyNetwork="copyNetwork"
       />
     </v-navigation-drawer>
 
@@ -171,6 +172,14 @@ export default {
       this.socket.off('packet');
       this.socket.off('notice');
       this.$store.dispatch('resetSocket');
+    }
+  },
+  methods: {
+    copyNetwork(src, dst) {
+      this.$set(this.network, dst, JSON.parse(JSON.stringify(this.network[src])));
+      if (dst === 'visualize') {
+        this.$refs.networkEntity.set(this.network.visualize);
+      }
     }
   }
 };
