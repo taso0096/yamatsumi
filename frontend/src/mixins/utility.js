@@ -5,7 +5,10 @@ Vue.mixin({
   computed: {
     ...mapState({
       $_userData: state => state.userData
-    })
+    }),
+    $_appRefs() {
+      return this.$root.$children[0].$refs;
+    }
   },
   methods: {
     $_sleep(msec) {

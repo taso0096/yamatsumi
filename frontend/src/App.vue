@@ -31,6 +31,8 @@
       </template>
     </notifications>
 
+    <confirm-dialog ref="confirmDialog" />
+
     <v-navigation-drawer
       v-if="$route.name !== 'Logout'"
       v-model="appDrawer"
@@ -146,8 +148,13 @@
 </style>
 
 <script>
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+
 export default {
   name: 'App',
+  components: {
+    ConfirmDialog
+  },
   data: () => ({
     appDrawer: window.innerWidth >= 960,
     drawerTabs: [
