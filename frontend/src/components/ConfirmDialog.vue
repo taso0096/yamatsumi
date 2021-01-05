@@ -13,6 +13,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
+            tile
             text
             @click="cancel"
           >
@@ -20,6 +21,7 @@
           </v-btn>
           <v-btn
             :color="data.color || 'primary'"
+            tile
             depressed
             @click="confirm"
           >

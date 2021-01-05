@@ -84,14 +84,15 @@
             </v-list-item>
           </template>
           <v-divider />
+          <v-switch
+            v-model="$vuetify.theme.dark"
+            label="Dark Mode"
+            inset
+            hide-details
+            class="mt-2 mb-3 ml-4"
+          />
+          <v-divider />
           <div class="py-3 pl-4">
-            <v-switch
-              v-model="$vuetify.theme.dark"
-              label="Dark Mode"
-              inset
-              hide-details
-              class="mt-0 mb-3"
-            />
             <div class="subtitle-2">©YAMATSUMI</div>
             <div class="subtitle-2">Develop by <a href="https://github.com/taso0096" target="_blank">@taso0096</a></div>
           </div>
