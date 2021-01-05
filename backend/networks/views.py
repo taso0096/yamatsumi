@@ -14,7 +14,7 @@ def return_network_data(network):
         'label': network.label,
         'username': network.user.username,
         'layerCount': len(network.layers),
-        'nodeCount': len(network.routing_table),
+        'nodeCount': len(network.routing_table or {}),
         'createdAt': network.created_at,
         'updatedAt': network.updated_at
     }
@@ -30,7 +30,7 @@ def return_network_detail_data(network):
         'routingTable': network.routing_table,
         'layers': network.layers
     }
-    data = {k: data[k] for k in data if data[k]}
+    data = {k: data[k] for k in data if data[k] is not None}
     response_data = {
         'networkId': network.network_id,
         'username': network.user.username,

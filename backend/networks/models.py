@@ -11,7 +11,7 @@ class Network(models.Model):
     label = models.CharField(max_length=100, blank=True, null=True)
     desc = models.CharField(max_length=400, blank=True, null=True)
     version = models.CharField(max_length=10, blank=True, null=True)
-    routing_table = JSONField(default={})
+    routing_table = JSONField(default={}, blank=True, null=True)
     layers = JSONField(default=[])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
