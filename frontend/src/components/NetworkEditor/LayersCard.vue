@@ -536,7 +536,7 @@ export default {
       }
       this.$delete(node, 'nodes');
       this.$delete(node, 'layoutOptions');
-      if (node.id === this.detailMenus[nextIndex].id) {
+      if (node.id === this.detailMenus[nextIndex]?.id) {
         this.detailMenus.splice(nextIndex);
       }
     },
