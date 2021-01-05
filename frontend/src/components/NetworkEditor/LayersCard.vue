@@ -561,7 +561,15 @@ export default {
       this.detailMenus.splice(nextIndex);
       this.detailMenus.push(object);
     },
-    deleteIndex(array, showAll, delIndex, nextMenuIndex = 0) {
+    async deleteIndex(array, showAll, delIndex, nextMenuIndex = 0) {
+      const isConfirmed = await this.$_appRefs.confirmDialog.open({
+        message: `Are you sure you want to delete the "${array[delIndex].id}"?`,
+        confirmText: 'Delete',
+        color: 'error'
+      });
+      if (!isConfirmed) {
+        return;
+      }
       if (array[delIndex].id === this.detailMenus[nextMenuIndex]?.id) {
         this.detailMenus.splice(nextMenuIndex);
       }

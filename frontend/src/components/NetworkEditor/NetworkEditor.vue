@@ -272,7 +272,15 @@ export default {
     addRoutingTable() {
       this.routingTableArray.push(['', []]);
     },
-    deleteRoutingTable(i) {
+    async deleteRoutingTable(i) {
+      const isConfirmed = await this.$_appRefs.confirmDialog.open({
+        message: `Are you sure you want to delete the "${this.routingTableArray[i][0]}" routing?`,
+        confirmText: 'Delete',
+        color: 'error'
+      });
+      if (!isConfirmed) {
+        return;
+      }
       this.routingTableArray.splice(i, 1);
     },
     cancelEdit() {
@@ -290,6 +298,13 @@ export default {
       this.copyNetwork('original', 'visualize');
     },
     async saveNetwork() {
+      const isConfirmed = await this.$_appRefs.confirmDialog.open({
+        message: 'Do you want to save the changes?',
+        confirmText: 'Save'
+      });
+      if (!isConfirmed) {
+        return;
+      }
       this.isLoadingSave = true;
       const networkId = this.$route.params.networkId;
       await axios
