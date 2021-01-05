@@ -1,5 +1,41 @@
 <template>
   <div>
+    <v-dialog
+      v-model="networkCreateDialog"
+      max-width="400"
+    >
+      <v-card>
+        <v-card-title>Create Network</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="newNetworkId"
+            label="Network ID"
+            hide-details
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            tile
+            text
+            @click="networkCreateDialog = false"
+          >
+            <span>Cancel</span>
+          </v-btn>
+          <v-btn
+            tile
+            depressed
+            :disabled="!newNetworkId"
+            :loading="isLoading.createNetwork"
+            color="primary"
+            @click="createNetwork"
+          >
+            <span>Create</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-sheet>
       <v-row class="mx-1">
         <v-col class="col-12 col-sm-4">
@@ -12,6 +48,21 @@
             @click:append="searchNetwork"
             @keyup.enter="searchNetwork"
           />
+        </v-col>
+        <v-spacer />
+        <v-col
+          cols="auto"
+          class="d-flex align-center"
+        >
+          <v-btn
+            tile
+            depressed
+            small
+            color="primary"
+            @click="networkCreateDialog = true"
+          >
+            <span>Create Network</span>
+          </v-btn>
         </v-col>
       </v-row>
       <v-data-table
@@ -59,13 +110,19 @@ export default {
     ],
     networks: [],
     isLoading: {
-      getNetworks: false
+      getNetworks: false,
+      createNetwork: false
     },
-    searchWord: ''
+    searchWord: '',
+    networkCreateDialog: false,
+    newNetworkId: ''
   }),
   watch: {
     $route() {
       this.getNetworks();
+    },
+    networkCreateDialog() {
+      this.newNetworkId = '';
     }
   },
   mounted() {
@@ -86,7 +143,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
-          this.$_pushNotice('ネットワーク一覧の取得に失敗しました。', 'error');
+          this.$_pushNotice('Failed to retrieve network list.', 'error');
         });
       this.isLoading.getNetworks = false;
     },
@@ -100,6 +157,30 @@ export default {
           search: this.searchWord
         }
       });
+    },
+    async createNetwork() {
+      this.isLoading.createNetwork = true;
+      await axios
+        .post('/networks/', {
+          data: {
+            id: this.newNetworkId,
+            layers: []
+          }
+        })
+        .then(() => {
+          this.$_pushNotice('Created a new network.', 'success');
+          this.$router.push({
+            name: 'Visualize',
+            params: {
+              networkId: this.newNetworkId
+            }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.$_pushNotice('An error occurred.', 'error');
+        })
+      this.isLoading.createNetwork = false;
     }
   }
 }
