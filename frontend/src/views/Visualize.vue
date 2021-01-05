@@ -12,7 +12,7 @@
       class="pt-3 pr-3"
     >
       <network-editor
-        v-if="network.edit.id"
+        v-if="network.original.id"
         :network="network.edit"
         :copyNetwork="copyNetwork"
       />
