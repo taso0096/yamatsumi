@@ -13,6 +13,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
+            v-if="!data.isAlert"
             tile
             text
             @click="cancel"
