@@ -139,13 +139,13 @@
                 >
                   <v-card-text>
                     <v-text-field
-                      v-model="node[0]"
+                      v-model="node.nodeId"
                       :label="`Node ID (${i + 1})`"
                       hide-details
                     />
                     <v-combobox
-                      v-model="node[1]"
-                      :label="`IP addresses (${node[0] || i + 1})`"
+                      v-model="node.ipaddresses"
+                      :label="`IP addresses (${node.nodeId || i + 1})`"
                       hide-selected
                       single-line
                       hide-details
@@ -264,17 +264,34 @@ export default {
     isLoadingSave: false
   }),
   mounted() {
-    for (const key in this.network.routingTable) {
-      this.routingTableArray.push([key, this.network.routingTable[key]]);
-    }
+    this.init();
   },
   methods: {
+    init() {
+      this.routingTableArray = [];
+      for (const key in this.network.routingTable) {
+        this.routingTableArray.push({
+          nodeId: key,
+          ipaddresses: this.network.routingTable[key]
+        });
+      }
+    },
+    applyRoutingTable() {
+      const routingTable = {};
+      for (const item of this.routingTableArray) {
+        routingTable[item.nodeId] = item.ipaddresses;
+      }
+      this.$set(this.network, 'routingTable', routingTable);
+    },
     addRoutingTable() {
-      this.routingTableArray.push(['', []]);
+      this.routingTableArray.push({
+        nodeId: '',
+        ipaddresses: []
+      });
     },
     async deleteRoutingTable(i) {
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
-        message: `Are you sure you want to delete the "${this.routingTableArray[i][0]}" routing?`,
+        message: `Are you sure you want to delete the "${this.routingTableArray[i].nodeId}" routing?`,
         confirmText: 'Delete',
         color: 'error'
       });
@@ -288,11 +305,13 @@ export default {
       this.mode.preview = false;
       this.copyNetwork('original', 'edit');
       this.copyNetwork('original', 'visualize');
+      this.init();
     },
     previewNetwork() {
       this.mode.preview = !this.mode.preview;
       if (this.mode.preview) {
         this.copyNetwork('edit', 'visualize');
+        this.applyRoutingTable();
         return;
       }
       this.copyNetwork('original', 'visualize');
@@ -305,6 +324,7 @@ export default {
       if (!isConfirmed) {
         return;
       }
+      this.applyRoutingTable();
       this.isLoadingSave = true;
       const networkId = this.$route.params.networkId;
       await axios
