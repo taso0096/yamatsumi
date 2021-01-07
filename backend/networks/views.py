@@ -6,6 +6,7 @@ from django.db.models import Q
 from .models import Network
 
 import json
+import uuid
 
 
 def return_network_data(network):
@@ -60,7 +61,7 @@ class NetworksView(GenericAPIView):
         except Exception:
             loads_data = data
         network_data = {
-            'network_id': loads_data['id'],
+            'network_id': loads_data.get('id') or uuid.uuid4(),
             'user': request.user,
             'label': loads_data.get('label'),
             'desc': loads_data.get('desc'),
@@ -68,7 +69,10 @@ class NetworksView(GenericAPIView):
             'routing_table': loads_data.get('routingTable'),
             'layers': loads_data['layers']
         }
-        network = Network.objects.create(**network_data)
+        try:
+            network = Network.objects.create(**network_data)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(data=return_network_data(network), status=status.HTTP_201_CREATED)
 
 

@@ -8,8 +8,14 @@
         <v-card-title>Create Network</v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="newNetworkId"
+            v-model="newNetwork.id"
             label="Network ID"
+            placeholder="If empty, uuid will be set."
+            hide-details
+          />
+          <v-text-field
+            v-model="newNetwork.label"
+            label="Label"
             hide-details
           />
         </v-card-text>
@@ -25,7 +31,6 @@
           <v-btn
             tile
             depressed
-            :disabled="!newNetworkId"
             :loading="isLoading.createNetwork"
             color="primary"
             @click="createNetwork"
@@ -115,14 +120,18 @@ export default {
     },
     searchWord: '',
     networkCreateDialog: false,
-    newNetworkId: ''
+    newNetwork: {
+      id: '',
+      label: ''
+    }
   }),
   watch: {
     $route() {
       this.getNetworks();
     },
     networkCreateDialog() {
-      this.newNetworkId = '';
+      this.newNetwork.id = '';
+      this.newNetwork.label = '';
     }
   },
   mounted() {
@@ -159,20 +168,40 @@ export default {
       });
     },
     async createNetwork() {
+      if (!this.newNetwork.id) {
+        const isConfirmed = await this.$_appRefs.confirmDialog.open({
+          message: 'The Network ID was not set.\nDo you want to set UUID automatically?'
+        });
+        if (!isConfirmed) {
+          return;
+        }
+      }
       this.isLoading.createNetwork = true;
       await axios
         .post('/networks/', {
           data: {
-            id: this.newNetworkId,
+            id: this.newNetwork.id,
+            label: this.newNetwork.label,
             layers: []
           }
+        },
+        {
+          validateStatus: status => status < 500
         })
-        .then(() => {
+        .then(res => {
+          if (res.status !== 201) {
+            this.$_appRefs.confirmDialog.open({
+              isAlert: true,
+              title: 'Alert',
+              message: 'This Network ID is already in use.'
+            });
+            return;
+          }
           this.$_pushNotice('Created a new network.', 'success');
           this.$router.push({
             name: 'Visualize',
             params: {
-              networkId: this.newNetworkId
+              networkId: res.data.networkId
             }
           });
         })
