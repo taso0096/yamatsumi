@@ -6,18 +6,38 @@
       class="network-editor__title-header mt-3"
     >
       <v-card-title>
-        <span>Network JSON</span>
+        <span>Network Settings</span>
         <v-spacer />
-        <v-btn
+        <v-menu
           v-if="!mode.edit"
-          color="warning"
-          depressed
-          tile
-          small
-          @click="mode.edit = true"
+          bottom
+          left
+          offset-y
         >
-          <span>Edit</span>
-        </v-btn>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list class="pa-0">
+            <v-list-item @click="mode.edit = true">
+              <v-list-item-title>Edit</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              :disabled="isLoading.delete"
+              @click="deleteNetwork"
+            >
+              <v-list-item-title :class="{
+                'error--text': !isLoading.delete
+              }">Delete</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
         <template v-else>
           <v-btn
             text
@@ -45,7 +65,7 @@
             depressed
             tile
             small
-            :loading="isLoadingSave"
+            :loading="isLoading.save"
             @click="saveNetwork"
           >
             <span>Save</span>
@@ -261,7 +281,10 @@ export default {
       routingTable: false
     },
     routingTableArray: [],
-    isLoadingSave: false
+    isLoading: {
+      save: false,
+      delete: false
+    }
   }),
   mounted() {
     this.init();
@@ -325,7 +348,7 @@ export default {
         return;
       }
       this.applyRoutingTable();
-      this.isLoadingSave = true;
+      this.isLoading.save = true;
       const networkId = this.$route.params.networkId;
       await axios
         .put(`/networks/${networkId}/`, {
@@ -349,7 +372,30 @@ export default {
           console.log(err);
           this.$_pushNotice('An error occurred.', 'error');
         });
-      this.isLoadingSave = false;
+      this.isLoading.save = false;
+    },
+    async deleteNetwork() {
+      const isConfirmed = await this.$_appRefs.confirmDialog.open({
+        message: 'Are you sure you want to delete this Network?',
+        confirmText: 'Delete',
+        color: 'error'
+      });
+      if (!isConfirmed) {
+        return;
+      }
+      this.isLoading.delete = true;
+      const networkId = this.$route.params.networkId;
+      await axios
+        .delete(`/networks/${networkId}/`)
+        .then(() => {
+          this.$_pushNotice('Deleted the Network', 'success');
+          this.$router.push({ name: 'Network' });
+        })
+        .catch(err => {
+          console.log(err);
+          this.$_pushNotice('An error occurred.', 'error');
+        });
+      this.isLoading.delete = false;
     }
   }
 }
