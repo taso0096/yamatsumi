@@ -8,6 +8,14 @@
       <v-card-title>
         <span>Network Settings</span>
         <v-spacer />
+        <v-btn
+          v-if="!mode.edit"
+          icon
+          class="mr-3"
+          @click="downloadNetwork"
+        >
+          <v-icon>mdi-download</v-icon>
+        </v-btn>
         <v-menu
           v-if="!mode.edit"
           bottom
@@ -322,6 +330,20 @@ export default {
         return;
       }
       this.routingTableArray.splice(i, 1);
+    },
+    async downloadNetwork() {
+      const isConfirmed = await this.$_appRefs.confirmDialog.open({
+        message: 'Do you want to download the Network?',
+        confirmText: 'Download'
+      });
+      if (!isConfirmed) {
+        return;
+      }
+      const data = JSON.stringify(this.network, null, '  ');
+      const link = document.createElement('a');
+      link.href = `data:text/plain,${encodeURIComponent(data)}`;
+      link.download = `${this.network.id}.json`;
+      link.click();
     },
     cancelEdit() {
       this.mode.edit = false;
