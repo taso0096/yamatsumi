@@ -375,8 +375,15 @@ export default {
       await axios
         .put(`/networks/${networkId}/`, {
           data: this.network
+        },
+        {
+          validateStatus: status => status < 500
         })
-        .then(() => {
+        .then(res => {
+          if (res.status !== 200) {
+            this.$_pushNotice('This Network ID is already in use.', 'error');
+            return;
+          }
           this.copyNetwork('edit', 'visualize');
           this.copyNetwork('edit', 'original');
           this.cancelEdit();

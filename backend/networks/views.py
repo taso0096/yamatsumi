@@ -103,8 +103,12 @@ class NetworkDetailView(GenericAPIView):
                 setattr(network, key, value)
             network.save()
         else:
-            network.delete()
-            network = Network.objects.create(**network_data)
+            try:
+                Network.objects.get(pk=loads_data['id'])
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            except Exception:
+                network.delete()
+                network = Network.objects.create(**network_data)
         return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
 
     def delete(self, request, network_id):
