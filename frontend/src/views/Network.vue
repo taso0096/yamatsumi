@@ -5,12 +5,12 @@
       max-width="400"
     >
       <v-card>
-        <v-card-title>Create Network</v-card-title>
+        <v-card-title>Create Network{{ newNetwork.data.id ? ' (Upload JSON)' : '' }}</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="newNetwork.id"
             label="Network ID"
-            placeholder="If empty, uuid will be set."
+            placeholder="If empty, UUID will be set."
             hide-details
           />
           <v-text-field
@@ -59,15 +59,33 @@
           cols="auto"
           class="d-flex align-center"
         >
-          <v-btn
-            tile
-            depressed
-            small
-            color="primary"
-            @click="networkCreateDialog = true"
+          <v-menu
+            bottom
+            left
+            offset-y
           >
-            <span>Create Network</span>
-          </v-btn>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                tile
+                depressed
+                small
+                color="primary"
+              >
+                <span>Create Network</span>
+              </v-btn>
+            </template>
+
+            <v-list class="pa-0">
+              <v-list-item @click="networkCreateDialog = true">
+                <v-list-item-title>Create New</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="uploadNetwork">
+                <v-list-item-title>Upload JSON</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-col>
       </v-row>
       <v-data-table
@@ -102,6 +120,8 @@
 
 <script>
 import axios from '@/axios'
+import { validate } from 'jsonschema';
+import networkSchema from '@/assets/NetworkSchema.json';
 
 export default {
   name: 'Network',
@@ -122,16 +142,20 @@ export default {
     networkCreateDialog: false,
     newNetwork: {
       id: '',
-      label: ''
+      label: '',
+      data: {}
     }
   }),
   watch: {
     $route() {
       this.getNetworks();
     },
-    networkCreateDialog() {
-      this.newNetwork.id = '';
-      this.newNetwork.label = '';
+    networkCreateDialog(val) {
+      if (!val) {
+        this.newNetwork.id = '';
+        this.newNetwork.label = '';
+        this.newNetwork.data = {};
+      }
     }
   },
   mounted() {
@@ -180,9 +204,10 @@ export default {
       await axios
         .post('/networks/', {
           data: {
+            layers: [],
+            ...this.newNetwork.data,
             id: this.newNetwork.id,
-            label: this.newNetwork.label,
-            layers: []
+            label: this.newNetwork.label
           }
         },
         {
@@ -210,6 +235,29 @@ export default {
           this.$_pushNotice('An error occurred.', 'error');
         })
       this.isLoading.createNetwork = false;
+    },
+    uploadNetwork() {
+      const inputEl = document.createElement('input');
+      inputEl.type = 'file';
+      inputEl.accept = '.json';
+      inputEl.addEventListener('change', e => {
+        const reader = new FileReader();
+        reader.readAsText(e.target.files[0]);
+        reader.addEventListener('load', () => {
+          const network = JSON.parse(reader.result);
+          const networkValidate = validate(network, networkSchema);
+          if (!networkValidate.valid) {
+            console.error('JSON Schema Validate ERROR', networkValidate.errors);
+            this.$_pushNotice('An error occurred during JSON validation.', 'error');
+            return;
+          }
+          this.newNetwork.id = network.id;
+          this.newNetwork.label = network.label;
+          this.newNetwork.data = network;
+          this.networkCreateDialog = true;
+        });
+      });
+      inputEl.click();
     }
   }
 }
