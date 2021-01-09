@@ -56,18 +56,13 @@
           >
             <span>Cancel</span>
           </v-btn>
-          <v-btn
-            color="info"
-            depressed
-            :outlined="mode.preview"
-            tile
-            small
-            class="mr-3"
+          <v-switch
+            label="Preview Mode"
+            inset
+            hide-details
+            class="mt-0 pt-0 mr-5"
             @click="previewNetwork"
-          >
-            <span v-if="!mode.preview">Preview</span>
-            <span v-else>Original</span>
-          </v-btn>
+          />
           <v-btn
             color="primary"
             depressed
@@ -83,7 +78,7 @@
     </v-card>
 
     <v-form
-      :readonly="!mode.edit || mode.preview"
+      :readonly="!mode.edit"
       class="network-editor__form"
     >
       <v-card
@@ -191,7 +186,7 @@
                         >
                           <span>{{ item }}</span>
                           <v-icon
-                            v-if="mode.edit && !mode.preview"
+                            v-if="mode.edit"
                             small
                             class="ml-2"
                             @click="parent.selectItem(item)"
@@ -202,7 +197,7 @@
                   </v-card-text>
                 </v-card>
                 <div
-                  v-if="mode.edit && !mode.preview"
+                  v-if="mode.edit"
                   class="d-flex align-center ml-3"
                 >
                   <v-btn
@@ -215,7 +210,7 @@
                 </div>
               </div>
               <div
-                v-if="mode.edit && !mode.preview"
+                v-if="mode.edit"
                 class="text-center mb-4"
               >
                 <v-btn
@@ -235,7 +230,7 @@
 
       <layers-card
         :layers="network.layers"
-        :editMode="mode.edit && !mode.preview"
+        :editMode="mode.edit"
       />
     </v-form>
   </div>
@@ -292,8 +287,24 @@ export default {
     isLoading: {
       save: false,
       delete: false
-    }
+    },
+    previewIntervalId: null,
+    isChangedForm: false
   }),
+  watch: {
+    network: {
+      handler(val, oldVal) {
+        this.isChangedForm = true;
+      },
+      deep: true
+    },
+    routingTableArray: {
+      handler() {
+        this.applyRoutingTable();
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.init();
   },
@@ -354,12 +365,18 @@ export default {
     },
     previewNetwork() {
       this.mode.preview = !this.mode.preview;
-      if (this.mode.preview) {
-        this.copyNetwork('edit', 'visualize');
-        this.applyRoutingTable();
+      if (!this.mode.preview) {
+        this.copyNetwork('original', 'visualize');
+        clearInterval(this.previewIntervalId);
         return;
       }
-      this.copyNetwork('original', 'visualize');
+      this.copyNetwork('edit', 'visualize');
+      this.previewIntervalId = setInterval(() => {
+        if (this.isChangedForm) {
+          this.copyNetwork('edit', 'visualize');
+          this.isChangedForm = false;
+        }
+      }, 1000);
     },
     async saveNetwork() {
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
@@ -369,7 +386,6 @@ export default {
       if (!isConfirmed) {
         return;
       }
-      this.applyRoutingTable();
       this.isLoading.save = true;
       const networkId = this.$route.params.networkId;
       await axios

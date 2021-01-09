@@ -116,7 +116,6 @@ export default {
       edit: JSON.parse(JSON.stringify(this.networkData.data))
     };
     this.$refs.networkEntity.set(this.network.visualize);
-    const routingTable = this.network.original.routingTable;
     const lineColor = new Map([
       [22, {
         service: 'ssh',
@@ -153,10 +152,11 @@ export default {
     ]);
     this.socket = await this.$store.dispatch('connectSocket', networkId);
     this.socket.on('packet', data => {
+      const routingTable = this.network.visualize.routingTable;
       const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))];
       const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))];
-      const srcNode = data.srcIsGlobal ? '.internet-nodes' : srcNodeId ? `#node-${srcNodeId}` : '.intranet-nodes';
-      const dstNode = data.dstIsGlobal ? '.internet-nodes' : dstNodeId ? `#node-${dstNodeId}` : '.intranet-nodes';
+      const srcNode = srcNodeId ? `#node-${srcNodeId}` : data.srcIsGlobal ? '.internet-nodes' : '.intranet-nodes';
+      const dstNode = dstNodeId ? `#node-${dstNodeId}` : data.dstIsGlobal ? '.internet-nodes' : '.intranet-nodes';
       const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
       if (['ssh', 'ntlm', 'r_d'].includes(port?.service)) {
         console.log(`${port.service}: ${srcNode === '#node-else' ? data.srcIP : srcNode} -> ${dstNode === '#node-else' ? data.dstIP : dstNode}`);
