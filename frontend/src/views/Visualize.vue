@@ -98,6 +98,13 @@ export default {
       edit: {}
     }
   }),
+  watch: {
+    $route() {
+      this.$_createPageTitle({
+        title: `${(this.network.original.label || this.network.original.id)} - YAMATSUMI`
+      });
+    }
+  },
   async mounted() {
     const networkId = this.$route.params.networkId;
     this.networkData = await axios
@@ -115,6 +122,9 @@ export default {
       visualize: JSON.parse(JSON.stringify(this.networkData.data)),
       edit: JSON.parse(JSON.stringify(this.networkData.data))
     };
+    this.$_createPageTitle({
+      title: `${(this.network.original.label || this.network.original.id)} - YAMATSUMI`
+    });
     this.$refs.networkEntity.set(this.network.visualize);
     const lineColor = new Map([
       [22, {

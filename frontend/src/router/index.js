@@ -9,22 +9,30 @@ import Visualize from '@/views/Visualize.vue';
 
 Vue.use(VueRouter);
 
+const appName = 'YAMATSUMI';
 const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: {
+      title: `Login - ${appName}`
+    }
   },
   {
     path: '/logout',
     name: 'Logout',
-    component: Logout
+    component: Logout,
+    meta: {
+      title: `Logout - ${appName}`
+    }
   },
   {
     path: '/network',
     name: 'Network',
     component: Network,
     meta: {
+      title: appName,
       requiresAuth: true
     }
   },
@@ -33,6 +41,7 @@ const routes = [
     name: 'Visualize',
     component: Visualize,
     meta: {
+      title: `Visualize - ${appName}`,
       requiresAuth: true
     }
   },

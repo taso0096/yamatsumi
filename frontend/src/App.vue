@@ -178,6 +178,9 @@ export default {
     ]
   }),
   watch: {
+    $route(to) {
+      this.$_createPageTitle(to.meta);
+    },
     '$vuetify.theme.dark'(val) {
       if (val) {
         localStorage.setItem('darkMode', val);
@@ -187,6 +190,7 @@ export default {
     }
   },
   mounted() {
+    this.$_createPageTitle(this.$route.meta);
     this.$vuetify.theme.dark = !!localStorage.getItem('darkMode');
     AFRAME.registerComponent('look-center', {
       schema: {
