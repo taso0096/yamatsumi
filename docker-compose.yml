@@ -2,6 +2,7 @@ version: "3"
 services:
   frontend:
     build: ./frontend
+    command: bash -c "cd ./cert && ./make_cert.sh && nginx"
     volumes:
       - ./cert:/cert/
     ports:
