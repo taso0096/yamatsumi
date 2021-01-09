@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "version": "0.1.6",
+  "type": "object",
+  "required": [
+    "id",
+    "layers"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "ネットワークID",
+      "description": "ネットワークID",
+      "type": ["integer", "string"],
+      "pattern": ".+",
+      "examples": [
+        "example_network"
+      ]
+    },
+    "label": {
+      "title": "ネットワーク表示名",
+      "description": "ネットワーク表示名",
+      "type": "string",
+      "examples": [
+        "Example Network"
+      ]
+    },
+    "desc": {
+      "title": "説明",
+      "description": "ネットワークの説明",
+      "type": "string",
+      "examples": [
+        "This is an example of a network."
+      ]
+    },
+    "version": {
+      "title": "バージョン",
+      "description": "ネットワークのバージョン",
+      "type": ["integer", "string"],
+      "examples": [
+        "0.0.1"
+      ]
+    },
+    "routingTable": {
+      "title": "ルーティングテーブル",
+      "description": "ルーティングテーブル",
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "title": "IPアドレス",
+          "description": "IPアドレス",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "examples": [
+              "192.168.1.1"
+            ]
+          }
+        }
+      }
+    },
+    "layers": {
+      "title": "レイヤー",
+      "description": "ネットワークのレイヤー",
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "nodes"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "レイヤーID",
+            "description": "レイヤーID",
+            "type": ["integer", "string"],
+            "pattern": ".+",
+            "examples": [
+              "layer_1"
+            ]
+          },
+          "label": {
+            "title": "レイヤー表示名",
+            "description": "レイヤー表示名",
+            "type": "string",
+            "examples": [
+              "Layer-1"
+            ]
+          },
+          "depth": {
+            "title": "深度",
+            "description": "一つ上のレイヤーからの深度",
+            "type": ["number", "string"],
+            "default": 1,
+            "examples": [
+              1
+            ]
+          },
+          "fixedDepth": {
+            "title": "絶対深度",
+            "description": "一番上のレイヤーからの深度",
+            "type": ["number", "string"]
+          },
+          "layoutOptions": {
+            "$id": "layoutOptions",
+            "title": "配置オプション",
+            "description": "レイヤー内のノード（グループ）の配置",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "shape": {
+                "title": "レイヤー表示形式",
+                "description": "レイヤー表示形式",
+                "type": "string",
+                "enum": [
+                  "circle",
+                  "square"
+                ],
+                "default": "circle",
+                "examples": [
+                  "square"
+                ]
+              },
+              "scale": {
+                "title": "倍率",
+                "description": "ノード数依存の半径や1辺の長さに掛ける倍率",
+                "type": ["number", "string"],
+                "minimum": 0,
+                "default": 1,
+                "examples": [
+                  1
+                ]
+              },
+              "fixedDistance": {
+                "title": "絶対距離",
+                "description": "半径または1辺の長さ(ノード数に依存しない固定値)",
+                "type": ["number", "string"],
+                "minimum": 0,
+                "examples": [
+                  1
+                ]
+              }
+            }
+          },
+          "nodes": {
+            "$id": "nodeObject",
+            "title": "ノード",
+            "description": "レイヤー(グループ)内のノード",
+            "type": "array",
+            "additionalItems": false,
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "title": "ノードID",
+                  "description": "ノードID",
+                  "type": ["integer", "string"],
+                  "pattern": ".+",
+                  "examples": [
+                    "server_a"
+                  ]
+                },
+                "label": {
+                  "title": "ノード表示名",
+                  "description": "ノード表示名",
+                  "type": "string",
+                  "examples": [
+                    "Server-A"
+                  ]
+                },
+                "nodeOptions": {
+                  "title": "ノードオプション",
+                  "description": "ノードオプション",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "type": {
+                      "title": "ノード種類",
+                      "description": "ノード種類",
+                      "type": "string",
+                      "enum": [
+                        "sphere",
+                        "server",
+                        "switch",
+                        "router",
+                        "desktop",
+                        "laptop",
+                        "internet",
+                        "intranet"
+                      ],
+                      "default": "sphere",
+                      "examples": [
+                        "server"
+                      ]
+                    },
+                    "size": {
+                      "title": "ノードサイズ",
+                      "description": "ノードサイズ",
+                      "type": ["number", "string"],
+                      "minimum": 0,
+                      "default": 1,
+                      "examples": [
+                        1
+                      ]
+                    },
+                    "nodeColor": {
+                      "title": "ノード色",
+                      "description": "ノード色",
+                      "type": "string",
+                      "default": "#fff",
+                      "examples": [
+                        "#fff"
+                      ]
+                    },
+                    "labelColor": {
+                      "title": "ノードラベル色",
+                      "description": "ノードラベル色",
+                      "type": "string",
+                      "default": "#fff",
+                      "examples": [
+                        "#fff"
+                      ]
+                    }
+                  }
+                },
+                "parentId": {
+                  "title": "親ノードID",
+                  "description": "親ノードID",
+                  "type": ["integer", "string"],
+                  "examples": [
+                    "router_a"
+                  ]
+                },
+                "layoutOptions": {
+                  "$ref": "layoutOptions"
+                },
+                "nodes": {
+                  "$ref": "nodeObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
