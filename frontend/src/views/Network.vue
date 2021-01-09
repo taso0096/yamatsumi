@@ -215,11 +215,7 @@ export default {
         })
         .then(res => {
           if (res.status !== 201) {
-            this.$_appRefs.confirmDialog.open({
-              isAlert: true,
-              title: 'Alert',
-              message: 'This Network ID is already in use.'
-            });
+            this.$_pushNotice('This Network ID is already in use.', 'error');
             return;
           }
           this.$_pushNotice('Created a new network.', 'success');
