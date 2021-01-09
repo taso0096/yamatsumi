@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
 
 User = settings.AUTH_USER_MODEL
 
@@ -11,8 +10,8 @@ class Network(models.Model):
     label = models.CharField(max_length=100, blank=True, null=True)
     desc = models.CharField(max_length=400, blank=True, null=True)
     version = models.CharField(max_length=10, blank=True, null=True)
-    routing_table = JSONField(default={}, blank=True, null=True)
-    layers = JSONField(default=[])
+    routing_table = models.JSONField(default=dict, blank=True, null=True)
+    layers = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
