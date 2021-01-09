@@ -1,0 +1,2 @@
+scapy==2.4.4
+python-socketio==5.0.3
