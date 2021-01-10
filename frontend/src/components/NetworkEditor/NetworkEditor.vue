@@ -356,11 +356,13 @@ export default {
       link.download = `${this.network.id}.json`;
       link.click();
     },
-    cancelEdit() {
+    async cancelEdit() {
       this.mode.edit = false;
       this.mode.preview = false;
+      clearInterval(this.previewIntervalId);
       this.copyNetwork('original', 'edit');
       this.copyNetwork('original', 'visualize');
+      await this.$_sleep(100);
       this.init();
     },
     previewNetwork() {
