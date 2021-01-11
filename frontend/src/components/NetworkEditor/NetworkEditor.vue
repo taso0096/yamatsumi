@@ -33,7 +33,7 @@
           </template>
 
           <v-list class="pa-0">
-            <v-list-item @click="mode.edit = true">
+            <v-list-item @click="editNetwork">
               <v-list-item-title>Edit</v-list-item-title>
             </v-list-item>
             <v-list-item
@@ -52,7 +52,7 @@
             tile
             small
             class="mr-2"
-            @click="cancelEdit"
+            @click="cancelEdit(true)"
           >
             <span>Cancel</span>
           </v-btn>
@@ -308,6 +308,9 @@ export default {
   mounted() {
     this.init();
   },
+  destroyed() {
+    this.$store.dispatch('updateEditState', false);
+  },
   methods: {
     init() {
       this.routingTableArray = [];
@@ -356,10 +359,25 @@ export default {
       link.download = `${this.network.id}.json`;
       link.click();
     },
-    async cancelEdit() {
+    editNetwork() {
+      this.mode.edit = true;
+      this.$store.dispatch('updateEditState', true);
+    },
+    async cancelEdit(needConfirm) {
+      if (needConfirm) {
+        const isConfirmed = await this.$_appRefs.confirmDialog.open({
+          message: 'Are you sure you want to cancel editing Network?',
+          confirmText: 'Cancel',
+          color: 'error'
+        });
+        if (!isConfirmed) {
+          return;
+        }
+      }
       this.mode.edit = false;
       this.mode.preview = false;
       clearInterval(this.previewIntervalId);
+      this.$store.dispatch('updateEditState', false);
       this.copyNetwork('original', 'edit');
       this.copyNetwork('original', 'visualize');
       await this.$_sleep(100);
@@ -404,7 +422,7 @@ export default {
           }
           this.copyNetwork('edit', 'visualize');
           this.copyNetwork('edit', 'original');
-          this.cancelEdit();
+          this.cancelEdit(false);
           this.$_pushNotice('Saved the Network', 'success');
           if (this.network.id !== networkId) {
             this.$router.push({

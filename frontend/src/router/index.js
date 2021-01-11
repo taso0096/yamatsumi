@@ -59,6 +59,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const userData = store.state.userData;
+  if (userData.isEdit && !confirm('Are you sure you want to cancel editing Network?')) {
+    next(false);
+    return;
+  }
   if (to.matched.some(record => !record.meta.requiresAuth) || ((to.matched.some(record => !record.meta.requiresSuperuser) || userData.isSuperuser) && userData.isAuthed)) {
     if ((to.name === 'Login' && userData.isAuthed)) {
       next({ name: 'Network' });
