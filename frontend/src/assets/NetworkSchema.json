@@ -12,7 +12,7 @@
       "title": "ネットワークID",
       "description": "ネットワークID",
       "type": ["integer", "string"],
-      "pattern": "/^[a-zA-Z_-]+$/",
+      "pattern": "^[a-zA-Z0-9_-]+$",
       "examples": [
         "example_network"
       ]
@@ -76,7 +76,7 @@
             "title": "レイヤーID",
             "description": "レイヤーID",
             "type": ["integer", "string"],
-            "pattern": "/^[a-zA-Z_-]+$/",
+            "pattern": "^[a-zA-Z0-9_-]+$",
             "examples": [
               "layer_1"
             ]
@@ -161,7 +161,7 @@
                   "title": "ノードID",
                   "description": "ノードID",
                   "type": ["integer", "string"],
-                  "pattern": "/^[a-zA-Z_-]+$/",
+                  "pattern": "^[a-zA-Z0-9_-]+$",
                   "examples": [
                     "server_a"
                   ]
