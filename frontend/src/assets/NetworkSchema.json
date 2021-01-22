@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "type": "object",
   "required": [
     "id",
@@ -12,7 +12,7 @@
       "title": "ネットワークID",
       "description": "ネットワークID",
       "type": ["integer", "string"],
-      "pattern": ".+",
+      "pattern": "/^[a-zA-Z_-]+$/",
       "examples": [
         "example_network"
       ]
@@ -76,7 +76,7 @@
             "title": "レイヤーID",
             "description": "レイヤーID",
             "type": ["integer", "string"],
-            "pattern": ".+",
+            "pattern": "/^[a-zA-Z_-]+$/",
             "examples": [
               "layer_1"
             ]
@@ -161,7 +161,7 @@
                   "title": "ノードID",
                   "description": "ノードID",
                   "type": ["integer", "string"],
-                  "pattern": ".+",
+                  "pattern": "/^[a-zA-Z_-]+$/",
                   "examples": [
                     "server_a"
                   ]
