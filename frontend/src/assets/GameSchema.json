@@ -1,0 +1,242 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "version": "0.0.1",
+  "type": "object",
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "ネットワークID",
+      "description": "ネットワークID",
+      "type": ["integer", "string"],
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "examples": [
+        "example_network"
+      ]
+    },
+    "version": {
+      "title": "バージョン",
+      "description": "競技情報のバージョン",
+      "type": ["integer", "string"],
+      "examples": [
+        "0.0.1"
+      ]
+    },
+    "teams": {
+      "title": "チーム一覧",
+      "description": "チーム一覧",
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "チームID",
+            "description": "チームID",
+            "type": ["integer", "string"],
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "team_a"
+            ]
+          },
+          "label": {
+            "title": "チーム名",
+            "description": "チーム名",
+            "type": "string",
+            "examples": [
+              "Team A"
+            ]
+          },
+          "teamOptions": {
+            "title": "チームオプション",
+            "description": "チームオプション",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "color": {
+                "title": "チーム色",
+                "description": "チーム色",
+                "type": "string",
+                "default": "#fff",
+                "examples": [
+                  "#fff"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "users": {
+      "title": "ユーザ一覧",
+      "description": "ユーザ一覧",
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "nodeId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "ユーザID",
+            "description": "ユーザID",
+            "type": ["integer", "string"],
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "user_a"
+            ]
+          },
+          "label": {
+            "title": "ユーザ名",
+            "description": "ユーザ名",
+            "type": "string",
+            "examples": [
+              "User A"
+            ]
+          },
+          "nodeId": {
+            "title": "ノードID",
+            "description": "ノードID",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "server_a"
+            ]
+          },
+          "teamId": {
+            "title": "チームID",
+            "description": "チームID",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "team_a"
+            ]
+          }
+        }
+      }
+    },
+    "levels": {
+      "title": "難易度一覧",
+      "description": "難易度一覧",
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "難易度ID",
+            "description": "難易度ID",
+            "type": ["integer", "string"],
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "normal"
+            ]
+          },
+          "label": {
+            "title": "難易度表示名",
+            "description": "難易度表示名",
+            "type": "string",
+            "examples": [
+              "Normal"
+            ]
+          },
+          "score": {
+            "title": "スコア",
+            "description": "スコア",
+            "type": "integer",
+            "examples": [
+              100
+            ]
+          }
+        }
+      }
+    },
+    "categories": {
+      "title": "カテゴリ一覧",
+      "description": "カテゴリ一覧",
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "カテゴリID",
+            "description": "カテゴリID",
+            "type": ["integer", "string"],
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "web"
+            ]
+          },
+          "label": {
+            "title": "カテゴリ名",
+            "description": "カテゴリ名",
+            "type": "string",
+            "examples": [
+              "Web"
+            ]
+          }
+        }
+      }
+    },
+    "questions": {
+      "title": "問題一覧",
+      "description": "問題一覧",
+      "type": "array",
+      "additionalItems": false,
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "問題ID",
+            "description": "問題ID",
+            "type": ["integer", "string"],
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              1
+            ]
+          },
+          "levelId": {
+            "title": "難易度ID",
+            "description": "難易度ID",
+            "type": ["integer", "string"],
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "normal"
+            ]
+          },
+          "categoryId": {
+            "title": "カテゴリID",
+            "description": "カテゴリID",
+            "type": ["integer", "string"],
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "examples": [
+              "web"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
