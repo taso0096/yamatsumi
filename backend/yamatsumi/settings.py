@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'networks',
+    'games',
     'socketio_app',
 ]
 
