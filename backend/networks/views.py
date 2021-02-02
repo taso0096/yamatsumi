@@ -78,11 +78,11 @@ class NetworksView(GenericAPIView):
 
 class NetworkDetailView(GenericAPIView):
     def get(self, request, network_id):
-        network = Network.objects.get(pk=network_id)
+        network = Network.objects.get(network_id=network_id)
         return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
 
     def put(self, request, network_id):
-        network = Network.objects.get(pk=network_id)
+        network = Network.objects.get(network_id=network_id)
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -98,19 +98,11 @@ class NetworkDetailView(GenericAPIView):
             'routing_table': loads_data.get('routingTable'),
             'layers': loads_data['layers']
         }
-        if network_id == loads_data['id']:
-            for key, value in network_data.items():
-                setattr(network, key, value)
-            network.save()
-        else:
-            try:
-                Network.objects.get(pk=loads_data['id'])
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-            except Exception:
-                network.delete()
-                network = Network.objects.create(**network_data)
+        for key, value in network_data.items():
+            setattr(network, key, value)
+        network.save()
         return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
 
     def delete(self, request, network_id):
-        Network.objects.filter(pk=network_id).delete()
+        Network.objects.filter(network_id=network_id).delete()
         return Response(status=status.HTTP_200_OK)

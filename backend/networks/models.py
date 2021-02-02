@@ -5,7 +5,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Network(models.Model):
-    network_id = models.CharField(primary_key=True, max_length=100, editable=True)
+    network_id = models.CharField(unique=True, max_length=100, editable=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     label = models.CharField(max_length=100, blank=True, null=True)
     desc = models.CharField(max_length=400, blank=True, null=True)
