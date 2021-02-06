@@ -21,5 +21,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('networks/', include('networks.urls')),
     path('games/', include('games.urls')),
+    path('sio/', include('socketio_app.urls')),
     path('', include('socketio_app.urls')),
 ]

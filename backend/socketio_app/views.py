@@ -1,3 +1,9 @@
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from networks.models import Network
+
 import socketio
 from urllib.parse import parse_qs
 import json
@@ -5,6 +11,22 @@ import json
 sio = socketio.Server(cors_allowed_origins='*')
 
 networks = {}
+
+
+class AnswerView(GenericAPIView):
+    def post(self, request, network_id):
+        try:
+            Network.objects.get(network_id=network_id)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if not ((uid := request.data['uid']) and (qid := request.data['qid'])):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        response_data = {
+            "uid": uid,
+            "qid": qid
+        }
+        sio.emit('answer', response_data, room=network_id)
+        return Response(status=status.HTTP_200_OK)
 
 
 @sio.event
