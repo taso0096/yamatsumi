@@ -176,6 +176,20 @@ export default {
     this.socket.on('notice', data => {
       this.$_pushNotice(data.text, data.type);
     });
+
+    this.gameData = await axios
+      .get(`/games/${networkId}/`)
+      .then(res => res.data)
+      .catch(err => {
+        console.log(err);
+        return { loaded: true };
+      });
+    if (!this.gameData.networkId) {
+      return;
+    }
+    this.socket.on('answer', data => {
+      this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect);
+    });
   },
   beforeDestroy() {
     if (this.socket.status === 'connect') {

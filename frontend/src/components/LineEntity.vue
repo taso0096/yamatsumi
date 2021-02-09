@@ -153,6 +153,9 @@ export default {
         nowP.needsUpdate = true;
         nextGeometry.dispose();
       };
+    },
+    emitAnswer(uid, qid, isCorrect) {
+
     }
   }
 };
