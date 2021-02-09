@@ -9,7 +9,7 @@ import json
 
 
 def return_game_data(game):
-    response_data = {
+    data = {
         'id': game.network.network_id,
         'version': game.version,
         'teams': game.teams,
@@ -17,6 +17,10 @@ def return_game_data(game):
         'levels': game.levels,
         'categories': game.categories,
         'questions': game.questions,
+    }
+    data = {k: data[k] for k in data if data[k] is not None}
+    response_data = {
+        'data': data,
         'createdAt': game.created_at,
         'updatedAt': game.updated_at
     }
