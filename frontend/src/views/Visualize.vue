@@ -96,7 +96,8 @@ export default {
       original: {},
       visualize: {},
       edit: {}
-    }
+    },
+    game: {}
   }),
   watch: {
     $route() {
@@ -125,7 +126,6 @@ export default {
     this.$_createPageTitle({
       title: `${(this.network.original.label || this.network.original.id)} - YAMATSUMI`
     });
-    this.$refs.networkEntity.set(this.network.visualize);
     const lineColor = new Map([
       [22, {
         service: 'ssh',
@@ -177,32 +177,34 @@ export default {
       this.$_pushNotice(data.text, data.type);
     });
 
-    this.gameData = await axios
+    this.game = await axios
       .get(`/games/${networkId}/`)
-      .then(res => res.data)
+      .then(res => res.data.data)
       .catch(err => {
         console.log(err);
-        return { loaded: true };
+        return undefined;
       });
-    if (!this.gameData.networkId) {
-      return;
+    if (this.game?.id) {
+      this.socket.on('answer', data => {
+        this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect);
+      });
     }
-    this.socket.on('answer', data => {
-      this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect);
-    });
+
+    this.$refs.networkEntity.set(this.network.visualize, this.game);
   },
   beforeDestroy() {
     if (this.socket.status === 'connect') {
       this.socket.off('packet');
       this.socket.off('notice');
       this.$store.dispatch('resetSocket');
+      this.$store.dispatch('resetEvent');
     }
   },
   methods: {
     copyNetwork(src, dst) {
       this.$set(this.network, dst, JSON.parse(JSON.stringify(this.network[src])));
       if (dst === 'visualize') {
-        this.$refs.networkEntity.set(this.network.visualize);
+        this.$refs.networkEntity.set(this.network.visualize, this.game);
       }
     }
   }
