@@ -155,7 +155,8 @@ export default {
       };
     },
     emitAnswer(uid, qid, isCorrect) {
-
+      const user = this.$_event.game.users.find(u => u.id === uid);
+      this.emit1(`#node-${user.nodeId}`, `#question__${qid}`, isCorrect ? '#00ff00' : '#ff0000');
     }
   }
 };
