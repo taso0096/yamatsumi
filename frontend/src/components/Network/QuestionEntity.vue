@@ -12,7 +12,7 @@
       wrap-count="50"
     />
     <a-circle
-      v-for="(question, i) in questions"
+      v-for="question in questions"
       :key="question.id"
       :id="`question__${question.id}`"
       :color="node.nodeOptions.nodeColor"
@@ -34,7 +34,7 @@
         radius-outer="0.235"
       />
       <a-text
-        :value="i + 1"
+        :value="question.id"
         align="center"
         :color="node.nodeOptions.labelColor"
         side="double"
