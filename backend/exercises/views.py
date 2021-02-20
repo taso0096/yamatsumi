@@ -1,14 +1,27 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Q
 
 from networks.models import Network
 from .models import Exercise
 
 import json
+import uuid
 
 
 def return_exercise_data(exercise):
+    response_data = {
+        'exerciseId': exercise.exercise_id,
+        'label': exercise.label,
+        'username': exercise.user.username,
+        'createdAt': exercise.created_at,
+        'updatedAt': exercise.updated_at
+    }
+    return response_data
+
+
+def return_exercise_detail_data(exercise):
     data = {
         'id': exercise.network.network_id,
         'version': exercise.version,
@@ -28,6 +41,16 @@ def return_exercise_data(exercise):
 
 
 class ExercisesView(GenericAPIView):
+    def get(self, request, *args, **kwargs):
+        search_word = request.GET.get('search')
+        exercises = Exercise.objects.all() if not search_word else Exercise.objects.filter(
+            Q(exercise_id__icontains=search_word) | Q(label__icontains=search_word)
+        )
+        reponse_data = []
+        for exercise in exercises:
+            reponse_data.insert(0, return_exercise_data(exercise))
+        return Response(data=reponse_data, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -35,13 +58,10 @@ class ExercisesView(GenericAPIView):
             loads_data = json.loads(data)
         except Exception:
             loads_data = data
-        try:
-            if not (network := Network.objects.get(network_id=loads_data['id'])) or Exercise.objects.get(network=network):
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            pass
         exercise_data = {
-            'network': network,
+            'exercise_id': loads_data.get('id') or uuid.uuid4(),
+            'label': loads_data.get('label'),
+            'desc': loads_data.get('desc'),
             'version': loads_data.get('version'),
             'teams': loads_data.get('teams'),
             'users': loads_data.get('users'),
@@ -57,14 +77,12 @@ class ExercisesView(GenericAPIView):
 
 
 class ExerciseDetailView(GenericAPIView):
-    def get(self, request, network_id):
-        network = Network.objects.get(network_id=network_id)
-        exercise = Exercise.objects.get(network=network)
-        return Response(data=return_exercise_data(exercise), status=status.HTTP_200_OK)
+    def get(self, request, exercise_id):
+        exercise = Exercise.objects.get(exercise_id=exercise_id)
+        return Response(data=return_exercise_detail_data(exercise), status=status.HTTP_200_OK)
 
-    def put(self, request, network_id):
-        network = Network.objects.get(network_id=network_id)
-        exercise = Exercise.objects.get(network=network)
+    def put(self, request, exercise_id):
+        exercise = Exercise.objects.get(exercise_id=exercise_id)
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -72,7 +90,10 @@ class ExerciseDetailView(GenericAPIView):
         except Exception:
             loads_data = data
         exercise_data = {
-            'network': network,
+            'exercise_id': loads_data['id'],
+            'user': exercise.user,
+            'label': loads_data.get('label'),
+            'desc': loads_data.get('desc'),
             'version': loads_data.get('version'),
             'teams': loads_data.get('teams'),
             'users': loads_data.get('users'),
@@ -83,9 +104,8 @@ class ExerciseDetailView(GenericAPIView):
         for key, value in exercise_data.items():
             setattr(exercise, key, value)
         exercise.save()
-        return Response(data=return_exercise_data(exercise), status=status.HTTP_200_OK)
+        return Response(data=return_exercise_detail_data(exercise), status=status.HTTP_200_OK)
 
-    def delete(self, request, network_id):
-        network = Network.objects.get(network_id=network_id)
-        Exercise.objects.filter(network=network).delete()
+    def delete(self, request, exercise_id):
+        Exercise.objects.filter(exercise_id=exercise_id).delete()
         return Response(status=status.HTTP_200_OK)
