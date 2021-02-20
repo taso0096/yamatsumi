@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "type": "object",
   "required": [
     "id",
@@ -9,28 +9,12 @@
   "additionalProperties": false,
   "properties": {
     "id": {
-      "title": "ネットワークID",
-      "description": "ネットワークID",
+      "title": "演習ID",
+      "description": "演習ID",
       "type": ["integer", "string"],
       "pattern": "^[a-zA-Z0-9_-]+$",
       "examples": [
         "example_network"
-      ]
-    },
-    "label": {
-      "title": "ネットワーク表示名",
-      "description": "ネットワーク表示名",
-      "type": "string",
-      "examples": [
-        "Example Network"
-      ]
-    },
-    "desc": {
-      "title": "説明",
-      "description": "ネットワークの説明",
-      "type": "string",
-      "examples": [
-        "This is an example of a network."
       ]
     },
     "version": {
