@@ -14,7 +14,7 @@ import LayerEntity from './LayerEntity.vue';
 
 import { validate } from 'jsonschema';
 import networkSchema from '@/assets/NetworkSchema.json';
-import gameSchema from '@/assets/GameSchema.json';
+import exerciseSchema from '@/assets/ExerciseSchema.json';
 
 export default {
   name: 'BaseNetworkEntity',
@@ -23,13 +23,13 @@ export default {
   },
   data: () => ({
     network: {},
-    game: {},
+    exercise: {},
     isValidNetwork: false,
     totalDepth: 0
   }),
   methods: {
-    async set(network, game = undefined) {
-      this.$store.dispatch('setEvent', { network, game });
+    async set(network, exercise = undefined) {
+      this.$store.dispatch('setEvent', { network, exercise });
       this.isValidNetwork = false;
       await this.$_sleep(100);
       const networkValidate = validate(network, networkSchema);
@@ -62,13 +62,13 @@ export default {
       }
       this.network = network;
 
-      const gameValidate = validate(game, gameSchema);
-      if (!gameValidate.valid) {
-        console.error('JSON Schema Validate ERROR', gameValidate.errors);
+      const exerciseValidate = validate(exercise, exerciseSchema);
+      if (!exerciseValidate.valid) {
+        console.error('JSON Schema Validate ERROR', exerciseValidate.errors);
         this.$_pushNotice('An error occurred during JSON validation.', 'error');
         return false;
       } else {
-        this.game = game;
+        this.exercise = exercise;
       }
 
       this.isValidNetwork = true;

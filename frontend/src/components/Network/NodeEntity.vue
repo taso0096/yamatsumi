@@ -43,7 +43,7 @@ export default {
   },
   mounted() {
     if (this.node.nodeOptions?.type === 'question') {
-      const questions = JSON.parse(JSON.stringify(this.$_event.game.questions));
+      const questions = JSON.parse(JSON.stringify(this.$_visualizeData.exercise.questions));
       const tags = this.node.id.split('__');
       tags.forEach(tag => {
         const levelId = tag.split(/^level-/)[1];

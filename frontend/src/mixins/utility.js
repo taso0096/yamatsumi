@@ -5,7 +5,7 @@ Vue.mixin({
   computed: {
     ...mapState({
       $_userData: state => state.userData,
-      $_event: state => state.event
+      $_visualizeData: state => state.visualizeData
     }),
     $_appRefs() {
       return this.$root.$children[0].$refs;

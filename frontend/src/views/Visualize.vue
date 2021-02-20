@@ -97,7 +97,7 @@ export default {
       visualize: {},
       edit: {}
     },
-    game: {}
+    exercise: {}
   }),
   watch: {
     $route() {
@@ -177,20 +177,20 @@ export default {
       this.$_pushNotice(data.text, data.type);
     });
 
-    this.game = await axios
-      .get(`/games/${networkId}/`)
+    this.exercise = await axios
+      .get(`/exercises/${networkId}/`)
       .then(res => res.data.data)
       .catch(err => {
         console.log(err);
         return undefined;
       });
-    if (this.game?.id) {
+    if (this.exercise?.id) {
       this.socket.on('answer', data => {
         this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect);
       });
     }
 
-    this.$refs.networkEntity.set(this.network.visualize, this.game);
+    this.$refs.networkEntity.set(this.network.visualize, this.exercise);
   },
   beforeDestroy() {
     if (this.socket.status === 'connect') {
@@ -204,7 +204,7 @@ export default {
     copyNetwork(src, dst) {
       this.$set(this.network, dst, JSON.parse(JSON.stringify(this.network[src])));
       if (dst === 'visualize') {
-        this.$refs.networkEntity.set(this.network.visualize, this.game);
+        this.$refs.networkEntity.set(this.network.visualize, this.exercise);
       }
     }
   }

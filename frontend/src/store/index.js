@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 import socket from './modules/socket';
 import userData from './modules/userData';
-import event from './modules/event';
+import visualizeData from './modules/visualizeData';
 
 Vue.use(Vuex);
 
@@ -11,6 +11,6 @@ export default new Vuex.Store({
   modules: {
     socket,
     userData,
-    event
+    visualizeData
   }
 });
