@@ -4,5 +4,5 @@ from networks import views
 
 urlpatterns = [
     path('', views.NetworksView.as_view(), name='networks'),
-    path('<str:network_id>/', views.NetworkDetailView.as_view(), name='get network'),
+    path('<str:exercise_id>/', views.NetworkDetailView.as_view(), name='get network'),
 ]
