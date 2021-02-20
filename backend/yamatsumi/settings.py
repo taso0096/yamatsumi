@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'users',
     'networks',
-    'games',
+    'exercises',
     'socketio_app',
 ]
 

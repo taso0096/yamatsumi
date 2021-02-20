@@ -2,7 +2,7 @@ from django.db import models
 from networks.models import Network
 
 
-class Game(models.Model):
+class Exercise(models.Model):
     network = models.ForeignKey(Network, on_delete=models.CASCADE)
     version = models.CharField(max_length=10, blank=True, null=True)
     teams = models.JSONField(default=dict, blank=True, null=True)

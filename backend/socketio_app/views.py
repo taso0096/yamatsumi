@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from networks.models import Network
-from games.models import Game
+from exercises.models import Exercise
 
 import socketio
 from urllib.parse import parse_qs
@@ -18,7 +18,7 @@ class AnswerView(GenericAPIView):
     def post(self, request, network_id):
         try:
             network = Network.objects.get(network_id=network_id)
-            Game.objects.get(network=network)
+            Exercise.objects.get(network=network)
             response_data = {
                 "uid": request.data['uid'],
                 "qid": request.data['qid'],
