@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
 
-from networks.models import Network
 from .models import Exercise
 
 import json
@@ -23,7 +22,7 @@ def return_exercise_data(exercise):
 
 def return_exercise_detail_data(exercise):
     data = {
-        'id': exercise.network.network_id,
+        'id': exercise.exercise_id,
         'version': exercise.version,
         'teams': exercise.teams,
         'users': exercise.users,
@@ -60,6 +59,7 @@ class ExercisesView(GenericAPIView):
             loads_data = data
         exercise_data = {
             'exercise_id': loads_data.get('id') or uuid.uuid4(),
+            'user': request.user,
             'label': loads_data.get('label'),
             'desc': loads_data.get('desc'),
             'version': loads_data.get('version'),
@@ -73,7 +73,7 @@ class ExercisesView(GenericAPIView):
             exercise = Exercise.objects.create(**exercise_data)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        return Response(data=return_exercise_data(exercise), status=status.HTTP_201_CREATED)
+        return Response(data=return_exercise_detail_data(exercise), status=status.HTTP_201_CREATED)
 
 
 class ExerciseDetailView(GenericAPIView):
