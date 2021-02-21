@@ -9,39 +9,46 @@
         <span>Details</span>
         <v-spacer />
         <v-menu
-          v-if="!mode.edit"
           bottom
           left
           offset-y
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              icon
               v-bind="attrs"
               v-on="on"
+              tile
+              depressed
+              small
+              color="primary"
+              :disabled="isLoading.upload"
             >
-              <v-icon>mdi-dots-vertical</v-icon>
+              <span>Upload JSON</span>
             </v-btn>
           </template>
 
           <v-list class="pa-0">
-            <v-list-item
-              :disabled="isLoading.delete"
-              @click="deleteExercise"
-            >
-              <v-list-item-title :class="{
-                'error--text': !isLoading.delete
-              }">Delete</v-list-item-title>
+            <v-list-item @click="selectJSON('exercise')">
+              <v-list-item-title>Exercise</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="selectJSON('network')">
+              <v-list-item-title>Network</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
+        <v-btn
+          tile
+          depressed
+          small
+          color="error"
+          :disabled="isLoading.delete"
+          class="ml-3"
+          @click="deleteExercise"
+        >Delete</v-btn>
       </v-card-title>
     </v-card>
 
-    <v-form
-      :readonly="!mode.edit"
-      class="exercise-editor__form"
-    >
+    <v-form class="exercise-editor__form">
       <v-card
         tile
         flat
@@ -90,6 +97,9 @@
 
 <script>
 import axios from '@/axios';
+import { validate } from 'jsonschema';
+import exerciseSchema from '@/assets/ExerciseSchema.json';
+import networkSchema from '@/assets/NetworkSchema.json';
 
 export default {
   name: 'ExerciseEditor',
@@ -100,14 +110,56 @@ export default {
     }
   },
   data: () => ({
-    mode: {
-      edit: false
-    },
     isLoading: {
+      upload: false,
       delete: false
     }
   }),
+  computed: {
+    schema: () => ({
+      exercise: exerciseSchema,
+      network: networkSchema
+    })
+  },
   methods: {
+    selectJSON(type) {
+      const inputEl = document.createElement('input');
+      inputEl.type = 'file';
+      inputEl.accept = '.json';
+      inputEl.addEventListener('change', e => {
+        const reader = new FileReader();
+        reader.readAsText(e.target.files[0]);
+        reader.addEventListener('load', () => {
+          const data = JSON.parse(reader.result);
+          const dataValidate = validate(data, this.schema[type]);
+          if (!dataValidate.valid) {
+            console.error('JSON Schema Validate ERROR', dataValidate.errors);
+            this.$_pushNotice('An error occurred during JSON validation.', 'error');
+            return;
+          }
+          this.updateJSON(type, data);
+        });
+      });
+      inputEl.click();
+    },
+    async updateJSON(type, data) {
+      this.isLoading.upload = true;
+      const exerciseId = this.$route.params.exerciseId;
+      await axios
+        .post(`/${type}s/${exerciseId}`, {
+          data: {
+            data: data
+          }
+        })
+        .then(res => {
+          this.$_pushNotice(`Saved the ${type.charAt(0).toUpperCase() + type.slice(1)}.`, 'success');
+        })
+        .catch(err => {
+          console.log(err);
+          this.$_pushNotice('An error occurred.', 'error');
+        })
+      this.isLoading.upload = false;
+    },
     async deleteExercise() {
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
         message: 'Are you sure you want to delete this Exercise?',
@@ -123,7 +175,7 @@ export default {
         .delete(`/exercises/${exerciseId}/`)
         .then(() => {
           this.$_pushNotice('Deleted the Exercise', 'success');
-          this.$router.push({ name: 'Exercise' });
+          this.$router.push({ name: 'ExerciseList' });
         })
         .catch(err => {
           console.log(err);
