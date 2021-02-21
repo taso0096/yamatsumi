@@ -28,7 +28,7 @@ const routes = [
     }
   },
   {
-    path: '/network',
+    path: '/exercise',
     name: 'ExerciseList',
     component: ExerciseList,
     meta: {
@@ -37,7 +37,7 @@ const routes = [
     }
   },
   {
-    path: '/network/:exerciseId',
+    path: '/exercise/:exerciseId',
     name: 'Exercise',
     component: Exercise,
     meta: {
@@ -47,7 +47,7 @@ const routes = [
   },
   {
     path: '*',
-    redirect: '/network'
+    redirect: '/exercise'
   }
 ];
 
