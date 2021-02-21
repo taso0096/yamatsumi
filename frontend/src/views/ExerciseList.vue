@@ -124,7 +124,7 @@ import { validate } from 'jsonschema';
 import exerciseSchema from '@/assets/ExerciseSchema.json';
 
 export default {
-  name: 'Exercise',
+  name: 'ExerciseList',
   data: () => ({
     headers: [
       { text: 'Label', value: 'label', sortable: false },

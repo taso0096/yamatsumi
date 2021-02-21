@@ -124,7 +124,7 @@
     >
       <v-container
         :style="{
-          height: $route.name === 'Visualize' && '100%'
+          height: $route.name === 'Exercise' && '100%'
         }"
       >
         <router-view />
