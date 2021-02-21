@@ -23,6 +23,9 @@ def return_exercise_data(exercise):
 def return_exercise_detail_data(exercise):
     data = {
         'id': exercise.exercise_id,
+        'label': exercise.label,
+        'desc': exercise.desc,
+        'scoreUrl': exercise.score_url,
         'version': exercise.version,
         'teams': exercise.teams,
         'users': exercise.users,
@@ -64,6 +67,7 @@ class ExercisesView(GenericAPIView):
             'user': request.user,
             'label': loads_data.get('label'),
             'desc': loads_data.get('desc'),
+            'score_url': loads_data.get('score_url'),
             'version': loads_data.get('version'),
             'teams': loads_data.get('teams'),
             'users': loads_data.get('users'),
@@ -96,6 +100,7 @@ class ExerciseDetailView(GenericAPIView):
             'user': exercise.user,
             'label': loads_data.get('label'),
             'desc': loads_data.get('desc'),
+            'score_url': loads_data.get('score_url'),
             'version': loads_data.get('version'),
             'teams': loads_data.get('teams'),
             'users': loads_data.get('users'),
