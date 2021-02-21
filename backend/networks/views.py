@@ -17,6 +17,7 @@ def return_network_detail_data(network):
     }
     data = {k: data[k] for k in data if data[k] is not None}
     response_data = {
+        'exercise_id': network.exercise.exercise_id,
         'data': data,
         'createdAt': network.created_at,
         'updatedAt': network.updated_at
@@ -58,7 +59,10 @@ class NetworkDetailView(GenericAPIView):
 
     def put(self, request, exercise_id):
         exercise = Exercise.objects.get(exercise_id=exercise_id)
-        network = Network.objects.get(exercise=exercise)
+        try:
+            network = Network.objects.get(exercise=exercise)
+        except Exception:
+            network = None
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -71,10 +75,13 @@ class NetworkDetailView(GenericAPIView):
             'routing_table': loads_data.get('routingTable'),
             'layers': loads_data['layers']
         }
-        for key, value in network_data.items():
-            setattr(exercise, key, value)
-        network.save()
-        return Response(data=return_network_detail_data(exercise), status=status.HTTP_200_OK)
+        if network:
+            for key, value in network_data.items():
+                setattr(network, key, value)
+            network.save()
+        else:
+            network = Network.objects.create(**network_data)
+        return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
 
     def delete(self, request, exercise_id):
         exercise = Exercise.objects.get(exercise_id=exercise_id)
