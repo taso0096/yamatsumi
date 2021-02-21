@@ -5,7 +5,7 @@ import store from '@/store';
 import Login from '@/views/Login.vue';
 import Logout from '@/views/Logout.vue';
 import ExerciseList from '@/views/ExerciseList.vue';
-import Visualize from '@/views/Visualize.vue';
+import Exercise from '@/views/Exercise.vue';
 
 Vue.use(VueRouter);
 
@@ -37,11 +37,11 @@ const routes = [
     }
   },
   {
-    path: '/network/:networkId',
-    name: 'Visualize',
-    component: Visualize,
+    path: '/network/:exerciseId',
+    name: 'Exercise',
+    component: Exercise,
     meta: {
-      title: `Visualize - ${appName}`,
+      title: `Exercise - ${appName}`,
       requiresAuth: true
     }
   },

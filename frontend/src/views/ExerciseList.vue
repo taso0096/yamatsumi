@@ -96,7 +96,7 @@
       >
         <template v-slot:[`item.label`]="{ item }">
           <router-link
-            :to="{ name: 'Visualize', params: { exerciseId: item.exerciseId } }"
+            :to="{ name: 'Exercise', params: { exerciseId: item.exerciseId } }"
             class="text-decoration-none"
           >
             {{ item.label || item.exerciseId }}
@@ -218,7 +218,7 @@ export default {
           }
           this.$_pushNotice('Created a new exercise.', 'success');
           this.$router.push({
-            name: 'Visualize',
+            name: 'Exercise',
             params: {
               exerciseId: res.data.exerciseId
             }
