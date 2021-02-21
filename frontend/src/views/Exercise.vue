@@ -1,5 +1,5 @@
 <template>
-  <div class="visualize">
+  <div class="exercise">
     <v-navigation-drawer
       v-model="editDrawer"
       app
@@ -24,13 +24,13 @@
       :loading="!Object.keys(network).length"
     >
       <v-card-title>
-        <span v-if="!Object.keys(networkData).length">Loading</span>
-        <span v-else-if="!network.original.id">Network ID "{{ $route.params.networkId }}" does not exist.</span>
+        <span v-if="!exercise">Exercise ID "{{ $route.params.exerciseId }}" does not exist.</span>
+        <span v-else-if="!Object.keys(exercise).length">Loading</span>
         <template v-else>
-          <span>{{ network.original.label || network.original.id }}</span>
+          <span>{{ exercise.data.label || exercise.data.id }}</span>
           <span class="mx-2">-</span>
-          <span>{{ networkData.username }}</span>
-          <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(networkData.updatedAt) }}</span>
+          <span>{{ exercise.username }}</span>
+          <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(exercise.updatedAt) }}</span>
           <v-btn
             icon
             small
@@ -63,7 +63,7 @@
 </template>
 
 <style lang="scss" scoped>
-.visualize {
+.exercise {
   height: 100%;
 
   a-scene {
@@ -80,7 +80,7 @@ import NetworkEditor from '@/components/NetworkEditor/NetworkEditor.vue';
 import axios from '@/axios';
 
 export default {
-  name: 'Visualize',
+  name: 'Exercise',
   components: {
     NetworkEntity,
     LineEntity,
@@ -91,7 +91,6 @@ export default {
     socket: {
       status: null
     },
-    networkData: {},
     network: {
       original: {},
       visualize: {},
@@ -107,21 +106,32 @@ export default {
     }
   },
   async mounted() {
-    const networkId = this.$route.params.networkId;
-    this.networkData = await axios
-      .get(`/networks/${networkId}/`)
+    const exerciseId = this.$route.params.exerciseId;
+    this.exercise = await axios
+      .get(`/exercises/${exerciseId}/`)
       .then(res => res.data)
       .catch(err => {
         console.log(err);
-        return { loaded: true };
+        return undefined;
       });
-    if (!this.networkData.data) {
+    if (!this.exercise) {
+      return;
+    }
+
+    const originalNetwork = await axios
+      .get(`/networks/${exerciseId}/`)
+      .then(res => res.data.data)
+      .catch(err => {
+        console.log(err);
+        return undefined;
+      });
+    if (!originalNetwork) {
       return;
     }
     this.network = {
-      original: JSON.parse(JSON.stringify(this.networkData.data)),
-      visualize: JSON.parse(JSON.stringify(this.networkData.data)),
-      edit: JSON.parse(JSON.stringify(this.networkData.data))
+      original: JSON.parse(JSON.stringify(originalNetwork)),
+      visualize: JSON.parse(JSON.stringify(originalNetwork)),
+      edit: JSON.parse(JSON.stringify(originalNetwork))
     };
     this.$_createPageTitle({
       title: `${(this.network.original.label || this.network.original.id)} - YAMATSUMI`
@@ -160,7 +170,7 @@ export default {
         color: '#cdffb5'
       }]
     ]);
-    this.socket = await this.$store.dispatch('connectSocket', networkId);
+    this.socket = await this.$store.dispatch('connectSocket', exerciseId);
     this.socket.on('packet', data => {
       const routingTable = this.network.visualize.routingTable;
       const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))];
@@ -173,27 +183,18 @@ export default {
       }
       this.$refs.lineEntity.emit1(srcNode, dstNode, port?.color || '#fff');
     });
+    this.socket.on('answer', data => {
+      this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect);
+    });
     this.socket.on('notice', data => {
       this.$_pushNotice(data.text, data.type);
     });
 
-    this.exercise = await axios
-      .get(`/exercises/${networkId}/`)
-      .then(res => res.data.data)
-      .catch(err => {
-        console.log(err);
-        return undefined;
-      });
-    if (this.exercise?.id) {
-      this.socket.on('answer', data => {
-        this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect);
-      });
-    }
-
-    this.$refs.networkEntity.set(this.network.visualize, this.exercise);
+    this.$refs.networkEntity.set(this.network.visualize, this.exercise.data);
   },
   beforeDestroy() {
     if (this.socket.status === 'connect') {
+      this.socket.off('answer');
       this.socket.off('packet');
       this.socket.off('notice');
       this.$store.dispatch('resetSocket');
@@ -204,7 +205,7 @@ export default {
     copyNetwork(src, dst) {
       this.$set(this.network, dst, JSON.parse(JSON.stringify(this.network[src])));
       if (dst === 'visualize') {
-        this.$refs.networkEntity.set(this.network.visualize, this.exercise);
+        this.$refs.networkEntity.set(this.network.visualize, this.exercise.data);
       }
     }
   }
