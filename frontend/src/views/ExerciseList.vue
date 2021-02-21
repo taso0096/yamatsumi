@@ -1,20 +1,20 @@
 <template>
   <div>
     <v-dialog
-      v-model="networkCreateDialog"
+      v-model="exerciseCreateDialog"
       max-width="400"
     >
       <v-card>
-        <v-card-title>Create Network{{ newNetwork.data.id ? ' (Upload JSON)' : '' }}</v-card-title>
+        <v-card-title>Create Exercise{{ newExercise.data.id ? ' (Upload JSON)' : '' }}</v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="newNetwork.id"
-            label="Network ID"
+            v-model="newExercise.id"
+            label="Exercise ID"
             placeholder="If empty, UUID will be set."
             hide-details
           />
           <v-text-field
-            v-model="newNetwork.label"
+            v-model="newExercise.label"
             label="Label"
             hide-details
           />
@@ -24,16 +24,16 @@
           <v-btn
             tile
             text
-            @click="networkCreateDialog = false"
+            @click="exerciseCreateDialog = false"
           >
             <span>Cancel</span>
           </v-btn>
           <v-btn
             tile
             depressed
-            :loading="isLoading.createNetwork"
+            :loading="isLoading.createExercise"
             color="primary"
-            @click="createNetwork"
+            @click="createExercise"
           >
             <span>Create</span>
           </v-btn>
@@ -50,8 +50,8 @@
             label="Search"
             hide-details
             clearable
-            @click:append="searchNetwork"
-            @keyup.enter="searchNetwork"
+            @click:append="searchExercise"
+            @keyup.enter="searchExercise"
           />
         </v-col>
         <v-spacer />
@@ -73,15 +73,15 @@
                 small
                 color="primary"
               >
-                <span>Create Network</span>
+                <span>Create Exercise</span>
               </v-btn>
             </template>
 
             <v-list class="pa-0">
-              <v-list-item @click="networkCreateDialog = true">
+              <v-list-item @click="exerciseCreateDialog = true">
                 <v-list-item-title>Create New</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="uploadNetwork">
+              <v-list-item @click="uploadExercise">
                 <v-list-item-title>Upload JSON</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -90,16 +90,16 @@
       </v-row>
       <v-data-table
         :headers="headers"
-        :items="networks"
+        :items="exercises"
         :items-per-page="10"
-        :loading="isLoading.getNetworks"
+        :loading="isLoading.getExercises"
       >
         <template v-slot:[`item.label`]="{ item }">
           <router-link
-            :to="{ name: 'Visualize', params: { networkId: item.networkId } }"
+            :to="{ name: 'Visualize', params: { exerciseId: item.exerciseId } }"
             class="text-decoration-none"
           >
-            {{ item.label || item.networkId }}
+            {{ item.label || item.exerciseId }}
           </router-link>
         </template>
         <template v-slot:[`item.updatedAt`]="{ item }">
@@ -121,26 +121,24 @@
 <script>
 import axios from '@/axios'
 import { validate } from 'jsonschema';
-import networkSchema from '@/assets/NetworkSchema.json';
+import exerciseSchema from '@/assets/ExerciseSchema.json';
 
 export default {
-  name: 'Network',
+  name: 'Exercise',
   data: () => ({
     headers: [
       { text: 'Label', value: 'label', sortable: false },
-      { text: 'Layers', value: 'layerCount', sortable: false, align: 'center' },
-      { text: 'Nodes', value: 'nodeCount', sortable: false, align: 'center' },
       { text: 'Username', value: 'username', sortable: false, align: 'center' },
       { text: 'UpdatedAt', value: 'updatedAt', align: 'center' }
     ],
-    networks: [],
+    exercises: [],
     isLoading: {
-      getNetworks: false,
-      createNetwork: false
+      getExercises: false,
+      createExercise: false
     },
     searchWord: '',
-    networkCreateDialog: false,
-    newNetwork: {
+    exerciseCreateDialog: false,
+    newExercise: {
       id: '',
       label: '',
       data: {}
@@ -148,41 +146,41 @@ export default {
   }),
   watch: {
     $route() {
-      this.getNetworks();
+      this.getExercises();
     },
-    networkCreateDialog(val) {
+    exerciseCreateDialog(val) {
       if (!val) {
-        this.newNetwork.id = '';
-        this.newNetwork.label = '';
-        this.newNetwork.data = {};
+        this.newExercise.id = '';
+        this.newExercise.label = '';
+        this.newExercise.data = {};
       }
     }
   },
   mounted() {
-    this.getNetworks();
+    this.getExercises();
   },
   methods: {
-    async getNetworks() {
-      this.isLoading.getNetworks = true;
+    async getExercises() {
+      this.isLoading.getExercises = true;
       this.searchWord = this.$route.query.search;
       await axios
-        .get('/networks/', {
+        .get('/exercises/', {
           params: {
             search: this.searchWord
           }
         })
         .then(res => {
-          this.networks = res.data;
+          this.exercises = res.data;
         })
         .catch(err => {
           console.log(err);
-          this.$_pushNotice('Failed to retrieve network list.', 'error');
+          this.$_pushNotice('Failed to retrieve exercise list.', 'error');
         });
-      this.isLoading.getNetworks = false;
+      this.isLoading.getExercises = false;
     },
-    searchNetwork() {
+    searchExercise() {
       if (this.searchWord === this.$route.query.search) {
-        this.getNetworks();
+        this.getExercises();
         return;
       }
       this.$router.push({
@@ -191,23 +189,23 @@ export default {
         }
       });
     },
-    async createNetwork() {
-      if (!this.newNetwork.id) {
+    async createExercise() {
+      if (!this.newExercise.id) {
         const isConfirmed = await this.$_appRefs.confirmDialog.open({
-          message: 'The Network ID was not set.\nDo you want to set UUID automatically?'
+          message: 'The Exercise ID was not set.\nDo you want to set UUID automatically?'
         });
         if (!isConfirmed) {
           return;
         }
       }
-      this.isLoading.createNetwork = true;
+      this.isLoading.createExercise = true;
       await axios
-        .post('/networks/', {
+        .post('/exercises/', {
           data: {
             layers: [],
-            ...this.newNetwork.data,
-            id: this.newNetwork.id,
-            label: this.newNetwork.label
+            ...this.newExercise.data,
+            id: this.newExercise.id,
+            label: this.newExercise.label
           }
         },
         {
@@ -215,14 +213,14 @@ export default {
         })
         .then(res => {
           if (res.status !== 201) {
-            this.$_pushNotice('This Network ID is already in use.', 'error');
+            this.$_pushNotice('This Exercise ID is already in use.', 'error');
             return;
           }
-          this.$_pushNotice('Created a new network.', 'success');
+          this.$_pushNotice('Created a new exercise.', 'success');
           this.$router.push({
             name: 'Visualize',
             params: {
-              networkId: res.data.networkId
+              exerciseId: res.data.exerciseId
             }
           });
         })
@@ -230,9 +228,9 @@ export default {
           console.log(err);
           this.$_pushNotice('An error occurred.', 'error');
         })
-      this.isLoading.createNetwork = false;
+      this.isLoading.createExercise = false;
     },
-    uploadNetwork() {
+    uploadExercise() {
       const inputEl = document.createElement('input');
       inputEl.type = 'file';
       inputEl.accept = '.json';
@@ -240,17 +238,17 @@ export default {
         const reader = new FileReader();
         reader.readAsText(e.target.files[0]);
         reader.addEventListener('load', () => {
-          const network = JSON.parse(reader.result);
-          const networkValidate = validate(network, networkSchema);
-          if (!networkValidate.valid) {
-            console.error('JSON Schema Validate ERROR', networkValidate.errors);
+          const exercise = JSON.parse(reader.result);
+          const exerciseValidate = validate(exercise, exerciseSchema);
+          if (!exerciseValidate.valid) {
+            console.error('JSON Schema Validate ERROR', exerciseValidate.errors);
             this.$_pushNotice('An error occurred during JSON validation.', 'error');
             return;
           }
-          this.newNetwork.id = network.id;
-          this.newNetwork.label = network.label;
-          this.newNetwork.data = network;
-          this.networkCreateDialog = true;
+          this.newExercise.id = exercise.id;
+          this.newExercise.label = exercise.label;
+          this.newExercise.data = exercise;
+          this.exerciseCreateDialog = true;
         });
       });
       inputEl.click();
