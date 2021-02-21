@@ -146,10 +146,8 @@ export default {
       this.isLoading.upload = true;
       const exerciseId = this.$route.params.exerciseId;
       await axios
-        .post(`/${type}s/${exerciseId}`, {
-          data: {
-            data: data
-          }
+        .put(`/${type}s/${exerciseId}/`, {
+          data
         })
         .then(res => {
           this.$_pushNotice(`Saved the ${type.charAt(0).toUpperCase() + type.slice(1)}.`, 'success');
