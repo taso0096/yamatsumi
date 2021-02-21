@@ -162,10 +162,10 @@ export default {
     appDrawer: window.innerWidth >= 960,
     drawerTabs: [
       {
-        title: 'Exercise',
+        title: 'Exercise List',
         icon: 'mdi-wan',
         route: {
-          name: 'Exercise'
+          name: 'ExerciseList'
         },
         requiresAuth: true
       },
