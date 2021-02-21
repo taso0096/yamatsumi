@@ -32,6 +32,7 @@ def return_exercise_detail_data(exercise):
     }
     data = {k: data[k] for k in data if data[k] is not None}
     response_data = {
+        'username': exercise.user.username,
         'data': data,
         'createdAt': exercise.created_at,
         'updatedAt': exercise.updated_at
