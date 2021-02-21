@@ -1,28 +1,22 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Q
 
 from exercises.models import Exercise
 from .models import Network
 
 import json
-import uuid
 
 
 def return_network_detail_data(network):
     data = {
-        'id': network.network_id,
-        'label': network.label,
-        'desc': network.desc,
+        'id': network.exercise.exercise_id,
         'version': network.version,
         'routingTable': network.routing_table,
         'layers': network.layers
     }
     data = {k: data[k] for k in data if data[k] is not None}
     response_data = {
-        'networkId': network.network_id,
-        'username': network.user.username,
         'data': data,
         'createdAt': network.created_at,
         'updatedAt': network.updated_at
@@ -83,6 +77,6 @@ class NetworkDetailView(GenericAPIView):
         return Response(data=return_network_detail_data(exercise), status=status.HTTP_200_OK)
 
     def delete(self, request, exercise_id):
-        exercese = Exercise.objects.get(exercise_id=exercise_id)
-        Network.objects.filter(exercese=exercese).delete()
+        exercise = Exercise.objects.get(exercise_id=exercise_id)
+        Network.objects.filter(exercise=exercise).delete()
         return Response(status=status.HTTP_200_OK)
