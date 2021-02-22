@@ -62,7 +62,10 @@ class Scapy:
             data['srcIsGlobal'] = True
         if ipaddress.ip_address(data['dstIP']).is_global:
             data['dstIsGlobal'] = True
-        if data.get('proto') in ALLOW_PROTOCOLS or data.get('srcPort') in ALLOW_PORTS or data.get('dstPort') in ALLOW_PORTS:
+        if data.get('proto') in ALLOW_PROTOCOLS and (
+                data.get('proto') == 'icmp' or
+                data.get('srcPort') in ALLOW_PORTS or
+                data.get('dstPort') in ALLOW_PORTS):
             try:
                 if not PRIVACY_MODE:
                     self.send_packet(data)
