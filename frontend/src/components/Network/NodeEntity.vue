@@ -69,12 +69,12 @@ export default {
       this.$set(this.validNode, 'questions', questions);
       return;
     };
-    this.$set(this.validNode, 'label', this.node.label || this.node.id);
+    this.$set(this.validNode, 'userId', this.$_visualizeData.exercise.users.find(u => u.nodeId === this.node.id)?.id);
+    this.$set(this.validNode, 'label', this.validNode.userId || this.node.label || this.node.id);
     this.$set(this.validNode, 'type', this.node.nodeOptions?.type || 'sphere');
     this.$set(this.validNode, 'size', this.node.nodeOptions?.size || 1);
     this.$set(this.validNode, 'nodeColor', this.node.nodeOptions?.nodeColor || '#fff');
     this.$set(this.validNode, 'labelColor', this.node.nodeOptions?.labelColor || '#fff');
-    this.$set(this.validNode, 'userId', this.$_visualizeData.exercise.users.find(u => u.nodeId === this.node.id)?.id);
   }
 };
 </script>
