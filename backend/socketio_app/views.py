@@ -11,7 +11,7 @@ import json
 
 sio = socketio.Server(cors_allowed_origins='*')
 
-networks = {}
+exercises = {}
 
 
 class AnswerView(GenericAPIView):
@@ -39,10 +39,10 @@ def connect(sid, environ):
     if exercise_id:
         sio.enter_room(sid, exercise_id)
         if is_forwarder:
-            if not networks.get(exercise_id):
-                networks[exercise_id] = [sid]
+            if not exercises.get(exercise_id):
+                exercises[exercise_id] = [sid]
             else:
-                networks[exercise_id].append(sid)
+                exercises[exercise_id].append(sid)
             notice = {
                 'text': 'Packet forwarder has started.',
                 'type': 'success'
@@ -55,7 +55,7 @@ def disconnect(sid):
     rooms = sio.rooms(sid)
     rooms.remove(sid)
     exercise_id = rooms[0]
-    networks[exercise_id].remove(sid)
+    exercises[exercise_id].remove(sid)
     notice = {
         'text': 'Packet forwarder has stopped.',
         'type': 'error'
