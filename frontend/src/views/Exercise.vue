@@ -182,12 +182,18 @@ export default {
     ]);
     this.socket = await this.$store.dispatch('connectSocket', exerciseId);
     this.socket.on('packet', data => {
+      const userId = data.userId;
+      const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
+      if (userId) {
+        const user = this.$_visualizeData.exercise.users.find(u => u.id === userId);
+        this.$refs.lineEntity.emit1(`#node-${user.nodeId}`, '.internet-nodes', port?.color || '#fff');
+        return;
+      }
       const routingTable = this.network.visualize.routingTable;
       const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))];
       const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))];
       const srcNode = srcNodeId ? `#node-${srcNodeId}` : data.srcIsGlobal ? '.internet-nodes' : '.intranet-nodes';
       const dstNode = dstNodeId ? `#node-${dstNodeId}` : data.dstIsGlobal ? '.internet-nodes' : '.intranet-nodes';
-      const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
       this.$refs.lineEntity.emit1(srcNode, dstNode, port?.color || '#fff');
     });
     this.socket.on('answer', data => {
