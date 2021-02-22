@@ -188,9 +188,6 @@ export default {
       const srcNode = srcNodeId ? `#node-${srcNodeId}` : data.srcIsGlobal ? '.internet-nodes' : '.intranet-nodes';
       const dstNode = dstNodeId ? `#node-${dstNodeId}` : data.dstIsGlobal ? '.internet-nodes' : '.intranet-nodes';
       const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
-      if (['ssh', 'ntlm', 'r_d'].includes(port?.service)) {
-        console.log(`${port.service}: ${srcNode === '#node-else' ? data.srcIP : srcNode} -> ${dstNode === '#node-else' ? data.dstIP : dstNode}`);
-      }
       this.$refs.lineEntity.emit1(srcNode, dstNode, port?.color || '#fff');
     });
     this.socket.on('answer', data => {
