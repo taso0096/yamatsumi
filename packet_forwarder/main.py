@@ -4,7 +4,7 @@ import ipaddress
 import json
 import threading
 
-from config import SOCKETIO_HOST, NETWORK_ID, INTERFACES, PRIVACY_MODE, USER_ID
+from config import SOCKETIO_HOST, NETWORK_ID, INTERFACES, ALLOW_PROTOCOLS, ALLOW_PORTS, PRIVACY_MODE, USER_ID
 
 
 class SocketIOClient:
@@ -62,13 +62,12 @@ class Scapy:
             data['srcIsGlobal'] = True
         if ipaddress.ip_address(data['dstIP']).is_global:
             data['dstIsGlobal'] = True
-        allow_ports = [22, 80, 443]
-        if data.get('proto') == 'icmp' or data.get('srcPort') in allow_ports or data.get('dstPort') in allow_ports:
+        if data.get('proto') in ALLOW_PROTOCOLS or data.get('srcPort') in ALLOW_PORTS or data.get('dstPort') in ALLOW_PORTS:
             try:
                 if not PRIVACY_MODE:
                     self.send_packet(data)
                     return
-                elif not (USER_ID and (data['srcIsGlobal'] or data['dstIsGlobal'])):
+                elif not (USER_ID and (data.get('srcIsGlobal') or data.get('dstIsGlobal'))):
                     return
                 self.send_packet({
                     "userId": USER_ID
