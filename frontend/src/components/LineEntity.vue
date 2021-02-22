@@ -154,9 +154,9 @@ export default {
         nextGeometry.dispose();
       };
     },
-    emitAnswer(uid, qid, isCorrect) {
-      const user = this.$_event.game.users.find(u => u.id === uid);
-      this.emit1(`#node-${user.nodeId}`, `#question__${qid}`, isCorrect ? '#00ff00' : '#ff0000');
+    emitAnswer(uid, qid, isCorrect, endFunc = () => {}) {
+      const user = this.$_visualizeData.exercise.users.find(u => u.id === uid);
+      this.emit1(`#node-${user.nodeId}`, `#question__${qid}`, isCorrect ? '#00ff00' : '#ff0000', endFunc);
     }
   }
 };

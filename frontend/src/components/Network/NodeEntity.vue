@@ -18,6 +18,15 @@
         :position="`0 ${-sphereRadius*validNode.size - sphereRadius} 0`"
         wrap-count="50"
       />
+      <a-text
+        v-if="validNode.userId"
+        :value="$_visualizeData.score.users[validNode.userId]"
+        align="center"
+        :color="validNode.labelColor"
+        side="double"
+        :position="`0 ${sphereRadius*validNode.size + sphereRadius} 0`"
+        wrap-count="50"
+      />
     </a-sphere>
   </a-entity>
 </template>
@@ -65,6 +74,7 @@ export default {
     this.$set(this.validNode, 'size', this.node.nodeOptions?.size || 1);
     this.$set(this.validNode, 'nodeColor', this.node.nodeOptions?.nodeColor || '#fff');
     this.$set(this.validNode, 'labelColor', this.node.nodeOptions?.labelColor || '#fff');
+    this.$set(this.validNode, 'userId', this.$_visualizeData.exercise.users.find(u => u.nodeId === this.node.id)?.id);
   }
 };
 </script>

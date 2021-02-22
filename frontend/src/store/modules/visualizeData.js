@@ -1,6 +1,7 @@
 const defaultState = {
   exercise: {},
-  network: {}
+  network: {},
+  score: {}
 };
 
 const state = Object.assign({}, defaultState);
@@ -12,6 +13,7 @@ const mutations = {
   SET_VISUALIZE_DATA(state, visualizeData) {
     state.exercise = visualizeData.exercise || {};
     state.network = visualizeData.network || {};
+    state.score = visualizeData.score || {};
   }
 };
 

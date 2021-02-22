@@ -28,8 +28,9 @@ export default {
     totalDepth: 0
   }),
   methods: {
-    async set(network, exercise = undefined) {
-      this.$store.dispatch('setEvent', { network, exercise });
+    async set(visualizeData) {
+      const { exercise, network } = visualizeData;
+      this.$store.dispatch('setEvent', visualizeData);
       this.isValidNetwork = false;
       await this.$_sleep(100);
       const networkValidate = validate(network, networkSchema);

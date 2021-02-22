@@ -102,7 +102,8 @@ export default {
       visualize: {},
       edit: {}
     },
-    exercise: {}
+    exercise: {},
+    scoreData: {}
   }),
   watch: {
     $route() {
@@ -123,6 +124,9 @@ export default {
     if (!this.exercise) {
       return;
     }
+    this.scoreData = await fetch(this.exercise.data.scoreUrl)
+      .then(res => res.json())
+      .catch(() => undefined);
 
     const originalNetwork = await axios
       .get(`/networks/${exerciseId}/`)
@@ -190,13 +194,34 @@ export default {
       this.$refs.lineEntity.emit1(srcNode, dstNode, port?.color || '#fff');
     });
     this.socket.on('answer', data => {
-      this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect);
+      this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect, () => {
+        if (!data.isCorrect) {
+          return;
+        }
+        const levelId = (this.exercise.data.questions || []).find(q => String(q.id) === String(data.qid))?.levelId;
+        const targetScore = this.scoreData.users[data.uid] + (this.exercise.data.levels || []).find(l => String(l.id) === String(levelId))?.score;
+        if (!targetScore) {
+          return;
+        }
+        const scoreIntervalId = setInterval(() => {
+          const score = this.scoreData.users[data.uid];
+          if (score < targetScore) {
+            this.$set(this.scoreData.users, data.uid, score + 5);
+          } else {
+            clearInterval(scoreIntervalId);
+          }
+        }, 20);
+      });
     });
     this.socket.on('notice', data => {
       this.$_pushNotice(data.text, data.type);
     });
 
-    this.$refs.networkEntity.set(this.network.visualize, this.exercise.data);
+    this.$refs.networkEntity.set({
+      exercise: this.exercise.data,
+      network: this.network.visualize,
+      score: this.scoreData
+    });
   },
   beforeDestroy() {
     if (this.socket.status === 'connect') {
@@ -211,7 +236,11 @@ export default {
     copyNetwork(src, dst) {
       this.$set(this.network, dst, JSON.parse(JSON.stringify(this.network[src])));
       if (dst === 'visualize') {
-        this.$refs.networkEntity.set(this.network.visualize, this.exercise.data);
+        this.$refs.networkEntity.set({
+          exercise: this.exercise.data,
+          network: this.network.visualize,
+          score: this.scoreData
+        });
       }
     }
   }

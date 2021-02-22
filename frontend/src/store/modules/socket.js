@@ -27,7 +27,7 @@ const actions = {
     }
     const socket = await io.connect(process.env.VUE_APP_SOCKETIO_BASE_URL, {
       query: {
-        network_id: networkId
+        exercise_id: networkId
       }
     });
     socket.status = null;
