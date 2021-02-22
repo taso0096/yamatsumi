@@ -4,22 +4,22 @@ import ipaddress
 import json
 import threading
 
-from config import SOCKETIO_HOST, NETWORK_ID, INTERFACES, ALLOW_PROTOCOLS, ALLOW_PORTS, PRIVACY_MODE, USER_ID
+from config import SOCKETIO_HOST, EXERCISE_ID, INTERFACES, ALLOW_PROTOCOLS, ALLOW_PORTS, PRIVACY_MODE, USER_ID
 
 
 class SocketIOClient:
-    def __init__(self, host, network_id):
+    def __init__(self, host, exercise_id):
         self.host = host
-        self.network_id = network_id
+        self.exercise_id = exercise_id
         self.sio = socketio.Client()
         self.background_task = None
 
     def connect(self):
-        self.sio.connect(f'{self.host}?network_id={self.network_id}&is_forwarder=true')
+        self.sio.connect(f'{self.host}?exercise_id={self.exercise_id}&is_forwarder=true')
 
     def send_packet(self, data):
         self.sio.emit('packet', json.dumps({
-            'network_id': self.network_id,
+            'exercise_id': self.exercise_id,
             'packet': data
         }))
 
@@ -70,14 +70,16 @@ class Scapy:
                 elif not (USER_ID and (data.get('srcIsGlobal') or data.get('dstIsGlobal'))):
                     return
                 self.send_packet({
-                    "userId": USER_ID
+                    "userId": USER_ID,
+                    "srcPort": data.get('srcPort'),
+                    "dstPort": data.get('dstPort')
                 })
             except Exception as e:
                 print(e)
 
 
 if __name__ == '__main__':
-    sio_client = SocketIOClient(SOCKETIO_HOST, NETWORK_ID)
+    sio_client = SocketIOClient(SOCKETIO_HOST, EXERCISE_ID)
     sio_client.connect()
 
     for iface in INTERFACES:
