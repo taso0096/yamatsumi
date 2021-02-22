@@ -25,7 +25,7 @@ export default {
         func();
       }
     },
-    emit1(source, target, color = '#fff', endFunc = () => {}) {
+    emit1(source, target, color = '#fff', endFunc = () => {}, isAnswer = false) {
       if (Object.keys(this.animationFunctions).length > 100) {
         return;
       }
@@ -63,9 +63,9 @@ export default {
         sourceP.z + diffP.z*4/5
       ));
       points.push(targetP);
-      const linePoints = new THREE.CatmullRomCurve3(points).getPoints(15);
+      const linePoints = new THREE.CatmullRomCurve3(points).getPoints(isAnswer ? 40 : 15);
       const path = new THREE.CatmullRomCurve3(linePoints.slice(0, this.lineLength));
-      const geometry = new THREE.TubeBufferGeometry(path, 20, 0.01);
+      const geometry = new THREE.TubeBufferGeometry(path, isAnswer ? 5 : 20, isAnswer ? 0.03 : 0.01);
       const material = new THREE.MeshBasicMaterial({ color });
       const lineMesh = new THREE.Mesh(geometry, material);
       this.lineGroup.add(lineMesh);
@@ -82,7 +82,7 @@ export default {
         };
         index++;
         const nextPath = new THREE.CatmullRomCurve3(linePoints.slice(index, index + this.lineLength));
-        const nextGeometry = new THREE.TubeBufferGeometry(nextPath, 20, 0.01);
+        const nextGeometry = new THREE.TubeBufferGeometry(nextPath, isAnswer ? 5 : 20, isAnswer ? 0.03 : 0.01);
         const nowP = geometry.attributes.position;
         nowP.array = nextGeometry.attributes.position.array;
         nowP.needsUpdate = true;
@@ -156,7 +156,7 @@ export default {
     },
     emitAnswer(uid, qid, isCorrect, endFunc = () => {}) {
       const user = this.$_visualizeData.exercise.users.find(u => u.id === uid);
-      this.emit1(`#node-${user.nodeId}`, `#question__${qid}`, isCorrect ? '#00ff00' : '#ff0000', endFunc);
+      this.emit1(`#node-${user.nodeId}`, `#question__${qid}`, isCorrect ? '#00ff00' : '#ff0000', endFunc, true);
     }
   }
 };
