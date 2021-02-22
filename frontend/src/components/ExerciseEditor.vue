@@ -48,7 +48,10 @@
       </v-card-title>
     </v-card>
 
-    <v-form class="exercise-editor__form">
+    <v-form
+      readonly
+      class="exercise-editor__form"
+    >
       <v-card
         tile
         flat
