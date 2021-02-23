@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "version": "0.0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "teams": {
+      "title": "チーム一覧",
+      "description": "チーム一覧",
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "title": "スコア",
+          "description": "スコア",
+          "type": "integer",
+          "examples": [
+            100
+          ]
+        }
+      }
+    },
+    "users": {
+      "title": "ユーザ一覧",
+      "description": "ユーザ一覧",
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "title": "スコア",
+          "description": "スコア",
+          "type": "integer",
+          "examples": [
+            100
+          ]
+        }
+      }
+    }
+  }
+}
