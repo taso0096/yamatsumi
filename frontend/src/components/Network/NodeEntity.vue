@@ -69,7 +69,10 @@ export default {
       this.$set(this.validNode, 'questions', questions);
       return;
     };
-    this.$set(this.validNode, 'userId', this.$_visualizeData.exercise.users.find(u => u.nodeId === this.node.id)?.id);
+    const users = this.$_visualizeData.exercise.users;
+    if (users) {
+      this.$set(this.validNode, 'userId', users.find(u => u.nodeId === this.node.id)?.id);
+    }
     this.$set(this.validNode, 'label', this.validNode.userId || this.node.label || this.node.id);
     this.$set(this.validNode, 'type', this.node.nodeOptions?.type || 'sphere');
     this.$set(this.validNode, 'size', this.node.nodeOptions?.size || 1);
