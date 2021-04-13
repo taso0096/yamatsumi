@@ -287,7 +287,8 @@
                         hide-details
                         :input-value="!!node.nodes"
                         class="mt-0 mb-3"
-                        @change="updateGroupNode($event, node, i + 1)"
+                        readonly
+                        @click="updateGroupNode(node, i + 1)"
                       />
                     </v-col>
                   </v-row>
@@ -528,8 +529,20 @@ export default {
         parentId: ''
       });
     },
-    updateGroupNode(val, node, nextIndex) {
-      if (val) {
+    async updateGroupNode(node, nextIndex) {
+      if (!this.editMode) {
+        return;
+      } else {
+        const isConfirmed = await this.$_appRefs.confirmDialog.open({
+          message: 'Are you sure you want to change "Group Node" status?',
+          confirmText: 'Change',
+          color: 'error'
+        });
+        if (!isConfirmed) {
+          return;
+        }
+      }
+      if (!node.nodes) {
         this.$set(node, 'nodes', []);
         this.$delete(node, 'nodeOptions');
         return;
@@ -580,5 +593,5 @@ export default {
       this.detailMenus.splice(index);
     }
   }
-}
+};
 </script>
