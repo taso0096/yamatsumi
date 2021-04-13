@@ -8,15 +8,11 @@
       right
       mobile-breakpoint="960"
       color="transparent"
-      width="600"
+      width="1024"
       class="pt-3 pr-3"
     >
-      <exercise-editor
-        v-if="exercise.data"
-        :exercise="exercise"
-      />
       <network-editor
-        v-if="false && network.original.id"
+        v-if="network.original.id"
         :network="network.edit"
         :copyNetwork="copyNetwork"
       />
@@ -79,7 +75,6 @@
 <script>
 import NetworkEntity from '@/components/Network/BaseNetworkEntity.vue';
 import LineEntity from '@/components/LineEntity.vue';
-import ExerciseEditor from '@/components/ExerciseEditor.vue';
 import NetworkEditor from '@/components/NetworkEditor/NetworkEditor.vue';
 
 import axios from '@/axios';
@@ -89,7 +84,6 @@ export default {
   components: {
     NetworkEntity,
     LineEntity,
-    ExerciseEditor,
     NetworkEditor
   },
   data: () => ({

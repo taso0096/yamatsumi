@@ -3,8 +3,8 @@
     <v-card
       tile
       flat
-      min-width="588"
-      width="588"
+      min-width="500"
+      width="500"
       height="100%"
       class="mb-3"
     >
@@ -209,8 +209,8 @@
       :key="`object-${i}`"
       tile
       flat
-      min-width="588"
-      width="588"
+      min-width="500"
+      width="500"
       height="100%"
       class="ml-3 mb-3"
     >
