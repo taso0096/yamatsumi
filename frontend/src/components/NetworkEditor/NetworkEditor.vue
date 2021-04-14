@@ -228,10 +228,12 @@
         </v-expand-transition>
       </v-card>
 
-      <layers-card
-        :layers="network.layers"
-        :editMode="mode.edit"
-      />
+      <div class="layers-block">
+        <layers-card
+          :layers="network.layers"
+          :editMode="mode.edit"
+        />
+      </div>
     </v-form>
   </div>
 </template>
@@ -249,6 +251,9 @@
   }
   .network-editor__form {
     height: 100%;
+    overflow: scroll;
+  }
+  .layers-block {
     overflow: scroll;
   }
 }
@@ -280,7 +285,7 @@ export default {
       preview: false
     },
     showAll: {
-      details: true,
+      details: false,
       routingTable: false
     },
     routingTableArray: [],
