@@ -263,7 +263,7 @@
                             depressed
                             small
                             color="primary"
-                            @click="addNode(undefined, node.nodes)"
+                            @click="addNode(node.nodes)"
                           >
                             <span>Add Node</span>
                           </v-btn>
@@ -291,6 +291,7 @@
               class="text-center mb-4"
             >
               <v-btn
+                v-if="layers"
                 tile
                 depressed
                 small
@@ -299,6 +300,20 @@
               >
                 <span>Add Layer</span>
               </v-btn>
+              <div
+                v-else
+                class="text-center mb-4"
+              >
+                <v-btn
+                  tile
+                  depressed
+                  small
+                  color="primary"
+                  @click="addNode(menuObject.nodes)"
+                >
+                  <span>Add Node</span>
+                </v-btn>
+              </div>
             </div>
           </v-card-text>
         </div>
@@ -390,9 +405,9 @@ export default {
         nodes: []
       });
     },
-    addNode(menuIndex, nodes) {
+    addNode(nodes) {
       if (nodes.length) {
-        this.showAll.detailMenus[menuIndex].push(false);
+        this.showAll.childNodes.push(false);
       }
       nodes.push({
         id: `node${nodes.length + 1}`,
