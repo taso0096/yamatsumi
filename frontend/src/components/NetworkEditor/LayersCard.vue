@@ -280,7 +280,7 @@
                 <v-btn
                   icon
                   small
-                  @click="deleteIndex(nodes, showAll.childNodes, i)"
+                  @click="deleteIndex(i)"
                 >
                   <v-icon color="error">mdi-delete-outline</v-icon>
                 </v-btn>
@@ -458,20 +458,21 @@ export default {
       this.nextMenuObject = object;
       this.showNextMenu = true;
     },
-    async deleteIndex(array, showAll, delIndex, nextMenuIndex = 0) {
+    async deleteIndex(i) {
+      const nodeId = this.menuObject.nodes[i].id;
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
-        message: `Are you sure you want to delete the "${array[delIndex].id}"?`,
+        message: `Are you sure you want to delete the "${nodeId}"?`,
         confirmText: 'Delete',
         color: 'error'
       });
       if (!isConfirmed) {
         return;
       }
-      if (array[delIndex].id === this.detailMenus[nextMenuIndex]?.id) {
-        this.detailMenus.splice(nextMenuIndex);
+      if (nodeId === this.nextMenuObject.id) {
+        this.closeNextMenu();
       }
-      array.splice(delIndex, 1);
-      showAll.splice(delIndex, 1);
+      this.menuObject.nodes.splice(i, 1);
+      this.showAll.childNodes.splice(i, 1);
     },
     closeNextMenu() {
       this.showNextMenu = false;
