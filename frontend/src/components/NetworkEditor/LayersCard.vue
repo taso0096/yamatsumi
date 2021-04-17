@@ -9,10 +9,10 @@
       class="mb-3"
     >
       <v-card-title class="font-weight-regular">
-        <span>{{ menuObject.label || menuObject.id || 'Layers' }}</span>
+        <span>{{ menuData.label || menuData.id || 'Layers' }}</span>
         <v-spacer />
         <v-btn
-          v-if="layers"
+          v-if="isLayers"
           icon
           small
           @click="showAll.parentNode = !showAll.parentNode"
@@ -34,14 +34,14 @@
         <div v-show="showAll.parentNode">
           <v-card-text class="pt-0">
             <div
-              v-if="!(layers || menuObject.nodes).length"
+              v-if="!menuTopNodes.length"
               class="mb-4"
             >
               <span>No data available</span>
             </div>
             <div
               v-else
-              v-for="(node, i) in (layers || menuObject.nodes)"
+              v-for="(node, i) in menuTopNodes"
               :key="`layer-${i}`"
               class="d-flex mb-4"
             >
@@ -65,7 +65,7 @@
                 <v-expand-transition>
                   <div v-show="showAll.childNodes[i]">
                     <v-card-text class="pt-0">
-                      <template v-if="layers">
+                      <template v-if="isLayers">
                         <v-row>
                           <v-col class="py-0">
                             <v-text-field
@@ -291,7 +291,7 @@
               class="text-center mb-4"
             >
               <v-btn
-                v-if="layers"
+                v-if="isLayers"
                 tile
                 depressed
                 small
@@ -309,7 +309,7 @@
                   depressed
                   small
                   color="primary"
-                  @click="addNode(menuObject.nodes)"
+                  @click="addNode(menuData.nodes)"
                 >
                   <span>Add Node</span>
                 </v-btn>
@@ -322,7 +322,7 @@
 
     <layers-card
       v-if="showNextMenu"
-      :menuObject="nextMenuObject"
+      :menuData="nextMenuData"
       :editMode="editMode"
       :closeMenu="closeNextMenu"
       class="ml-3"
@@ -347,12 +347,13 @@ export default {
     LayersCard
   },
   props: {
-    layers: {
-      type: Array
+    isLayers: {
+      type: Boolean,
+      default: false
     },
-    menuObject: {
-      type: Object,
-      default: () => ({})
+    menuData: {
+      type: [Array, Object],
+      required: true
     },
     editMode: {
       type: Boolean,
@@ -367,7 +368,7 @@ export default {
       parentNode: false,
       childNodes: []
     },
-    nextMenuObject: {},
+    nextMenuData: {},
     showNextMenu: false
   }),
   computed: {
@@ -379,26 +380,31 @@ export default {
     },
     nodeTypes() {
       return this.schemaLayerProperties.nodes.items.properties.nodeOptions.properties.type.enum;
+    },
+    menuTopNodes() {
+      return this.isLayers ? this.menuData : this.menuData.nodes;
     }
   },
   watch: {
-    'menuObject.id'() {
+    'menuData.id'() {
+      console.log(this.menuData);
       this.showAll.parentNode = true;
       this.showAll.childNodes = [];
-      this.showAll.childNodes = [...Array(this.menuObject.nodes.length)].map(() => false);
+      this.showAll.childNodes = [...Array(this.menuTopNodes.length)].map(() => false);
     }
   },
   mounted() {
-    if (this.menuObject.id) {
+    console.log(this.menuData);
+    if (this.menuData.id) {
       this.showAll.parentNode = true;
     }
-    this.showAll.childNodes = [...Array((this.layers || this.menuObject).length)].map(() => false);
+    this.showAll.childNodes = [...Array(this.menuTopNodes.length)].map(() => false);
   },
   methods: {
     addLayer() {
       this.showAll.childNodes.push(false);
-      this.layers.push({
-        id: `layer${this.layers.length + 1}`,
+      this.menuData.push({
+        id: `layer${this.menuData.length + 1}`,
         label: '',
         depth: '',
         fixedDepth: '',
@@ -454,12 +460,12 @@ export default {
         labelColor: '#fff'
       });
     },
-    pushMenu(object) {
-      this.nextMenuObject = object;
+    pushMenu(data) {
+      this.nextMenuData = data;
       this.showNextMenu = true;
     },
     async deleteIndex(i) {
-      const nodeId = this.menuObject.nodes[i].id;
+      const nodeId = this.menuTopNodes[i].id;
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
         message: `Are you sure you want to delete the "${nodeId}"?`,
         confirmText: 'Delete',
@@ -468,10 +474,10 @@ export default {
       if (!isConfirmed) {
         return;
       }
-      if (nodeId === this.nextMenuObject.id) {
+      if (nodeId === this.nextMenuData.id) {
         this.closeNextMenu();
       }
-      this.menuObject.nodes.splice(i, 1);
+      this.menuTopNodes.splice(i, 1);
       this.showAll.childNodes.splice(i, 1);
     },
     closeNextMenu() {

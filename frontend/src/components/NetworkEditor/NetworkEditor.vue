@@ -230,7 +230,8 @@
 
       <div class="layers-block">
         <layers-card
-          :layers="network.layers"
+          :isLayers="true"
+          :menuObject="network.layers"
           :editMode="mode.edit"
         />
       </div>
