@@ -3,29 +3,29 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from exercises.models import Exercise
-from .models import Network
+from .models import Cyberspace
 
 import json
 
 
-def return_network_detail_data(network):
+def return_cyberspace_detail_data(cyberspace):
     data = {
-        'id': network.exercise.exercise_id,
-        'version': network.version,
-        'routingTable': network.routing_table,
-        'layers': network.layers
+        'id': cyberspace.exercise.exercise_id,
+        'version': cyberspace.version,
+        'routingTable': cyberspace.routing_table,
+        'layers': cyberspace.layers
     }
     data = {k: data[k] for k in data if data[k] is not None}
     response_data = {
-        'exercise_id': network.exercise.exercise_id,
+        'exercise_id': cyberspace.exercise.exercise_id,
         'data': data,
-        'createdAt': network.created_at,
-        'updatedAt': network.updated_at
+        'createdAt': cyberspace.created_at,
+        'updatedAt': cyberspace.updated_at
     }
     return response_data
 
 
-class NetworksView(GenericAPIView):
+class CyberspacesView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -34,56 +34,56 @@ class NetworksView(GenericAPIView):
         except Exception:
             loads_data = data
         try:
-            if not (exercise := Exercise.objects.get(exercise_id=loads_data['id'])) or Network.objects.get(exercise=exercise):
+            if not (exercise := Exercise.objects.get(exercise_id=loads_data['id'])) or Cyberspace.objects.get(exercise=exercise):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         except Exception:
             pass
-        network_data = {
+        cyberspace_data = {
             'exercise': exercise,
             'version': loads_data.get('version'),
             'routing_table': loads_data.get('routingTable'),
             'layers': loads_data['layers']
         }
         try:
-            network = Network.objects.create(**network_data)
+            cyberspace = Cyberspace.objects.create(**cyberspace_data)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        return Response(data=return_network_detail_data(network), status=status.HTTP_201_CREATED)
+        return Response(data=return_cyberspace_detail_data(cyberspace), status=status.HTTP_201_CREATED)
 
 
-class NetworkDetailView(GenericAPIView):
+class CyberspaceDetailView(GenericAPIView):
     def get(self, request, exercise_id):
         exercise = Exercise.objects.get(exercise_id=exercise_id)
-        network = Network.objects.get(exercise=exercise)
-        return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
+        cyberspace = Cyberspace.objects.get(exercise=exercise)
+        return Response(data=return_cyberspace_detail_data(cyberspace), status=status.HTTP_200_OK)
 
     def put(self, request, exercise_id):
         exercise = Exercise.objects.get(exercise_id=exercise_id)
         try:
-            network = Network.objects.get(exercise=exercise)
+            cyberspace = Cyberspace.objects.get(exercise=exercise)
         except Exception:
-            network = None
+            cyberspace = None
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
             loads_data = json.loads(data)
         except Exception:
             loads_data = data
-        network_data = {
+        cyberspace_data = {
             'exercise': exercise,
             'version': loads_data.get('version'),
             'routing_table': loads_data.get('routingTable'),
             'layers': loads_data['layers']
         }
-        if network:
-            for key, value in network_data.items():
-                setattr(network, key, value)
-            network.save()
+        if cyberspace:
+            for key, value in cyberspace_data.items():
+                setattr(cyberspace, key, value)
+            cyberspace.save()
         else:
-            network = Network.objects.create(**network_data)
-        return Response(data=return_network_detail_data(network), status=status.HTTP_200_OK)
+            cyberspace = Cyberspace.objects.create(**cyberspace_data)
+        return Response(data=return_cyberspace_detail_data(cyberspace), status=status.HTTP_200_OK)
 
     def delete(self, request, exercise_id):
         exercise = Exercise.objects.get(exercise_id=exercise_id)
-        Network.objects.filter(exercise=exercise).delete()
+        Cyberspace.objects.filter(exercise=exercise).delete()
         return Response(status=status.HTTP_200_OK)

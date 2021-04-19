@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'users',
-    'networks',
+    'cyberspaces',
     'exercises',
     'socketio_app',
 ]

@@ -2,7 +2,7 @@ from django.db import models
 from exercises.models import Exercise
 
 
-class Network(models.Model):
+class Cyberspace(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     version = models.CharField(max_length=10, blank=True, null=True)
     routing_table = models.JSONField(default=dict, blank=True, null=True)
