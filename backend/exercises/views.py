@@ -1,30 +1,16 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Q
 
+from cyberspaces.models import Cyberspace
 from .models import Exercise
 
 import json
-import uuid
-
-
-def return_exercise_data(exercise):
-    response_data = {
-        'exerciseId': exercise.exercise_id,
-        'label': exercise.label,
-        'username': exercise.user.username,
-        'createdAt': exercise.created_at,
-        'updatedAt': exercise.updated_at
-    }
-    return response_data
 
 
 def return_exercise_detail_data(exercise):
     data = {
-        'id': exercise.exercise_id,
-        'label': exercise.label,
-        'desc': exercise.desc,
+        'id': exercise.cyberspace.cyberspace_id,
         'scoreUrl': exercise.score_url,
         'version': exercise.version,
         'teams': exercise.teams,
@@ -35,8 +21,8 @@ def return_exercise_detail_data(exercise):
     }
     data = {k: data[k] for k in data if data[k] is not None}
     response_data = {
-        'exerciseId': exercise.exercise_id,
-        'username': exercise.user.username,
+        'id': exercise.cyberspace.cyberspace_id,
+        'username': exercise.cyberspace.user.username,
         'data': data,
         'createdAt': exercise.created_at,
         'updatedAt': exercise.updated_at
@@ -45,16 +31,6 @@ def return_exercise_detail_data(exercise):
 
 
 class ExercisesView(GenericAPIView):
-    def get(self, request, *args, **kwargs):
-        search_word = request.GET.get('search')
-        exercises = Exercise.objects.all() if not search_word else Exercise.objects.filter(
-            Q(exercise_id__icontains=search_word) | Q(label__icontains=search_word)
-        )
-        reponse_data = []
-        for exercise in exercises:
-            reponse_data.insert(0, return_exercise_data(exercise))
-        return Response(data=reponse_data, status=status.HTTP_200_OK)
-
     def post(self, request, *args, **kwargs):
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -62,11 +38,13 @@ class ExercisesView(GenericAPIView):
             loads_data = json.loads(data)
         except Exception:
             loads_data = data
+        try:
+            if not (cyberspace := Cyberspace.objects.get(cyberspace_id=loads_data['id'])) or Exercise.objects.get(cyberspace=cyberspace):
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            pass
         exercise_data = {
-            'exercise_id': loads_data.get('id') or uuid.uuid4(),
-            'user': request.user,
-            'label': loads_data.get('label'),
-            'desc': loads_data.get('desc'),
+            'cyberspace': cyberspace,
             'score_url': loads_data.get('scoreUrl'),
             'version': loads_data.get('version'),
             'teams': loads_data.get('teams'),
@@ -83,12 +61,17 @@ class ExercisesView(GenericAPIView):
 
 
 class ExerciseDetailView(GenericAPIView):
-    def get(self, request, exercise_id):
-        exercise = Exercise.objects.get(exercise_id=exercise_id)
+    def get(self, request, cyberspace_id):
+        cyberspace = Cyberspace.objects.get(cyberspace_id=cyberspace_id)
+        exercise = Exercise.objects.get(cyberspace=cyberspace)
         return Response(data=return_exercise_detail_data(exercise), status=status.HTTP_200_OK)
 
-    def put(self, request, exercise_id):
-        exercise = Exercise.objects.get(exercise_id=exercise_id)
+    def put(self, request, cyberspace_id):
+        cyberspace = Cyberspace.objects.get(cyberspace_id=cyberspace_id)
+        try:
+            exercise = Exercise.objects.get(cyberspace=cyberspace)
+        except Exception:
+            exercise = None
         if not (data := request.data['data']):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -96,10 +79,7 @@ class ExerciseDetailView(GenericAPIView):
         except Exception:
             loads_data = data
         exercise_data = {
-            'exercise_id': loads_data['id'],
-            'user': exercise.user,
-            'label': loads_data.get('label'),
-            'desc': loads_data.get('desc'),
+            'cyberspace': cyberspace,
             'score_url': loads_data.get('scoreUrl'),
             'version': loads_data.get('version'),
             'teams': loads_data.get('teams'),
@@ -108,11 +88,15 @@ class ExerciseDetailView(GenericAPIView):
             'categories': loads_data.get('categories'),
             'questions': loads_data.get('questions')
         }
-        for key, value in exercise_data.items():
-            setattr(exercise, key, value)
-        exercise.save()
+        if exercise:
+            for key, value in exercise_data.items():
+                setattr(exercise, key, value)
+            exercise.save()
+        else:
+            exercise = Exercise.objects.create(**exercise_data)
         return Response(data=return_exercise_detail_data(exercise), status=status.HTTP_200_OK)
 
-    def delete(self, request, exercise_id):
-        Exercise.objects.filter(exercise_id=exercise_id).delete()
+    def delete(self, request, cyberspace_id):
+        cyberspace = Cyberspace.objects.get(cyberspace_id=cyberspace_id)
+        Exercise.objects.filter(cyberspace=cyberspace).delete()
         return Response(status=status.HTTP_200_OK)
