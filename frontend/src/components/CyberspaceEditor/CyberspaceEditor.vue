@@ -266,7 +266,7 @@ import axios from '@/axios';
 import LayersCard from './LayersCard.vue';
 
 export default {
-  name: 'NetworkEditor',
+  name: 'CyberspaceEditor',
   components: {
     LayersCard
   },

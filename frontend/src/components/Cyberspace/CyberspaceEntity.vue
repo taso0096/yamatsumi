@@ -17,7 +17,7 @@ import cyberspaceSchema from '@/assets/CyberspaceSchema.json';
 import exerciseSchema from '@/assets/ExerciseSchema.json';
 
 export default {
-  name: 'BaseNetworkEntity',
+  name: 'CyberspaceEntity',
   components: {
     LayerEntity
   },
