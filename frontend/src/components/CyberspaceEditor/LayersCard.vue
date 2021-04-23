@@ -128,7 +128,7 @@
                               :input-value="!!node.nodes"
                               class="mt-0 mb-3"
                               readonly
-                              @click="updateGroupNode(node, index + 1)"
+                              @click="updateGroupNode(node)"
                             />
                           </v-col>
                         </v-row>
@@ -424,7 +424,7 @@ export default {
         parentId: ''
       });
     },
-    async updateGroupNode(node, nextIndex) {
+    async updateGroupNode(node) {
       if (!this.editMode) {
         return;
       } else {
@@ -444,8 +444,8 @@ export default {
       }
       this.$delete(node, 'nodes');
       this.$delete(node, 'layoutOptions');
-      if (node.id === this.detailMenus[nextIndex]?.id) {
-        this.detailMenus.splice(nextIndex);
+      if (node.id === this.nextMenuData.id) {
+        this.showNextMenu = false;
       }
     },
     addLayoutOptions(layer) {
