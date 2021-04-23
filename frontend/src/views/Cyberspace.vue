@@ -80,7 +80,7 @@ import NetworkEditor from '@/components/NetworkEditor/NetworkEditor.vue';
 import axios from '@/axios';
 
 export default {
-  name: 'Exercise',
+  name: 'Cyberspace',
   components: {
     NetworkEntity,
     LineEntity,

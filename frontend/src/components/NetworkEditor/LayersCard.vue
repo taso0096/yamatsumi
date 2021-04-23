@@ -339,7 +339,7 @@
 <script>
 import LayersCard from './LayersCard.vue';
 
-import networkSchema from '@/assets/NetworkSchema.json';
+import cyberspaceSchema from '@/assets/CyberspaceSchema.json';
 
 export default {
   name: 'LayersCard',
@@ -373,7 +373,7 @@ export default {
   }),
   computed: {
     schemaLayerProperties() {
-      return networkSchema.properties.layers.items.properties;
+      return cyberspaceSchema.properties.layers.items.properties;
     },
     layoutShapes() {
       return this.schemaLayerProperties.layoutOptions.properties.shape.enum;

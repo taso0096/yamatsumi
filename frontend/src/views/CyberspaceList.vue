@@ -1,20 +1,20 @@
 <template>
   <div>
     <v-dialog
-      v-model="exerciseCreateDialog"
+      v-model="cyberspaceCreateDialog"
       max-width="400"
     >
       <v-card>
-        <v-card-title>Create Exercise{{ newExercise.data.id ? ' (Upload JSON)' : '' }}</v-card-title>
+        <v-card-title>Create Cyberspace{{ newCyberspace.data.id ? ' (Upload JSON)' : '' }}</v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="newExercise.id"
-            label="Exercise ID"
+            v-model="newCyberspace.id"
+            label="Cyberspace ID"
             placeholder="If empty, UUID will be set."
             hide-details
           />
           <v-text-field
-            v-model="newExercise.label"
+            v-model="newCyberspace.label"
             label="Label"
             hide-details
           />
@@ -24,16 +24,16 @@
           <v-btn
             tile
             text
-            @click="exerciseCreateDialog = false"
+            @click="cyberspaceCreateDialog = false"
           >
             <span>Cancel</span>
           </v-btn>
           <v-btn
             tile
             depressed
-            :loading="isLoading.createExercise"
+            :loading="isLoading.createCyberspace"
             color="primary"
-            @click="createExercise"
+            @click="createCyberspace"
           >
             <span>Create</span>
           </v-btn>
@@ -50,8 +50,8 @@
             label="Search"
             hide-details
             clearable
-            @click:append="searchExercise"
-            @keyup.enter="searchExercise"
+            @click:append="searchCyberspace"
+            @keyup.enter="searchCyberspace"
           />
         </v-col>
         <v-spacer />
@@ -73,15 +73,15 @@
                 small
                 color="primary"
               >
-                <span>Create Exercise</span>
+                <span>Create Cyberspace</span>
               </v-btn>
             </template>
 
             <v-list class="pa-0">
-              <v-list-item @click="exerciseCreateDialog = true">
+              <v-list-item @click="cyberspaceCreateDialog = true">
                 <v-list-item-title>Create New</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="uploadExercise">
+              <v-list-item @click="uploadCyberspace">
                 <v-list-item-title>Upload JSON</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -90,16 +90,16 @@
       </v-row>
       <v-data-table
         :headers="headers"
-        :items="exercises"
+        :items="cyberspaces"
         :items-per-page="10"
-        :loading="isLoading.getExercises"
+        :loading="isLoading.getCyberspaces"
       >
         <template v-slot:[`item.label`]="{ item }">
           <router-link
-            :to="{ name: 'Exercise', params: { exerciseId: item.exerciseId } }"
+            :to="{ name: 'Cyberspace', params: { id: item.id } }"
             class="text-decoration-none"
           >
-            {{ item.label || item.exerciseId }}
+            {{ item.label || item.id }}
           </router-link>
         </template>
         <template v-slot:[`item.updatedAt`]="{ item }">
@@ -121,24 +121,24 @@
 <script>
 import axios from '@/axios'
 import { validate } from 'jsonschema';
-import exerciseSchema from '@/assets/ExerciseSchema.json';
+import cyberspaceSchema from '@/assets/CyberspaceSchema.json';
 
 export default {
-  name: 'ExerciseList',
+  name: 'CyberspaceList',
   data: () => ({
     headers: [
       { text: 'Label', value: 'label', sortable: false },
       { text: 'Username', value: 'username', sortable: false, align: 'center' },
       { text: 'UpdatedAt', value: 'updatedAt', align: 'center' }
     ],
-    exercises: [],
+    cyberspaces: [],
     isLoading: {
-      getExercises: false,
-      createExercise: false
+      getCyberspaces: false,
+      createCyberspace: false
     },
     searchWord: '',
-    exerciseCreateDialog: false,
-    newExercise: {
+    cyberspaceCreateDialog: false,
+    newCyberspace: {
       id: '',
       label: '',
       data: {}
@@ -146,41 +146,41 @@ export default {
   }),
   watch: {
     $route() {
-      this.getExercises();
+      this.getCyberspaces();
     },
-    exerciseCreateDialog(val) {
+    cyberspaceCreateDialog(val) {
       if (!val) {
-        this.newExercise.id = '';
-        this.newExercise.label = '';
-        this.newExercise.data = {};
+        this.newCyberspace.id = '';
+        this.newCyberspace.label = '';
+        this.newCyberspace.data = {};
       }
     }
   },
   mounted() {
-    this.getExercises();
+    this.getCyberspaces();
   },
   methods: {
-    async getExercises() {
-      this.isLoading.getExercises = true;
+    async getCyberspaces() {
+      this.isLoading.getCyberspaces = true;
       this.searchWord = this.$route.query.search;
       await axios
-        .get('/exercises/', {
+        .get('/cyberspaces/', {
           params: {
             search: this.searchWord
           }
         })
         .then(res => {
-          this.exercises = res.data;
+          this.cyberspaces = res.data;
         })
         .catch(err => {
           console.log(err);
-          this.$_pushNotice('Failed to retrieve exercise list.', 'error');
+          this.$_pushNotice('Failed to retrieve cyberspace list.', 'error');
         });
-      this.isLoading.getExercises = false;
+      this.isLoading.getCyberspaces = false;
     },
-    searchExercise() {
+    searchCyberspace() {
       if (this.searchWord === this.$route.query.search) {
-        this.getExercises();
+        this.getCyberspaces();
         return;
       }
       this.$router.push({
@@ -189,23 +189,23 @@ export default {
         }
       });
     },
-    async createExercise() {
-      if (!this.newExercise.id) {
+    async createCyberspace() {
+      if (!this.newCyberspace.id) {
         const isConfirmed = await this.$_appRefs.confirmDialog.open({
-          message: 'The Exercise ID was not set.\nDo you want to set UUID automatically?'
+          message: 'The Cyberspace ID was not set.\nDo you want to set UUID automatically?'
         });
         if (!isConfirmed) {
           return;
         }
       }
-      this.isLoading.createExercise = true;
+      this.isLoading.createCyberspace = true;
       await axios
-        .post('/exercises/', {
+        .post('/cyberspaces/', {
           data: {
             layers: [],
-            ...this.newExercise.data,
-            id: this.newExercise.id,
-            label: this.newExercise.label
+            ...this.newCyberspace.data,
+            id: this.newCyberspace.id,
+            label: this.newCyberspace.label
           }
         },
         {
@@ -213,14 +213,14 @@ export default {
         })
         .then(res => {
           if (res.status !== 201) {
-            this.$_pushNotice('This Exercise ID is already in use.', 'error');
+            this.$_pushNotice('This Cyberspace ID is already in use.', 'error');
             return;
           }
-          this.$_pushNotice('Created a new exercise.', 'success');
+          this.$_pushNotice('Created a new cyberspace.', 'success');
           this.$router.push({
-            name: 'Exercise',
+            name: 'Cyberspace',
             params: {
-              exerciseId: res.data.exerciseId
+              id: res.data.id
             }
           });
         })
@@ -228,9 +228,9 @@ export default {
           console.log(err);
           this.$_pushNotice('An error occurred.', 'error');
         })
-      this.isLoading.createExercise = false;
+      this.isLoading.createCyberspace = false;
     },
-    uploadExercise() {
+    uploadCyberspace() {
       const inputEl = document.createElement('input');
       inputEl.type = 'file';
       inputEl.accept = '.json';
@@ -238,17 +238,17 @@ export default {
         const reader = new FileReader();
         reader.readAsText(e.target.files[0]);
         reader.addEventListener('load', () => {
-          const exercise = JSON.parse(reader.result);
-          const exerciseValidate = validate(exercise, exerciseSchema);
-          if (!exerciseValidate.valid) {
-            console.error('JSON Schema Validate ERROR', exerciseValidate.errors);
+          const cyberspace = JSON.parse(reader.result);
+          const cyberspaceValidate = validate(cyberspace, cyberspaceSchema);
+          if (!cyberspaceValidate.valid) {
+            console.error('JSON Schema Validate ERROR', cyberspaceValidate.errors);
             this.$_pushNotice('An error occurred during JSON validation.', 'error');
             return;
           }
-          this.newExercise.id = exercise.id;
-          this.newExercise.label = exercise.label;
-          this.newExercise.data = exercise;
-          this.exerciseCreateDialog = true;
+          this.newCyberspace.id = cyberspace.id;
+          this.newCyberspace.label = cyberspace.label;
+          this.newCyberspace.data = cyberspace;
+          this.cyberspaceCreateDialog = true;
         });
       });
       inputEl.click();

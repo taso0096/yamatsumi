@@ -13,7 +13,7 @@
 import LayerEntity from './LayerEntity.vue';
 
 import { validate } from 'jsonschema';
-import networkSchema from '@/assets/NetworkSchema.json';
+import cyberspaceSchema from '@/assets/CyberspaceSchema.json';
 import exerciseSchema from '@/assets/ExerciseSchema.json';
 
 export default {
@@ -33,7 +33,7 @@ export default {
       this.$store.dispatch('setEvent', visualizeData);
       this.isValidNetwork = false;
       await this.$_sleep(100);
-      const networkValidate = validate(network, networkSchema);
+      const networkValidate = validate(network, cyberspaceSchema);
       if (!networkValidate.valid) {
         console.error('JSON Schema Validate ERROR', networkValidate.errors);
         this.$_pushNotice('An error occurred during JSON validation.', 'error');

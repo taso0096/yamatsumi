@@ -162,10 +162,10 @@ export default {
     appDrawer: window.innerWidth >= 960,
     drawerTabs: [
       {
-        title: 'Exercise List',
+        title: 'Cyberspace List',
         icon: 'mdi-wan',
         route: {
-          name: 'ExerciseList'
+          name: 'CyberspaceList'
         },
         requiresAuth: true
       },
