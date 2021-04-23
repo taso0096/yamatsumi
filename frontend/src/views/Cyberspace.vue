@@ -25,7 +25,7 @@
     >
       <v-card-title>
         <span v-if="isLoading.cyberspace">Loading</span>
-        <span v-else-if="!cyberspaceInfo.id">Exercise ID "{{ $route.params.id }}" does not exist.</span>
+        <span v-else-if="!cyberspaceInfo.id">Cyberspace ID "{{ $route.params.id }}" does not exist.</span>
         <template v-else>
           <span>{{ cyberspaceInfo.label || cyberspaceInfo.id }}</span>
           <span class="mx-2">-</span>
@@ -235,7 +235,7 @@ export default {
       this.socket.off('packet');
       this.socket.off('notice');
       this.$store.dispatch('resetSocket');
-      this.$store.dispatch('resetEvent');
+      this.$store.dispatch('resetVisualizeData');
     }
   },
   methods: {

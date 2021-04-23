@@ -30,7 +30,7 @@ export default {
   methods: {
     async set(visualizeData) {
       const { cyberspace, exercise } = visualizeData;
-      this.$store.dispatch('setEvent', visualizeData);
+      this.$store.dispatch('setVisualizeData', visualizeData);
       this.isValidCyberspace = false;
       await this.$_sleep(100);
       const cyberspaceValidate = validate(cyberspace, cyberspaceSchema);

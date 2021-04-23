@@ -2,7 +2,7 @@ import axios from '@/axios/index';
 import Cookies from 'js-cookie';
 
 const beforeunloadHandler = e => {
-  e.returnValue = 'Are you sure you want to cancel editing Network?';
+  e.returnValue = 'Are you sure you want to cancel editing Cyberspace?';
 };
 
 const defaultState = {

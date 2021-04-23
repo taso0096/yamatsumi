@@ -6,13 +6,13 @@
       class="cyberspace-editor__title-header mt-3"
     >
       <v-card-title>
-        <span>Network Settings</span>
+        <span>Cyberspace Settings</span>
         <v-spacer />
         <v-btn
           v-if="!mode.edit"
           icon
           class="mr-3"
-          @click="downloadNetwork"
+          @click="downloadCyberspace"
         >
           <v-icon>mdi-download</v-icon>
         </v-btn>
@@ -33,12 +33,12 @@
           </template>
 
           <v-list class="pa-0">
-            <v-list-item @click="editNetwork">
+            <v-list-item @click="editCyberspace">
               <v-list-item-title>Edit</v-list-item-title>
             </v-list-item>
             <v-list-item
               :disabled="isLoading.delete"
-              @click="deleteNetwork"
+              @click="deleteCyberspace"
             >
               <v-list-item-title :class="{
                 'error--text': !isLoading.delete
@@ -61,7 +61,7 @@
             inset
             hide-details
             class="mt-0 pt-0 mr-5"
-            @click="previewNetwork"
+            @click="previewCyberspace"
           />
           <v-btn
             color="primary"
@@ -69,7 +69,7 @@
             tile
             small
             :loading="isLoading.save"
-            @click="saveNetwork"
+            @click="saveCyberspace"
           >
             <span>Save</span>
           </v-btn>
@@ -104,11 +104,11 @@
             <v-card-text class="pt-0">
               <v-text-field
                 v-model="cyberspace.id"
-                label="Network ID"
+                label="Cyberspace ID"
               />
               <v-text-field
                 v-model="cyberspace.label"
-                label="Network Label"
+                label="Cyberspace Label"
               />
               <v-text-field
                 v-model="cyberspace.version"
@@ -351,9 +351,9 @@ export default {
       }
       this.routingTableArray.splice(i, 1);
     },
-    async downloadNetwork() {
+    async downloadCyberspace() {
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
-        message: 'Do you want to download the Network?',
+        message: 'Do you want to download the Cyberspace?',
         confirmText: 'Download'
       });
       if (!isConfirmed) {
@@ -365,14 +365,14 @@ export default {
       link.download = `${this.cyberspace.id}.json`;
       link.click();
     },
-    editNetwork() {
+    editCyberspace() {
       this.mode.edit = true;
       this.$store.dispatch('updateEditState', true);
     },
     async cancelEdit(needConfirm) {
       if (needConfirm) {
         const isConfirmed = await this.$_appRefs.confirmDialog.open({
-          message: 'Are you sure you want to cancel editing Network?',
+          message: 'Are you sure you want to cancel editing Cyberspace?',
           confirmText: 'Cancel',
           color: 'error'
         });
@@ -389,7 +389,7 @@ export default {
       await this.$_sleep(100);
       this.init();
     },
-    previewNetwork() {
+    previewCyberspace() {
       this.mode.preview = !this.mode.preview;
       if (!this.mode.preview) {
         this.copyCyberspace('original', 'visualize');
@@ -404,7 +404,7 @@ export default {
         }
       }, 1000);
     },
-    async saveNetwork() {
+    async saveCyberspace() {
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
         message: 'Do you want to save the changes?',
         confirmText: 'Save'
@@ -423,13 +423,13 @@ export default {
         })
         .then(res => {
           if (res.status !== 200) {
-            this.$_pushNotice('This Network ID is already in use.', 'error');
+            this.$_pushNotice('This Cyberspace ID is already in use.', 'error');
             return;
           }
           this.copyCyberspace('edit', 'visualize');
           this.copyCyberspace('edit', 'original');
           this.cancelEdit(false);
-          this.$_pushNotice('Saved the Network', 'success');
+          this.$_pushNotice('Saved the Cyberspace', 'success');
           if (this.cyberspace.id !== id) {
             this.$router.push({
               name: 'Visualize',
@@ -445,9 +445,9 @@ export default {
         });
       this.isLoading.save = false;
     },
-    async deleteNetwork() {
+    async deleteCyberspace() {
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
-        message: 'Are you sure you want to delete this Network?',
+        message: 'Are you sure you want to delete this Cyberspace?',
         confirmText: 'Delete',
         color: 'error'
       });
@@ -459,8 +459,8 @@ export default {
       await axios
         .delete(`/cyberspaces/${id}/`)
         .then(() => {
-          this.$_pushNotice('Deleted the Network', 'success');
-          this.$router.push({ name: 'Network' });
+          this.$_pushNotice('Deleted the Cyberspace', 'success');
+          this.$router.push({ name: 'Cyberspace' });
         })
         .catch(err => {
           console.log(err);

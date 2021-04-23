@@ -18,10 +18,10 @@ const mutations = {
 };
 
 const actions = {
-  resetEvent({ commit }) {
+  resetVisualizeData({ commit }) {
     commit('RESET_VISUALIZE_DATA');
   },
-  setEvent({ commit }, visualizeData) {
+  setVisualizeData({ commit }, visualizeData) {
     commit('SET_VISUALIZE_DATA', visualizeData);
   }
 };

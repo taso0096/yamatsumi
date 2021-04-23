@@ -162,7 +162,7 @@ export default {
     appDrawer: window.innerWidth >= 960,
     drawerTabs: [
       {
-        title: 'Cyberspace List',
+        title: 'Cyberspaces',
         icon: 'mdi-wan',
         route: {
           name: 'CyberspaceList'
