@@ -1,9 +1,9 @@
 <template>
-  <div class="network-editor">
+  <div class="cyberspace-editor">
     <v-card
       tile
       flat
-      class="network-editor__title-header mt-3"
+      class="cyberspace-editor__title-header mt-3"
     >
       <v-card-title>
         <span>Network Settings</span>
@@ -79,7 +79,7 @@
 
     <v-form
       :readonly="!mode.edit"
-      class="network-editor__form"
+      class="cyberspace-editor__form"
     >
       <v-card
         tile
@@ -103,19 +103,19 @@
           <div v-show="showAll.details">
             <v-card-text class="pt-0">
               <v-text-field
-                v-model="network.id"
+                v-model="cyberspace.id"
                 label="Network ID"
               />
               <v-text-field
-                v-model="network.label"
+                v-model="cyberspace.label"
                 label="Network Label"
               />
               <v-text-field
-                v-model="network.version"
+                v-model="cyberspace.version"
                 label="Version"
               />
               <v-textarea
-                v-model="network.desc"
+                v-model="cyberspace.desc"
                 label="Description"
               />
             </v-card-text>
@@ -231,7 +231,7 @@
       <div class="layers-block">
         <layers-card
           :isLayers="true"
-          :menuData="network.layers"
+          :menuData="cyberspace.layers"
           :editMode="mode.edit"
         />
       </div>
@@ -240,17 +240,17 @@
 </template>
 
 <style lang="scss" scoped>
-.network-editor {
+.cyberspace-editor {
   height: calc(100% - 64px - 12px);
   margin-top: calc(64px + 12px);
 
-  .network-editor__title-header {
+  .cyberspace-editor__title-header {
     position: absolute;
     top: 0;
     width: calc(100% - 12px);
     z-index: 1;
   }
-  .network-editor__form {
+  .cyberspace-editor__form {
     height: 100%;
     overflow: scroll;
   }
@@ -271,11 +271,11 @@ export default {
     LayersCard
   },
   props: {
-    network: {
+    cyberspace: {
       type: Object,
       required: true
     },
-    copyNetwork: {
+    copyCyberspace: {
       type: Function,
       required: true
     }
@@ -298,7 +298,7 @@ export default {
     isChangedForm: false
   }),
   watch: {
-    network: {
+    cyberspace: {
       handler(val, oldVal) {
         this.isChangedForm = true;
       },
@@ -320,10 +320,10 @@ export default {
   methods: {
     init() {
       this.routingTableArray = [];
-      for (const key in this.network.routingTable) {
+      for (const key in this.cyberspace.routingTable) {
         this.routingTableArray.push({
           nodeId: key,
-          ipaddresses: this.network.routingTable[key]
+          ipaddresses: this.cyberspace.routingTable[key]
         });
       }
     },
@@ -332,7 +332,7 @@ export default {
       for (const item of this.routingTableArray) {
         routingTable[item.nodeId] = item.ipaddresses;
       }
-      this.$set(this.network, 'routingTable', routingTable);
+      this.$set(this.cyberspace, 'routingTable', routingTable);
     },
     addRoutingTable() {
       this.routingTableArray.push({
@@ -359,10 +359,10 @@ export default {
       if (!isConfirmed) {
         return;
       }
-      const data = JSON.stringify(this.network, null, '  ');
+      const data = JSON.stringify(this.cyberspace, null, '  ');
       const link = document.createElement('a');
       link.href = `data:text/plain,${encodeURIComponent(data)}`;
-      link.download = `${this.network.id}.json`;
+      link.download = `${this.cyberspace.id}.json`;
       link.click();
     },
     editNetwork() {
@@ -384,22 +384,22 @@ export default {
       this.mode.preview = false;
       clearInterval(this.previewIntervalId);
       this.$store.dispatch('updateEditState', false);
-      this.copyNetwork('original', 'edit');
-      this.copyNetwork('original', 'visualize');
+      this.copyCyberspace('original', 'edit');
+      this.copyCyberspace('original', 'visualize');
       await this.$_sleep(100);
       this.init();
     },
     previewNetwork() {
       this.mode.preview = !this.mode.preview;
       if (!this.mode.preview) {
-        this.copyNetwork('original', 'visualize');
+        this.copyCyberspace('original', 'visualize');
         clearInterval(this.previewIntervalId);
         return;
       }
-      this.copyNetwork('edit', 'visualize');
+      this.copyCyberspace('edit', 'visualize');
       this.previewIntervalId = setInterval(() => {
         if (this.isChangedForm) {
-          this.copyNetwork('edit', 'visualize');
+          this.copyCyberspace('edit', 'visualize');
           this.isChangedForm = false;
         }
       }, 1000);
@@ -413,10 +413,10 @@ export default {
         return;
       }
       this.isLoading.save = true;
-      const networkId = this.$route.params.networkId;
+      const id = this.$route.params.id;
       await axios
-        .put(`/networks/${networkId}/`, {
-          data: this.network
+        .put(`/cyberspaces/${id}/`, {
+          data: this.cyberspace
         },
         {
           validateStatus: status => status < 500
@@ -426,15 +426,15 @@ export default {
             this.$_pushNotice('This Network ID is already in use.', 'error');
             return;
           }
-          this.copyNetwork('edit', 'visualize');
-          this.copyNetwork('edit', 'original');
+          this.copyCyberspace('edit', 'visualize');
+          this.copyCyberspace('edit', 'original');
           this.cancelEdit(false);
           this.$_pushNotice('Saved the Network', 'success');
-          if (this.network.id !== networkId) {
+          if (this.cyberspace.id !== id) {
             this.$router.push({
               name: 'Visualize',
               params: {
-                networkId: this.network.id
+                id: this.cyberspace.id
               }
             });
           }
@@ -455,9 +455,9 @@ export default {
         return;
       }
       this.isLoading.delete = true;
-      const networkId = this.$route.params.networkId;
+      const id = this.$route.params.id;
       await axios
-        .delete(`/networks/${networkId}/`)
+        .delete(`/cyberspaces/${id}/`)
         .then(() => {
           this.$_pushNotice('Deleted the Network', 'success');
           this.$router.push({ name: 'Network' });

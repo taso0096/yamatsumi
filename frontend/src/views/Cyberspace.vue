@@ -1,5 +1,5 @@
 <template>
-  <div class="exercise">
+  <div class="cyberspace">
     <v-navigation-drawer
       v-model="editDrawer"
       app
@@ -11,26 +11,26 @@
       width="1024"
       class="pt-3 pr-3"
     >
-      <network-editor
-        v-if="network.original.id"
-        :network="network.edit"
-        :copyNetwork="copyNetwork"
+      <cyberspace-editor
+        v-if="cyberspace.original.id"
+        :cyberspace="cyberspace.edit"
+        :copyCyberspace="copyCyberspace"
       />
     </v-navigation-drawer>
 
     <v-card
       tile
       flat
-      :loading="!Object.keys(network).length"
+      :loading="isLoading.cyberspace"
     >
       <v-card-title>
-        <span v-if="!exercise">Exercise ID "{{ $route.params.exerciseId }}" does not exist.</span>
-        <span v-else-if="!Object.keys(exercise).length">Loading</span>
+        <span v-if="isLoading.cyberspace">Loading</span>
+        <span v-else-if="!cyberspaceInfo.id">Exercise ID "{{ $route.params.id }}" does not exist.</span>
         <template v-else>
-          <span>{{ exercise.data.label || exercise.data.id }}</span>
+          <span>{{ cyberspaceInfo.label || cyberspaceInfo.id }}</span>
           <span class="mx-2">-</span>
-          <span>{{ exercise.username }}</span>
-          <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(exercise.updatedAt) }}</span>
+          <span>{{ cyberspaceInfo.username }}</span>
+          <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(cyberspaceInfo.updatedAt) }}</span>
           <v-btn
             icon
             small
@@ -55,7 +55,7 @@
         <a-entity oculus-touch-controls="hand: left"></a-entity>
         <a-entity oculus-touch-controls="hand: right"></a-entity>
 
-        <network-entity ref="networkEntity" />
+        <cyberspace-entity ref="cyberspaceEntity" />
         <line-entity ref="lineEntity" />
       </a-scene>
     </v-card>
@@ -63,7 +63,7 @@
 </template>
 
 <style lang="scss" scoped>
-.exercise {
+.cyberspace {
   height: 100%;
 
   a-scene {
@@ -73,73 +73,82 @@
 </style>
 
 <script>
-import NetworkEntity from '@/components/Network/BaseNetworkEntity.vue';
+import CyberspaceEntity from '@/components/Cyberspace/CyberspaceEntity.vue';
 import LineEntity from '@/components/LineEntity.vue';
-import NetworkEditor from '@/components/NetworkEditor/NetworkEditor.vue';
+import CyberspaceEditor from '@/components/CyberspaceEditor/CyberspaceEditor.vue';
 
 import axios from '@/axios';
 
 export default {
   name: 'Cyberspace',
   components: {
-    NetworkEntity,
+    CyberspaceEntity,
     LineEntity,
-    NetworkEditor
+    CyberspaceEditor
   },
   data: () => ({
     editDrawer: false,
     socket: {
       status: null
     },
-    network: {
+    cyberspaceInfo: {},
+    cyberspace: {
       original: {},
       visualize: {},
       edit: {}
     },
     exercise: {},
-    scoreData: {}
+    scoreData: {},
+    isLoading: {
+      cyberspace: true
+    }
   }),
   watch: {
     $route() {
       this.$_createPageTitle({
-        title: `${(this.network.original.label || this.network.original.id)} - YAMATSUMI`
+        title: `${(this.cyberspace.original.label || this.cyberspace.original.id)} - YAMATSUMI`
       });
     }
   },
   async mounted() {
-    const exerciseId = this.$route.params.exerciseId;
-    this.exercise = await axios
-      .get(`/exercises/${exerciseId}/`)
-      .then(res => res.data)
-      .catch(err => {
-        console.log(err);
-        return undefined;
-      });
-    if (!this.exercise) {
-      return;
-    }
-    this.scoreData = await fetch(this.exercise.data.scoreUrl)
-      .then(res => res.json())
+    const id = this.$route.params.id;
+    // cyberspace読み込み
+    const originalCyberspace = await axios
+      .get(`/cyberspaces/${id}/`)
+      .then(res => {
+        this.cyberspaceInfo = {
+          id,
+          label: res.data.data.label,
+          username: res.data.username,
+          updatedAt: res.data.updatedAt
+        };
+        return res.data.data;
+      })
       .catch(() => undefined);
-
-    const originalNetwork = await axios
-      .get(`/networks/${exerciseId}/`)
-      .then(res => res.data.data)
-      .catch(err => {
-        console.log(err);
-        return undefined;
-      });
-    if (!originalNetwork) {
+    this.isLoading.cyberspace = false;
+    if (!originalCyberspace) {
       return;
     }
-    this.network = {
-      original: JSON.parse(JSON.stringify(originalNetwork)),
-      visualize: JSON.parse(JSON.stringify(originalNetwork)),
-      edit: JSON.parse(JSON.stringify(originalNetwork))
+    // 編集等で使用するcyberspaceのコピー
+    this.cyberspace = {
+      original: JSON.parse(JSON.stringify(originalCyberspace)),
+      visualize: JSON.parse(JSON.stringify(originalCyberspace)),
+      edit: JSON.parse(JSON.stringify(originalCyberspace))
     };
     this.$_createPageTitle({
-      title: `${(this.network.original.label || this.network.original.id)} - YAMATSUMI`
+      title: `${(this.cyberspace.original.label || this.cyberspace.original.id)} - YAMATSUMI`
     });
+    // exercise読み込み
+    this.exercise = await axios
+      .get(`/exercises/${id}/`)
+      .then(res => res.data.data)
+      .catch(err => undefined);
+    if (this.exercise?.scoreUrl) {
+      this.scoreData = await fetch(this.exercise.scoreUrl)
+        .then(res => res.json())
+        .catch(() => undefined);
+    }
+
     const lineColor = new Map([
       [22, {
         service: 'ssh',
@@ -174,7 +183,7 @@ export default {
         color: '#cdffb5'
       }]
     ]);
-    this.socket = await this.$store.dispatch('connectSocket', exerciseId);
+    this.socket = await this.$store.dispatch('connectSocket', id);
     this.socket.on('packet', data => {
       const userId = data.userId;
       const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
@@ -183,7 +192,7 @@ export default {
         this.$refs.lineEntity.emit1(`#node-${user.nodeId}`, '.internet-nodes', port?.color || '#fff');
         return;
       }
-      const routingTable = this.network.visualize.routingTable;
+      const routingTable = this.cyberspace.visualize.routingTable;
       const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))];
       const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))];
       const srcNode = srcNodeId ? `#node-${srcNodeId}` : data.srcIsGlobal ? '.internet-nodes' : '.intranet-nodes';
@@ -195,8 +204,8 @@ export default {
         if (!data.isCorrect) {
           return;
         }
-        const levelId = (this.exercise.data.questions || []).find(q => String(q.id) === String(data.qid))?.levelId;
-        const targetScore = this.scoreData.users[data.uid] + (this.exercise.data.levels || []).find(l => String(l.id) === String(levelId))?.score;
+        const levelId = (this.exercise.questions || []).find(q => String(q.id) === String(data.qid))?.levelId;
+        const targetScore = this.scoreData.users[data.uid] + (this.exercise.levels || []).find(l => String(l.id) === String(levelId))?.score;
         if (!targetScore) {
           return;
         }
@@ -214,9 +223,9 @@ export default {
       this.$_pushNotice(data.text, data.type);
     });
 
-    this.$refs.networkEntity.set({
-      exercise: this.exercise.data,
-      network: this.network.visualize,
+    this.$refs.cyberspaceEntity.set({
+      cyberspace: this.cyberspace.visualize,
+      exercise: this.exercise,
       score: this.scoreData
     });
   },
@@ -230,12 +239,12 @@ export default {
     }
   },
   methods: {
-    copyNetwork(src, dst) {
-      this.$set(this.network, dst, JSON.parse(JSON.stringify(this.network[src])));
+    copyCyberspace(src, dst) {
+      this.$set(this.cyberspace, dst, JSON.parse(JSON.stringify(this.cyberspace[src])));
       if (dst === 'visualize') {
-        this.$refs.networkEntity.set({
-          exercise: this.exercise.data,
-          network: this.network.visualize,
+        this.$refs.cyberspaceEntity.set({
+          cyberspace: this.cyberspace.visualize,
+          exercise: this.exercise,
           score: this.scoreData
         });
       }
