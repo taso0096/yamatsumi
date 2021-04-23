@@ -92,13 +92,9 @@ class CyberspaceDetailView(GenericAPIView):
             'user': cyberspace.user,
             'label': loads_data.get('label'),
             'desc': loads_data.get('desc'),
-            'score_url': loads_data.get('scoreUrl'),
             'version': loads_data.get('version'),
-            'teams': loads_data.get('teams'),
-            'users': loads_data.get('users'),
-            'levels': loads_data.get('levels'),
-            'categories': loads_data.get('categories'),
-            'questions': loads_data.get('questions')
+            'routing_table': loads_data.get('routingTable'),
+            'layers': loads_data['layers']
         }
         for key, value in cyberspace_data.items():
             setattr(cyberspace, key, value)
