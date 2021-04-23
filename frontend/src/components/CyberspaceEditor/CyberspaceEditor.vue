@@ -230,9 +230,8 @@
 
       <div class="group-block">
         <group-card
-          :isLayers="true"
+          :isLayer="true"
           :groupData="cyberspace.layers"
-          :editMode="mode.edit"
         />
       </div>
     </v-form>
