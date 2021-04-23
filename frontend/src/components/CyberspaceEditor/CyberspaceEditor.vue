@@ -228,10 +228,10 @@
         </v-expand-transition>
       </v-card>
 
-      <div class="layers-block">
-        <layers-card
+      <div class="group-block">
+        <group-card
           :isLayers="true"
-          :menuData="cyberspace.layers"
+          :groupData="cyberspace.layers"
           :editMode="mode.edit"
         />
       </div>
@@ -254,7 +254,7 @@
     height: 100%;
     overflow: scroll;
   }
-  .layers-block {
+  .group-block {
     overflow: scroll;
   }
 }
@@ -263,12 +263,12 @@
 <script>
 import axios from '@/axios';
 
-import LayersCard from './LayersCard.vue';
+import GroupCard from './GroupCard/GroupCard.vue';
 
 export default {
   name: 'CyberspaceEditor',
   components: {
-    LayersCard
+    GroupCard
   },
   props: {
     cyberspace: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="layers-card d-flex">
+  <div class="group-card d-flex">
     <v-card
       tile
       flat
@@ -9,7 +9,7 @@
       class="mb-3"
     >
       <v-card-title class="font-weight-regular">
-        <span>{{ menuData.label || menuData.id || 'Layers' }}</span>
+        <span>{{ groupData.label || groupData.id || 'Layers' }}</span>
         <v-spacer />
         <v-btn
           v-if="isLayers"
@@ -25,7 +25,7 @@
           v-else
           icon
           small
-          @click="closeMenu()"
+          @click="closeGroup()"
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -34,14 +34,14 @@
         <div v-show="showAll.parentNode">
           <v-card-text class="pt-0">
             <div
-              v-if="!menuTopNodes.length"
+              v-if="!groupTopNodes.length"
               class="mb-4"
             >
               <span>No data available</span>
             </div>
             <div
               v-else
-              v-for="(node, i) in menuTopNodes"
+              v-for="(node, i) in groupTopNodes"
               :key="`layer-${i}`"
               class="d-flex mb-4"
             >
@@ -248,7 +248,7 @@
                             depressed
                             small
                             color="secondary"
-                            @click="pushMenu(node)"
+                            @click="pushGroup(node)"
                           >
                             <span>Show {{ node.nodes.length }} Nodes</span>
                             <v-icon>mdi-chevron-right</v-icon>
@@ -309,7 +309,7 @@
                   depressed
                   small
                   color="primary"
-                  @click="addNode(menuData.nodes)"
+                  @click="addNode(groupData.nodes)"
                 >
                   <span>Add Node</span>
                 </v-btn>
@@ -320,38 +320,38 @@
       </v-expand-transition>
     </v-card>
 
-    <layers-card
-      v-if="showNextMenu"
-      :menuData="nextMenuData"
+    <group-card
+      v-if="showNextGroup"
+      :groupData="nextGroupData"
       :editMode="editMode"
-      :closeMenu="closeNextMenu"
+      :closeGroup="closeNextGroup"
       class="ml-3"
     />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.layers-card {
+.group-card {
   height: 100%;
 }
 </style>
 
 <script>
-import LayersCard from './LayersCard.vue';
+import GroupCard from './GroupCard.vue';
 
 import cyberspaceSchema from '@/assets/CyberspaceSchema.json';
 
 export default {
-  name: 'LayersCard',
+  name: 'GroupCard',
   components: {
-    LayersCard
+    GroupCard
   },
   props: {
     isLayers: {
       type: Boolean,
       default: false
     },
-    menuData: {
+    groupData: {
       type: [Array, Object],
       required: true
     },
@@ -359,7 +359,7 @@ export default {
       type: Boolean,
       default: false
     },
-    closeMenu: {
+    closeGroup: {
       type: Function
     }
   },
@@ -368,8 +368,8 @@ export default {
       parentNode: false,
       childNodes: []
     },
-    nextMenuData: {},
-    showNextMenu: false
+    nextGroupData: {},
+    showNextGroup: false
   }),
   computed: {
     schemaLayerProperties() {
@@ -381,33 +381,33 @@ export default {
     nodeTypes() {
       return this.schemaLayerProperties.nodes.items.properties.nodeOptions.properties.type.enum;
     },
-    menuTopNodes() {
-      return this.isLayers ? this.menuData : this.menuData.nodes;
+    groupTopNodes() {
+      return this.isLayers ? this.groupData : this.groupData.nodes;
     }
   },
   watch: {
-    'menuData.id'() {
+    'groupData.id'() {
       this.showAll.parentNode = true;
       this.showAll.childNodes = [];
-      this.showAll.childNodes = [...Array(this.menuTopNodes.length)].map(() => false);
+      this.showAll.childNodes = [...Array(this.groupTopNodes.length)].map(() => false);
     },
     '$_userData.isEdit'(val) {
       if (!val) {
-        this.showNextMenu = false;
+        this.showNextGroup = false;
       }
     }
   },
   mounted() {
-    if (this.menuData.id) {
+    if (this.groupData.id) {
       this.showAll.parentNode = true;
     }
-    this.showAll.childNodes = [...Array(this.menuTopNodes.length)].map(() => false);
+    this.showAll.childNodes = [...Array(this.groupTopNodes.length)].map(() => false);
   },
   methods: {
     addLayer() {
       this.showAll.childNodes.push(false);
-      this.menuData.push({
-        id: `layer${this.menuData.length + 1}`,
+      this.groupData.push({
+        id: `layer${this.groupData.length + 1}`,
         label: '',
         depth: '',
         fixedDepth: '',
@@ -444,8 +444,8 @@ export default {
       }
       this.$delete(node, 'nodes');
       this.$delete(node, 'layoutOptions');
-      if (node.id === this.nextMenuData.id) {
-        this.showNextMenu = false;
+      if (node.id === this.nextGroupData.id) {
+        this.showNextGroup = false;
       }
     },
     addLayoutOptions(layer) {
@@ -463,12 +463,12 @@ export default {
         labelColor: '#fff'
       });
     },
-    pushMenu(data) {
-      this.nextMenuData = data;
-      this.showNextMenu = true;
+    pushGroup(data) {
+      this.nextGroupData = data;
+      this.showNextGroup = true;
     },
     async deleteIndex(i) {
-      const nodeId = this.menuTopNodes[i].id;
+      const nodeId = this.groupTopNodes[i].id;
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
         message: `Are you sure you want to delete the "${nodeId}"?`,
         confirmText: 'Delete',
@@ -477,14 +477,14 @@ export default {
       if (!isConfirmed) {
         return;
       }
-      if (nodeId === this.nextMenuData.id) {
-        this.closeNextMenu();
+      if (nodeId === this.nextGroupData.id) {
+        this.closeNextGroup();
       }
-      this.menuTopNodes.splice(i, 1);
+      this.groupTopNodes.splice(i, 1);
       this.showAll.childNodes.splice(i, 1);
     },
-    closeNextMenu() {
-      this.showNextMenu = false;
+    closeNextGroup() {
+      this.showNextGroup = false;
     }
   }
 };
