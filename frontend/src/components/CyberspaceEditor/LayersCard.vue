@@ -387,14 +387,17 @@ export default {
   },
   watch: {
     'menuData.id'() {
-      console.log(this.menuData);
       this.showAll.parentNode = true;
       this.showAll.childNodes = [];
       this.showAll.childNodes = [...Array(this.menuTopNodes.length)].map(() => false);
+    },
+    '$_userData.isEdit'(val) {
+      if (!val) {
+        this.showNextMenu = false;
+      }
     }
   },
   mounted() {
-    console.log(this.menuData);
     if (this.menuData.id) {
       this.showAll.parentNode = true;
     }

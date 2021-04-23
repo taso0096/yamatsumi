@@ -299,7 +299,7 @@ export default {
   }),
   watch: {
     cyberspace: {
-      handler(val, oldVal) {
+      handler() {
         this.isChangedForm = true;
       },
       deep: true
