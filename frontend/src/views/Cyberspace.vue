@@ -189,7 +189,7 @@ export default {
       const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
       if (userId) {
         const user = this.$_visualizeData.exercise.users.find(u => u.id === userId);
-        this.$refs.lineEntity.emit1(`#node-${user.nodeId}`, '.internet-nodes', port?.color || '#fff');
+        this.$refs.lineEntity.emit3(`#node-${user.nodeId}`, '.internet-nodes', port?.color || '#fff');
         return;
       }
       const routingTable = this.cyberspace.visualize.routingTable;
@@ -197,7 +197,7 @@ export default {
       const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))];
       const srcNode = srcNodeId ? `#node-${srcNodeId}` : data.srcIsGlobal ? '.internet-nodes' : '.intranet-nodes';
       const dstNode = dstNodeId ? `#node-${dstNodeId}` : data.dstIsGlobal ? '.internet-nodes' : '.intranet-nodes';
-      this.$refs.lineEntity.emit1(srcNode, dstNode, port?.color || '#fff');
+      this.$refs.lineEntity.emit3(srcNode, dstNode, port?.color || '#fff');
     });
     this.socket.on('answer', data => {
       this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect, () => {

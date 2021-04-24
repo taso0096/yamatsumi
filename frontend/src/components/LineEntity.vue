@@ -157,6 +157,74 @@ export default {
     emitAnswer(uid, qid, isCorrect, endFunc = () => {}) {
       const user = this.$_visualizeData.exercise.users.find(u => u.id === uid);
       this.emit1(`#node-${user.nodeId}`, `#question__${qid}`, isCorrect ? '#00ff00' : '#ff0000', endFunc, true);
+    },
+    emit3(source, target, color = '#fff', endFunc = () => {}, isAnswer = false) {
+      if (Object.keys(this.animationFunctions).length > 100) {
+        return;
+      }
+      const sourceEl = document.querySelector(source);
+      const targetEl = document.querySelector(target);
+      if (!(sourceEl && targetEl)) {
+        return;
+      }
+      const sourceP = sourceEl.object3D.getWorldPosition(new THREE.Vector3());
+      const targetP = targetEl.object3D.getWorldPosition(new THREE.Vector3());
+      const diffP = {
+        x: targetP.x - sourceP.x,
+        y: targetP.y - sourceP.y,
+        z: targetP.z - sourceP.z
+      };
+      const length = Math.sqrt((-diffP.x)**2 + (-diffP.y)**2 + (-diffP.z)**2);
+      const curveTopHeight = length/5;
+      const curveBottomHeight = length/8;
+      const sign = targetP.y - sourceP.y < -curveTopHeight ? -1 : 1;
+      const points = [
+        sourceP,
+        new THREE.Vector3(
+          sourceP.x + diffP.x/5,
+          sourceP.y + diffP.y/5 + curveBottomHeight*sign,
+          sourceP.z + diffP.z/5
+        ),
+        new THREE.Vector3(
+          sourceP.x + diffP.x/2,
+          sourceP.y + diffP.y/2 + curveTopHeight*sign,
+          sourceP.z + diffP.z/2
+        ),
+        new THREE.Vector3(
+          sourceP.x + diffP.x*4/5,
+          sourceP.y + diffP.y*4/5 + curveBottomHeight*sign,
+          sourceP.z + diffP.z*4/5
+        ),
+        targetP
+      ];
+
+      const linePoints = new THREE.CatmullRomCurve3(points).getPoints(isAnswer ? 80 : 30);
+      const coneGeometry = new THREE.CylinderGeometry(0, 0.05, 0.2, 4);
+      const coneMaterial = new THREE.MeshBasicMaterial({ color });
+      const coneMesh = new THREE.Mesh(coneGeometry, coneMaterial);
+      const coneWrapperMesh = new THREE.Mesh();
+      coneWrapperMesh.add(coneMesh);
+      this.lineGroup.add(coneWrapperMesh);
+      coneMesh.rotation.x = Math.PI/2;
+      coneWrapperMesh.position = sourceP;
+      coneWrapperMesh.lookAt(linePoints[1]);
+
+      const lineId = source + target + Date.now();
+      let index = 0;
+      this.animationFunctions[lineId] = () => {
+        if (index >= linePoints.length - 2) {
+          delete this.animationFunctions[lineId];
+          this.lineGroup.remove(coneMesh);
+          this.lineGroup.remove(coneWrapperMesh);
+          coneGeometry.dispose();
+          coneMaterial.dispose();
+          endFunc();
+          return;
+        };
+        index++;
+        coneWrapperMesh.position = linePoints[index];
+        coneWrapperMesh.lookAt(linePoints[index + 1]);
+      };
     }
   }
 };
