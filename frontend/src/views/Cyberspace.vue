@@ -142,7 +142,7 @@ export default {
     this.exercise = await axios
       .get(`/exercises/${id}/`)
       .then(res => res.data.data)
-      .catch(err => undefined);
+      .catch(() => undefined);
     if (this.exercise?.scoreUrl) {
       this.scoreData = await fetch(this.exercise.scoreUrl)
         .then(res => res.json())

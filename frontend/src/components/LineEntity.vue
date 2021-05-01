@@ -209,7 +209,10 @@ export default {
       coneWrapperMesh.position = sourceP;
       coneWrapperMesh.lookAt(linePoints[1]);
 
-      const lineId = source + target + Date.now();
+      let lineId = `${source}->${target}__${Date.now() + Math.random()}`;
+      while (this.animationFunctions[lineId]) {
+        lineId += Math.random();
+      }
       let index = 0;
       this.animationFunctions[lineId] = () => {
         if (index >= linePoints.length - 2) {
