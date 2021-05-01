@@ -9,7 +9,6 @@
         'intranet-nodes': isIntranetNode(node)
       }"
       :position="node.position"
-      :rotation="layer.layoutOptions && layer.layoutOptions.shape === 'square' && '0 180 0'"
       :look-center="(!layer.layoutOptions || layer.layoutOptions && layer.layoutOptions.shape !== 'square') && (!layer.parentId || `parentSelector: #node-${layer.parentId}`)"
     >
       <layer-entity
