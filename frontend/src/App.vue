@@ -124,7 +124,7 @@
     >
       <v-container
         :style="{
-          height: $route.name === 'Cyberspace' && '100%'
+          height: ['Cyberspace', 'CyberspaceV2'].includes($route.name) && '100%'
         }"
       >
         <router-view />
