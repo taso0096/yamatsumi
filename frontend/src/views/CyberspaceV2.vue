@@ -1,5 +1,22 @@
 <template>
   <div class="cyberspace-v2">
+    <v-navigation-drawer
+      v-model="editDrawer"
+      app
+      clipped
+      floating
+      right
+      mobile-breakpoint="960"
+      color="transparent"
+      width="50%"
+      class="pt-3 pr-3"
+    >
+      <network-editor
+        v-if="cyberspace.original.id"
+        :networkData="cyberspace.edit.layers"
+      />
+    </v-navigation-drawer>
+
     <v-card
       tile
       flat
@@ -13,6 +30,14 @@
           <span class="mx-2">-</span>
           <span>{{ cyberspaceInfo.username }}</span>
           <span class="ml-auto mr-3 subtitle-1">{{ $_convertDateFormat(cyberspaceInfo.updatedAt) }}</span>
+          <v-btn
+            icon
+            small
+            @click="editDrawer = !editDrawer"
+          >
+            <v-icon v-if="!editDrawer">mdi-settings</v-icon>
+            <v-icon v-else>mdi-arrow-right</v-icon>
+          </v-btn>
         </template>
       </v-card-title>
     </v-card>
@@ -24,7 +49,14 @@
       height="calc(100% - 64px)"
     >
       <a-scene embedded>
-        <a-camera position='0 1.5 5' />
+        <a-camera v-if="!isEditMode" position='0 1.5 5' />
+        <a-camera
+          v-else
+          position='0 3 0'
+          rotation="-90 0 0"
+          look-controls="enabled: false"
+          wasd-controls="enabled: false"
+        />
         <a-sky color='#000' />
         <a-entity oculus-touch-controls="hand: left"></a-entity>
         <a-entity oculus-touch-controls="hand: right"></a-entity>
@@ -49,6 +81,7 @@
 <script>
 import CyberspaceEntity from '@/components/Cyberspace/CyberspaceEntity.vue';
 import LineEntity from '@/components/LineEntity.vue';
+import NetworkEditor from '@/components/NetworkEditor';
 
 import axios from '@/axios';
 
@@ -56,7 +89,8 @@ export default {
   name: 'Cyberspace',
   components: {
     CyberspaceEntity,
-    LineEntity
+    LineEntity,
+    NetworkEditor
   },
   data: () => ({
     socket: {
@@ -72,13 +106,21 @@ export default {
     scoreData: {},
     isLoading: {
       cyberspace: true
-    }
+    },
+    editDrawer: false,
+    isEditMode: false
   }),
   watch: {
     $route() {
       this.$_createPageTitle({
         title: `${(this.cyberspace.original.label || this.cyberspace.original.id)} - YAMATSUMI`
       });
+    },
+    'cyberspace.edit': {
+      handler() {
+        this.copyCyberspace('edit', 'visualize');
+      },
+      deep: true
     }
   },
   async mounted() {
