@@ -25,7 +25,7 @@
         class="node-block__nodes-group__draggable d-flex my-3"
       >
         <div
-          v-for="node, i in nodeData.nodes"
+          v-for="(node, i) in nodeData.nodes"
           :key="`nodes-group__${node.id}_${i}`"
           class="d-flex"
           @contextmenu.stop="showObjectMenu($event, nodeData.nodes, i)"

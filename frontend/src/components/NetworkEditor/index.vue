@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="network-editor">
     <v-row>
       <v-col>
         <v-btn
@@ -18,7 +18,7 @@
       class="network-editor__draggable"
     >
       <div
-        v-for="layer, i in networkData"
+        v-for="(layer, i) in networkData"
         :key="`layer__${layer.id}_${i}`"
         class="network-editor__layer d-flex my-3"
         @contextmenu.stop="showObjectMenu($event, networkData, i)"
@@ -38,7 +38,7 @@
             class="network-editor__layer__draggable d-flex py-3"
           >
             <div
-              v-for="node, j in layer.nodes"
+              v-for="(node, j) in layer.nodes"
               :key="`layer__${node.id}_${j}`"
               class="d-flex"
               @contextmenu.stop="showObjectMenu($event, layer.nodes, j)"
@@ -144,30 +144,33 @@
   </div>
 </template>
 
-<style scoped>
-.network-editor__layer {
-  outline: 2px solid #000;
-}
-.network-editor__layer__reorder {
-  outline: 2px solid #000;
-  cursor: move;
-  z-index: 100;
-}
-.network-editor__layer__draggable {
-  min-width: 100%;
-  min-height: calc(100px + 3rem);
-  margin-top: 48px;
-}
-.network-editor__layer__contents {
-  min-width: calc(100% - 42px);
-  overflow-x: scroll;
-}
-.network-editor__layer__header {
-  position: absolute;
-  min-width: 300px;
-}
-.network-editor__layer__footer {
-  margin-bottom: 30px;
+<style lang="scss" scoped>
+.network-editor {
+  position: relative;
+
+  .network-editor__layer {
+    outline: 2px solid #000;
+  }
+  .network-editor__layer__reorder {
+    outline: 2px solid #000;
+    cursor: move;
+    z-index: 100;
+  }
+  .network-editor__layer__draggable {
+    min-width: 100%;
+    min-height: calc(100px + 3rem);
+    margin-top: 48px;
+  }
+  .network-editor__layer__contents {
+    min-width: calc(100% - 42px);
+    overflow-x: scroll;
+  }
+  .network-editor__layer__header {
+    position: absolute;
+  }
+  .network-editor__layer__footer {
+    margin-bottom: 30px;
+  }
 }
 </style>
 

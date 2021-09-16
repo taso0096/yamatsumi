@@ -14,6 +14,7 @@
       <network-editor
         v-if="cyberspace.original.id"
         :networkData="cyberspace.edit.layers"
+        class="ma-3"
       />
     </v-navigation-drawer>
 
