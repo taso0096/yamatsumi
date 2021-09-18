@@ -34,16 +34,22 @@
             v-bind="dragOptions"
             :list="layer.nodes"
             :group="{ name: 'network' }"
-            handle=".node-block__reorder"
+            handle=".node__reorder"
             class="network-editor__layer__draggable d-flex py-3"
           >
             <div
               v-for="(node, j) in layer.nodes"
               :key="`layer__${node.id}_${j}`"
-              class="d-flex"
+              class="network-editor__node-wrapper d-flex mx-3 my-auto"
               @contextmenu.stop="showObjectMenu($event, layer.nodes, j)"
             >
               <node-block
+                v-if="!node.nodes"
+                :nodeData="node"
+                :showObjectMenu="showObjectMenu"
+              />
+              <node-group
+                v-else
                 :nodeData="node"
                 :showObjectMenu="showObjectMenu"
               />
@@ -160,6 +166,10 @@
     min-width: 100%;
     min-height: calc(100px + 3rem);
     margin-top: 48px;
+
+    .network-editor__node-wrapper {
+      height: fit-content;
+    }
   }
   .network-editor__layer__contents {
     min-width: calc(100% - 42px);
@@ -177,12 +187,14 @@
 <script>
 import draggable from 'vuedraggable';
 import NodeBlock from './NodeBlock.vue';
+import NodeGroup from './NodeGroup.vue';
 
 export default {
   name: 'NetworkEditor',
   components: {
     draggable,
-    NodeBlock
+    NodeBlock,
+    NodeGroup
   },
   props: {
     networkData: {
