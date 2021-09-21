@@ -8,14 +8,13 @@
 </template>
 
 <style scoped>
-.node__reorder {
-  outline: 2px solid #999;
-  cursor: move;
-}
-
 .node-block {
   width: 100px;
   height: 100px;
+}
+.node__reorder {
+  outline: 2px solid #bdbdbd;
+  cursor: move;
 }
 </style>
 

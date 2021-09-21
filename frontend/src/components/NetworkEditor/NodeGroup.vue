@@ -1,12 +1,10 @@
 <template>
-  <div class="node-group pr-3 d-flex">
-    <div class="node__reorder d-flex align-center">
-      <v-icon class="my-auto mx-2">mdi-reorder-horizontal</v-icon>
-    </div>
-    <div class="node-group__contents ml-3">
-      <div class="node-group__header d-flex mt-3 ml-3">
-        <span>{{ nodeData.id }}</span>
-      </div>
+  <div class="node-group">
+    <v-sheet class="d-flex align-center pa-3">
+      <v-icon class="node__reorder mr-3">mdi-drag</v-icon>
+      <span>{{ nodeData.id }}</span>
+    </v-sheet>
+    <div class="d-flex px-3">
       <draggable
         v-bind="dragOptions"
         :list="nodeData.nodes"
@@ -32,9 +30,7 @@
           />
         </div>
       </draggable>
-    </div>
-    <div class="d-flex">
-      <div class="my-auto">
+      <div class="my-auto ml-auto">
         <v-btn
           icon
           class="d-flex"
@@ -55,25 +51,19 @@
 </template>
 
 <style lang="scss" scoped>
-.node__reorder {
-  outline: 2px solid #999;
-  cursor: move;
-}
-
 .node-group {
-  outline: 2px solid #999;
-}
-.node-group__contents {
-  width: 100%;
-}
-.node-group__header {
-  min-width: calc(100px + 12px);
-}
-.node-group__draggable {
-  min-height: 100px;
+  min-width: 184px;
+  outline: 2px solid #bdbdbd;
 
-  .node-group__node-wrapper {
-    height: fit-content;
+  .node__reorder {
+    cursor: move;
+  }
+  .node-group__draggable {
+    min-height: 100px;
+
+    .node-group__node-wrapper {
+      height: fit-content;
+    }
   }
 }
 </style>

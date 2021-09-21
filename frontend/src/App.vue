@@ -119,7 +119,7 @@
 
     <v-main
       :style="{
-        background: $vuetify.theme.dark ? '#000' : '#f5f5f5'
+        background: $vuetify.theme.dark ? '#303030' : '#eee'
       }"
     >
       <v-container

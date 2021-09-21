@@ -23,59 +23,56 @@
         class="network-editor__layer d-flex my-3"
         @contextmenu.stop="showObjectMenu($event, networkData, i)"
       >
-        <div class="network-editor__layer__reorder d-flex align-center">
+        <v-sheet class="network-editor__layer__reorder d-flex align-center">
           <v-icon class="my-auto mx-2">mdi-reorder-horizontal</v-icon>
-        </div>
-        <div class="network-editor__layer__contents pl-3 pb-3">
-          <div class="network-editor__layer__header d-flex mt-4 ml-3">
+        </v-sheet>
+        <div class="network-editor__layer__contents">
+          <v-sheet class="network-editor__layer__header d-flex align-center pa-3">
             <span>{{ layer.id }}</span>
-          </div>
-          <draggable
-            v-bind="dragOptions"
-            :list="layer.nodes"
-            :group="{ name: 'network' }"
-            handle=".node__reorder"
-            class="network-editor__layer__draggable d-flex py-3"
-          >
-            <div
-              v-for="(node, j) in layer.nodes"
-              :key="`layer__${node.id}_${j}`"
-              class="network-editor__node-wrapper d-flex mx-3 my-auto"
-              @contextmenu.stop="showObjectMenu($event, layer.nodes, j)"
+          </v-sheet>
+          <div class="network-editor__layer__draggable-wrapper d-flex px-3">
+            <draggable
+              v-bind="dragOptions"
+              :list="layer.nodes"
+              :group="{ name: 'network' }"
+              handle=".node__reorder"
+              class="network-editor__layer__draggable d-flex py-3"
             >
-              <node-block
-                v-if="!node.nodes"
-                :nodeData="node"
-                :showObjectMenu="showObjectMenu"
-              />
-              <node-group
-                v-else
-                :nodeData="node"
-                :showObjectMenu="showObjectMenu"
-              />
-            </div>
-            <div
-              slot="footer"
-              class="network-editor__layer__footer d-flex pr-3"
-            >
-              <div class="my-auto">
-                <v-btn
-                  icon
-                  class="d-flex"
-                  @click="addNode(layer.nodes)"
-                >
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  class="d-flex"
-                  @click="addGroup(layer.nodes)"
-                >
-                  <v-icon>mdi-shape-square-plus</v-icon>
-                </v-btn>
+              <div
+                v-for="(node, j) in layer.nodes"
+                :key="`layer__${node.id}_${j}`"
+                class="network-editor__node-wrapper d-flex mx-3 my-auto"
+                @contextmenu.stop="showObjectMenu($event, layer.nodes, j)"
+              >
+                <node-block
+                  v-if="!node.nodes"
+                  :nodeData="node"
+                  :showObjectMenu="showObjectMenu"
+                />
+                <node-group
+                  v-else
+                  :nodeData="node"
+                  :showObjectMenu="showObjectMenu"
+                />
               </div>
+            </draggable>
+            <div class="my-auto mr-auto">
+              <v-btn
+                icon
+                class="d-flex"
+                @click="addNode(layer.nodes)"
+              >
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+              <v-btn
+                icon
+                class="d-flex"
+                @click="addGroup(layer.nodes)"
+              >
+                <v-icon>mdi-shape-square-plus</v-icon>
+              </v-btn>
             </div>
-          </draggable>
+          </div>
         </div>
       </div>
       <div
@@ -152,34 +149,29 @@
 
 <style lang="scss" scoped>
 .network-editor {
-  position: relative;
-
   .network-editor__layer {
-    outline: 2px solid #000;
-  }
-  .network-editor__layer__reorder {
-    outline: 2px solid #000;
-    cursor: move;
-    z-index: 100;
-  }
-  .network-editor__layer__draggable {
-    min-width: 100%;
-    min-height: calc(100px + 3rem);
-    margin-top: 48px;
+    outline: 2px solid #bdbdbd;
 
-    .network-editor__node-wrapper {
-      height: fit-content;
+    .network-editor__layer__reorder {
+      outline: 2px solid #bdbdbd;
+      cursor: move;
+      z-index: 100;
     }
-  }
-  .network-editor__layer__contents {
-    min-width: calc(100% - 42px);
-    overflow-x: scroll;
-  }
-  .network-editor__layer__header {
-    position: absolute;
-  }
-  .network-editor__layer__footer {
-    margin-bottom: 30px;
+    .network-editor__layer__contents {
+      width: calc(100% - 40px);
+
+      .network-editor__layer__draggable-wrapper {
+        overflow-x: scroll;
+
+        .network-editor__layer__draggable {
+          min-height: 100px;
+
+          .network-editor__node-wrapper {
+            height: fit-content;
+          }
+        }
+      }
+    }
   }
 }
 </style>
