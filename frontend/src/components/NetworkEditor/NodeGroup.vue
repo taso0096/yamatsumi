@@ -52,13 +52,13 @@
 
 <style lang="scss" scoped>
 .node-group {
-  min-width: 184px;
   outline: 2px solid #bdbdbd;
 
   .node__reorder {
     cursor: move;
   }
   .node-group__draggable {
+    min-width: calc(100px + 24px);
     min-height: 100px;
 
     .node-group__node-wrapper {
