@@ -25,10 +25,6 @@ export default {
     nodeData: {
       type: Object,
       required: true
-    },
-    showObjectMenu: {
-      type: Function,
-      required: true
     }
   }
 };

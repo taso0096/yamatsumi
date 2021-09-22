@@ -10,7 +10,7 @@
         v-for="(layer, i) in networkData"
         :key="`layer__${layer.id}_${i}`"
         class="network-editor__layer d-flex my-3"
-        @contextmenu.stop="showObjectMenu($event, networkData, i)"
+        @contextmenu.stop="openContextMenu($event, networkData, i)"
       >
         <v-sheet class="network-editor__layer__reorder d-flex align-center">
           <v-icon class="my-auto mx-2">mdi-reorder-horizontal</v-icon>
@@ -35,17 +35,16 @@
                   v-for="(node, j) in layer.nodes"
                   :key="`layer__${node.id}_${j}`"
                   class="network-editor__node-wrapper d-flex mx-3 my-auto"
-                  @contextmenu.stop="showObjectMenu($event, layer.nodes, j)"
+                  @contextmenu.stop="openContextMenu($event, layer.nodes, j)"
                 >
                   <node-block
                     v-if="!node.nodes"
                     :nodeData="node"
-                    :showObjectMenu="showObjectMenu"
                   />
                   <node-group
                     v-else
                     :nodeData="node"
-                    :showObjectMenu="showObjectMenu"
+                    :openContextMenu="openContextMenu"
                   />
                 </div>
               </draggable>
@@ -84,60 +83,7 @@
       </div>
     </draggable>
 
-    <v-menu
-      v-model="objectMenu.show"
-      :position-x="objectMenu.x"
-      :position-y="objectMenu.y"
-      absolute
-      offset-y
-    >
-      <v-list class="py-0">
-        <v-list-item>
-          <v-list-item-title>{{ selectedObject.id }}</v-list-item-title>
-        </v-list-item>
-        <v-divider />
-        <v-list-item @click="editObject">
-          <v-list-item-title>編集</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="deleteObject">
-          <v-list-item-title class="error--text">削除</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-
-    <v-dialog
-      v-model="editDialog"
-      :persistent="objectMenu.isChanged"
-      width="500"
-    >
-      <v-card>
-        <v-card-title>
-          <span>詳細</span>
-        </v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="objectMenu.editObject.id"
-            label="ID"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            depressed
-            @click="editDialog = false"
-          >
-            <span>キャンセル</span>
-          </v-btn>
-          <v-btn
-            depressed
-            color="primary"
-            @click="saveObject"
-          >
-            <span>保存</span>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <context-menu ref="contextMenu" />
   </div>
 </template>
 
@@ -223,13 +169,15 @@
 import draggable from 'vuedraggable';
 import NodeBlock from './NodeBlock.vue';
 import NodeGroup from './NodeGroup.vue';
+import ContextMenu from './ContextMenu.vue';
 
 export default {
   name: 'NetworkEditor',
   components: {
     draggable,
     NodeBlock,
-    NodeGroup
+    NodeGroup,
+    ContextMenu
   },
   props: {
     networkData: {
@@ -237,18 +185,6 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    objectMenu: {
-      show: false,
-      x: 0,
-      y: 0,
-      groupArray: [],
-      index: 0,
-      editObject: {},
-      isChanged: false
-    },
-    editDialog: false
-  }),
   computed: {
     dragOptions() {
       return {
@@ -256,30 +192,6 @@ export default {
         disabled: false,
         ghostClass: 'ghost'
       };
-    },
-    selectedObject() {
-      return this.objectMenu.groupArray[this.objectMenu.index] || {};
-    }
-  },
-  watch: {
-    'objectMenu.show'(val) {
-      if (!val) {
-        this.objectMenu.isChanged = false;
-        return;
-      }
-      this.objectMenu.editObject = {};
-      for (const key in this.selectedObject) {
-        if (typeof this.selectedObject[key] === 'object') {
-          return;
-        }
-        this.$set(this.objectMenu.editObject, key, this.selectedObject[key]);
-      }
-    },
-    'objectMenu.editObject': {
-      handler() {
-        this.objectMenu.isChanged = true;
-      },
-      deep: true
     }
   },
   methods: {
@@ -300,50 +212,8 @@ export default {
         id: `node${nodes.length + 1}`
       });
     },
-    showObjectMenu(e, array, index) {
-      e.preventDefault();
-      this.objectMenu.show = false;
-      this.objectMenu.x = e.clientX;
-      this.objectMenu.y = e.clientY;
-      this.objectMenu.groupArray = array;
-      this.objectMenu.index = index;
-      this.$nextTick(() => {
-        this.objectMenu.show = true;
-      });
-    },
-    editObject() {
-      this.editDialog = true;
-    },
-    async deleteObject() {
-      const isConfirmed = await this.$_appRefs.confirmDialog.open({
-        message: `"${this.selectedObject.id}"を削除しますか?`,
-        confirmText: '削除',
-        color: 'error'
-      });
-      if (!isConfirmed) {
-        return;
-      }
-      this.objectMenu.groupArray.splice(this.objectMenu.index, 1);
-    },
-    async saveObject() {
-      const isConfirmed = await this.$_appRefs.confirmDialog.open({
-        message: '変更を保存しますか?',
-        confirmText: '保存'
-      });
-      if (!isConfirmed) {
-        return;
-      }
-      for (const key in this.objectMenu.editObject) {
-        this.$set(this.selectedObject, key, this.objectMenu.editObject[key]);
-      }
-      this.editDialog = false;
-    },
-    downloadNetwork() {
-      const data = JSON.stringify(this.networkData, null, '  ');
-      const link = document.createElement('a');
-      link.href = `data:text/plain,${encodeURIComponent(data)}`;
-      link.download = 'network.json';
-      link.click();
+    openContextMenu(e, array, index) {
+      this.$refs.contextMenu.open(e, array, index);
     }
   }
 };

@@ -16,17 +16,16 @@
           v-for="(node, i) in nodeData.nodes"
           :key="`nodes-group__${node.id}_${i}`"
           class="node-group__node-wrapper d-flex mx-3 my-auto"
-          @contextmenu.stop="showObjectMenu($event, nodeData.nodes, i)"
+          @contextmenu.stop="openContextMenu($event, nodeData.nodes, i)"
         >
           <node-block
             v-if="!node.nodes"
             :nodeData="node"
-            :showObjectMenu="showObjectMenu"
           />
           <node-group
             v-else
             :nodeData="node"
-            :showObjectMenu="showObjectMenu"
+            :openContextMenu="openContextMenu"
           />
         </div>
       </draggable>
@@ -85,7 +84,7 @@ export default {
       type: Object,
       required: true
     },
-    showObjectMenu: {
+    openContextMenu: {
       type: Function,
       required: true
     }
