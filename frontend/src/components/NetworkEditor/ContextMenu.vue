@@ -1,29 +1,56 @@
 <template>
-  <v-menu
-    v-model="contextMenu.isOpened"
-    :position-x="contextMenu.x"
-    :position-y="contextMenu.y"
-    absolute
-    offset-y
-  >
-    <v-list class="py-0">
-      <v-list-item>
-        <v-list-item-title>{{ selectedObject.id }}</v-list-item-title>
-      </v-list-item>
-      <v-divider />
-      <v-list-item>
-        <v-list-item-title>Edit</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="deleteObject">
-        <v-list-item-title class="error--text">Delete</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+  <div>
+    <v-menu
+      v-model="contextMenu.isOpened"
+      :position-x="contextMenu.x"
+      :position-y="contextMenu.y"
+      absolute
+      offset-y
+    >
+      <v-list class="py-0">
+        <v-list-item>
+          <v-list-item-title>{{ selectedNode.id }}</v-list-item-title>
+        </v-list-item>
+        <v-divider />
+        <v-list-item @click="detailsDialog = true">
+          <v-list-item-title>Details</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="deleteNode">
+          <v-list-item-title class="error--text">Delete</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
+    <v-dialog
+      v-model="detailsDialog"
+      width="500"
+    >
+      <details-card :node="selectedNode">
+        <template #header>
+          <v-card-title>
+            <span>Details</span>
+            <v-spacer />
+            <v-btn
+              icon
+              @click="detailsDialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+        </template>
+      </details-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
+import DetailsCard from './DetailsCard.vue';
+
 export default {
   name: 'ContextMenu',
+  components: {
+    DetailsCard
+  },
   data: () => ({
     contextMenu: {
       isOpened: false,
@@ -31,10 +58,11 @@ export default {
       y: 0,
       array: [],
       index: 0
-    }
+    },
+    detailsDialog: false
   }),
   computed: {
-    selectedObject() {
+    selectedNode() {
       return this.contextMenu.array[this.contextMenu.index] || {};
     }
   },
@@ -50,9 +78,9 @@ export default {
         this.contextMenu.isOpened = true;
       });
     },
-    async deleteObject() {
+    async deleteNode() {
       const isConfirmed = await this.$_appRefs.confirmDialog.open({
-        message: `Are you sure you want to delete the "${this.selectedObject.id}"?`,
+        message: `Are you sure you want to delete the "${this.selectedNode.id}"?`,
         confirmText: 'delete',
         color: 'error'
       });
