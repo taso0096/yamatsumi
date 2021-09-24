@@ -10,7 +10,7 @@
         v-for="(layer, i) in networkData"
         :key="`layer__${layer.id}_${i}`"
         class="network-editor__layer d-flex my-3"
-        @contextmenu.stop="openContextMenu($event, networkData, i)"
+        @contextmenu.stop="openContextMenu($event, networkData, i, true)"
       >
         <v-sheet class="network-editor__layer__reorder d-flex align-center">
           <v-icon class="my-auto mx-2">mdi-reorder-horizontal</v-icon>
@@ -212,8 +212,8 @@ export default {
         id: `node${nodes.length + 1}`
       });
     },
-    openContextMenu(e, array, index) {
-      this.$refs.contextMenu.open(e, array, index);
+    openContextMenu(e, array, index, isLayer = false) {
+      this.$refs.contextMenu.open(e, array, index, isLayer);
     }
   }
 };

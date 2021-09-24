@@ -25,7 +25,10 @@
       v-model="detailsDialog"
       width="500"
     >
-      <details-card :node="selectedNode">
+      <details-card
+        :node="selectedNode"
+        :isLayer="contextMenu.isLayer"
+      >
         <template #header>
           <v-card-title>
             <span>Details</span>
@@ -57,7 +60,8 @@ export default {
       x: 0,
       y: 0,
       array: [],
-      index: 0
+      index: 0,
+      isLayer: false
     },
     detailsDialog: false
   }),
@@ -67,13 +71,14 @@ export default {
     }
   },
   methods: {
-    open(e, array, index) {
+    open(e, array, index, isLayer = false) {
       e.preventDefault();
       this.contextMenu.isOpened = false;
       this.contextMenu.x = e.clientX;
       this.contextMenu.y = e.clientY;
       this.contextMenu.array = array;
       this.contextMenu.index = index;
+      this.contextMenu.isLayer = isLayer;
       this.$nextTick(() => {
         this.contextMenu.isOpened = true;
       });

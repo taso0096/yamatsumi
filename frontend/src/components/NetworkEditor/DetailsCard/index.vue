@@ -21,6 +21,11 @@ export default {
     node: {
       type: Object,
       require: true
+    },
+    isLayer: {
+      type: Boolean,
+      default: false,
+      require: true
     }
   }
 };
