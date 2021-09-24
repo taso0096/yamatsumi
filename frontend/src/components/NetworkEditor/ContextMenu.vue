@@ -23,6 +23,7 @@
 
     <v-dialog
       v-model="detailsDialog"
+      :key="selectedNode.id"
       width="500"
     >
       <details-card

@@ -5,18 +5,21 @@
         <span>Details</span>
       </v-card-title>
     </slot>
-    <v-card-text>
-      <v-text-field
-        v-model="node.id"
-        label="ID"
-      />
-    </v-card-text>
+    <layer-form
+      v-if="isLayer"
+      :node="node"
+    />
   </v-card>
 </template>
 
 <script>
+import LayerForm from './LayerForm.vue'
+
 export default {
   name: 'DetailsCard',
+  components: {
+    LayerForm
+  },
   props: {
     node: {
       type: Object,
