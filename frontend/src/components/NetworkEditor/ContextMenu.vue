@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import DetailsCard from './DetailsCard.vue';
+import DetailsCard from './DetailsCard';
 
 export default {
   name: 'ContextMenu',
