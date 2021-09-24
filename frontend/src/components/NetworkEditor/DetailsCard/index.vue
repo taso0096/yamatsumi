@@ -9,16 +9,22 @@
       v-if="isLayer"
       :node="node"
     />
+    <node-form
+      v-else-if="!node.nodes"
+      :node="node"
+    />
   </v-card>
 </template>
 
 <script>
 import LayerForm from './LayerForm.vue'
+import NodeForm from './NodeForm.vue'
 
 export default {
   name: 'DetailsCard',
   components: {
-    LayerForm
+    LayerForm,
+    NodeForm
   },
   props: {
     node: {
