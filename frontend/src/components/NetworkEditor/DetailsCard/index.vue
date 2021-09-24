@@ -13,18 +13,24 @@
       v-else-if="!node.nodes"
       :node="node"
     />
+    <group-form
+      v-else
+      :node="node"
+    />
   </v-card>
 </template>
 
 <script>
 import LayerForm from './LayerForm.vue'
 import NodeForm from './NodeForm.vue'
+import GroupForm from './GroupForm.vue'
 
 export default {
   name: 'DetailsCard',
   components: {
     LayerForm,
-    NodeForm
+    NodeForm,
+    GroupForm
   },
   props: {
     node: {
