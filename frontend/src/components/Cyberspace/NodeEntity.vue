@@ -69,9 +69,12 @@ export default {
       this.$set(this.validNode, 'questions', questions);
       return;
     };
-    const users = this.$_visualizeData.exercise.users;
-    if (users) {
-      this.$set(this.validNode, 'userId', users.find(u => u.nodeId === this.node.id)?.id);
+    try {
+      const users = this.$_visualizeData.exercise.users;
+      if (users) {
+        this.$set(this.validNode, 'userId', users.find(u => u.nodeId === this.node.id)?.id);
+      }
+    } catch {
     }
     this.$set(this.validNode, 'label', this.validNode.userId || this.node.label || this.node.id);
     this.$set(this.validNode, 'type', this.node.nodeOptions?.type || 'sphere');
