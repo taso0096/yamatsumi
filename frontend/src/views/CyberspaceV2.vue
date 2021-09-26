@@ -1,65 +1,10 @@
 <template>
   <div class="cyberspace-v2">
-    <v-navigation-drawer
-      v-model="editDrawer"
-      app
-      clipped
-      floating
-      right
-      mobile-breakpoint="960"
-      color="transparent"
-      width="50%"
-      class="pt-3 pr-3"
-    >
-      <v-toolbar flat>
-        <v-tabs v-model="drawerTab">
-          <v-tab>Details</v-tab>
-          <v-tab disabled>Contest</v-tab>
-          <v-tab>Network</v-tab>
-          <v-spacer />
-          <v-menu
-            bottom
-            left
-            offset-y
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-                class="my-auto mr-3"
-              >
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </template>
-
-            <v-list class="pa-0">
-              <v-list-item>
-                <v-list-item-title>Edit</v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title color="error--text">Delete</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-tabs>
-      </v-toolbar>
-
-      <v-tabs-items
-        v-model="drawerTab"
-        class="cyberspace-v2__drawer-items"
-      >
-        <v-tab-item>Details</v-tab-item>
-        <v-tab-item>Contest</v-tab-item>
-        <v-tab-item>
-          <network-editor
-            v-if="cyberspace.original.id"
-            :networkData="cyberspace.edit.layers"
-            class="ma-3"
-          />
-        </v-tab-item>
-      </v-tabs-items>
-    </v-navigation-drawer>
+    <cyberspace-drawer
+      v-if="cyberspace.original.id"
+      :drawer="cyberspaceDrawer"
+      :cyberspace="cyberspace.edit"
+    />
 
     <v-card
       tile
@@ -77,9 +22,10 @@
           <v-btn
             icon
             small
-            @click="editDrawer = !editDrawer"
+            :disabled="!cyberspace.original.id"
+            @click="cyberspaceDrawer = !cyberspaceDrawer"
           >
-            <v-icon v-if="!editDrawer">mdi-settings</v-icon>
+            <v-icon v-if="!cyberspaceDrawer">mdi-settings</v-icon>
             <v-icon v-else>mdi-arrow-right</v-icon>
           </v-btn>
         </template>
@@ -116,9 +62,6 @@
 .cyberspace-v2 {
   height: 100%;
 
-  .cyberspace-v2__drawer-items {
-    background: transparent !important;
-  }
   a-scene {
     height: 100%;
   }
@@ -128,7 +71,7 @@
 <script>
 import CyberspaceEntity from '@/components/Cyberspace/CyberspaceEntity.vue';
 import LineEntity from '@/components/LineEntity.vue';
-import NetworkEditor from '@/components/NetworkEditor';
+import CyberspaceDrawer from '@/components/CyberspaceDrawer.vue';
 
 import axios from '@/axios';
 
@@ -137,7 +80,7 @@ export default {
   components: {
     CyberspaceEntity,
     LineEntity,
-    NetworkEditor
+    CyberspaceDrawer
   },
   data: () => ({
     socket: {
@@ -154,8 +97,7 @@ export default {
     isLoading: {
       cyberspace: true
     },
-    editDrawer: false,
-    drawerTab: null,
+    cyberspaceDrawer: false,
     isEditMode: false
   }),
   watch: {
