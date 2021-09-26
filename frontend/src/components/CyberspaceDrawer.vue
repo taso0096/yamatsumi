@@ -150,6 +150,7 @@ export default {
   methods: {
     switchEditMode() {
       this.editMode = !this.editMode;
+      this.$store.dispatch('updateEditState', this.editMode);
       if (!this.editMode) {
         this.copyCyberspace('original', 'visualize');
         this.copyCyberspace('original', 'edit');
