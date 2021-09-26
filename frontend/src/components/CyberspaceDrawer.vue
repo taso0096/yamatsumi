@@ -17,7 +17,9 @@
           <v-tab disabled>Contest</v-tab>
           <v-tab>Network</v-tab>
           <v-spacer />
+
           <v-menu
+            v-if="!editMode"
             bottom
             left
             offset-y
@@ -34,14 +36,39 @@
             </template>
 
             <v-list class="pa-0">
-              <v-list-item>
+              <v-list-item @click="switchEditMode">
                 <v-list-item-title>Edit</v-list-item-title>
               </v-list-item>
-              <v-list-item>
-                <v-list-item-title color="error--text">Delete</v-list-item-title>
+              <v-list-item
+                :disabled="isLoading.delete"
+                @click="deleteCyberspace"
+              >
+                <v-list-item-title :class="{
+                  'error--text': !isLoading.delete
+                }">Delete</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
+          <template v-else>
+            <v-btn
+              text
+              tile
+              class="my-auto mr-3"
+              @click="switchEditMode"
+            >
+              <span>Cancel</span>
+            </v-btn>
+            <v-btn
+              color="primary"
+              depressed
+              tile
+              :loading="isLoading.save"
+              class="my-auto mr-3"
+              @click="saveCyberspace"
+            >
+              <span>Save</span>
+            </v-btn>
+          </template>
         </v-tabs>
       </v-toolbar>
     </v-sheet>
@@ -73,6 +100,8 @@
 </style>
 
 <script>
+import axios from '@/axios';
+
 import DetailsEditor from '@/components/DetailsEditor.vue';
 import NetworkEditor from '@/components/NetworkEditor';
 
@@ -91,10 +120,108 @@ export default {
     cyberspace: {
       type: Object,
       required: true
+    },
+    copyCyberspace: {
+      type: Function,
+      required: true
     }
   },
   data: () => ({
-    drawerTab: null
-  })
+    drawerTab: null,
+    editMode: false,
+    editIntervalId: null,
+    isChangedForm: false,
+    isLoading: {
+      save: false,
+      delete: false
+    }
+  }),
+  watch: {
+    'cyberspace.layers': {
+      handler() {
+        this.isChangedForm = true;
+      },
+      deep: true
+    }
+  },
+  methods: {
+    switchEditMode() {
+      this.editMode = !this.editMode;
+      if (!this.editMode) {
+        this.copyCyberspace('original', 'visualize');
+        this.copyCyberspace('original', 'edit');
+        clearInterval(this.editIntervalId);
+        return;
+      }
+      this.editIntervalId = setInterval(() => {
+        if (this.isChangedForm) {
+          this.copyCyberspace('edit', 'visualize');
+          this.isChangedForm = false;
+        }
+      }, 1000);
+    },
+    async saveCyberspace() {
+      const isConfirmed = await this.$_appRefs.confirmDialog.open({
+        message: 'Do you want to save the changes?',
+        confirmText: 'Save'
+      });
+      if (!isConfirmed) {
+        return;
+      }
+      this.isLoading.save = true;
+      const id = this.$route.params.id;
+      await axios
+        .put(`/cyberspaces/${id}/`, {
+          data: this.cyberspace
+        },
+        {
+          validateStatus: status => status < 500
+        })
+        .then(res => {
+          if (res.status !== 200) {
+            this.$_pushNotice('This Cyberspace ID is already in use.', 'error');
+            return;
+          }
+          this.copyCyberspace('edit', 'visualize');
+          this.copyCyberspace('edit', 'original');
+          this.switchEditMode();
+          this.$_pushNotice('Saved the Cyberspace.', 'success');
+          if (this.cyberspace.id !== id) {
+            this.$router.push({
+              name: 'Visualize',
+              params: {
+                id: this.cyberspace.id
+              }
+            });
+          }
+        })
+        .catch(() => {
+          this.$_pushNotice('An error occurred.', 'error');
+        });
+      this.isLoading.save = false;
+    },
+    async deleteCyberspace() {
+      const isConfirmed = await this.$_appRefs.confirmDialog.open({
+        message: 'Are you sure you want to delete this Cyberspace?',
+        confirmText: 'Delete',
+        color: 'error'
+      });
+      if (!isConfirmed) {
+        return;
+      }
+      this.isLoading.delete = true;
+      const id = this.$route.params.id;
+      await axios
+        .delete(`/cyberspaces/${id}/`)
+        .then(() => {
+          this.$_pushNotice('Deleted the Cyberspace.', 'success');
+          this.$router.push({ name: 'Cyberspace' });
+        })
+        .catch(() => {
+          this.$_pushNotice('An error occurred.', 'error');
+        });
+      this.isLoading.delete = false;
+    }
+  }
 };
 </script>

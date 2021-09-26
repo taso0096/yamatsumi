@@ -4,6 +4,7 @@
       v-if="cyberspace.original.id"
       :drawer="cyberspaceDrawer"
       :cyberspace="cyberspace.edit"
+      :copyCyberspace="copyCyberspace"
     />
 
     <v-card
@@ -105,12 +106,6 @@ export default {
       this.$_createPageTitle({
         title: `${(this.cyberspace.original.label || this.cyberspace.original.id)} - YAMATSUMI`
       });
-    },
-    'cyberspace.edit': {
-      handler() {
-        this.copyCyberspace('edit', 'visualize');
-      },
-      deep: true
     }
   },
   async mounted() {

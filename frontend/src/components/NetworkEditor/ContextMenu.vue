@@ -12,7 +12,7 @@
           <v-list-item-title>{{ selectedNode.id }}</v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item @click="detailsDialog = true">
+        <v-list-item @click="openDetailsDialog">
           <v-list-item-title>Details</v-list-item-title>
         </v-list-item>
         <v-list-item @click="deleteNode">
@@ -27,7 +27,7 @@
       width="500"
     >
       <details-card
-        :node="selectedNode"
+        :node="selectedNodeCopy"
         :isLayer="contextMenu.isLayer"
       >
         <template #header>
@@ -64,11 +64,21 @@ export default {
       index: 0,
       isLayer: false
     },
-    detailsDialog: false
+    detailsDialog: false,
+    selectedNodeCopy: {}
   }),
   computed: {
     selectedNode() {
       return this.contextMenu.array[this.contextMenu.index] || {};
+    }
+  },
+  watch: {
+    detailsDialog(val) {
+      if (!val) {
+        for (const key in this.selectedNodeCopy) {
+          this.selectedNode[key] = this.selectedNodeCopy[key];
+        }
+      }
     }
   },
   methods: {
@@ -94,6 +104,10 @@ export default {
         return;
       }
       this.contextMenu.array.splice(this.contextMenu.index, 1);
+    },
+    openDetailsDialog() {
+      this.selectedNodeCopy = JSON.parse(JSON.stringify(this.selectedNode));
+      this.detailsDialog = true;
     }
   }
 };
