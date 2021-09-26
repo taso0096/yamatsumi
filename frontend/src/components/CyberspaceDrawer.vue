@@ -73,21 +73,24 @@
       </v-toolbar>
     </v-sheet>
 
-    <v-tabs-items
-      v-model="drawerTab"
-      class="cyberspace-drawer__tab-items mt-3"
-    >
-      <v-tab-item>
-        <details-editor :cyberspace="cyberspace" />
-      </v-tab-item>
-      <v-tab-item>Contest</v-tab-item>
-      <v-tab-item>
-        <network-editor
-          :networkData="cyberspace.layers"
-          class="ma-3"
-        />
-      </v-tab-item>
-    </v-tabs-items>
+    <v-form :readonly="!editMode">
+      <v-tabs-items
+        v-model="drawerTab"
+        class="cyberspace-drawer__tab-items mt-3"
+      >
+        <v-tab-item>
+          <details-editor :cyberspace="cyberspace" />
+        </v-tab-item>
+        <v-tab-item>Contest</v-tab-item>
+        <v-tab-item>
+          <network-editor
+            :network="cyberspace.layers"
+            :editMode="editMode"
+            class="ma-3"
+          />
+        </v-tab-item>
+      </v-tabs-items>
+    </v-form>
   </v-navigation-drawer>
 </template>
 

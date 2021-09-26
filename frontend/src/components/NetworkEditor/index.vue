@@ -1,18 +1,21 @@
 <template>
   <div class="network-editor">
     <draggable
-      :list="networkData"
+      :list="network"
       v-bind="dragOptions"
       handle=".network-editor__layer__reorder"
       class="network-editor__draggable"
     >
       <div
-        v-for="(layer, i) in networkData"
+        v-for="(layer, i) in network"
         :key="`layer__${layer.id}_${i}`"
         class="network-editor__layer d-flex my-3"
-        @contextmenu.stop="openContextMenu($event, networkData, i, true)"
+        @contextmenu.stop="openContextMenu($event, network, i, true)"
       >
-        <v-sheet class="network-editor__layer__reorder d-flex align-center">
+        <v-sheet
+          v-if="editMode"
+          class="network-editor__layer__reorder d-flex align-center"
+        >
           <v-icon class="my-auto mx-2">mdi-reorder-horizontal</v-icon>
         </v-sheet>
         <div class="network-editor__layer__contents">
@@ -39,16 +42,21 @@
                 >
                   <node-block
                     v-if="!node.nodes"
-                    :nodeData="node"
+                    :node="node"
+                    :editMode="editMode"
                   />
                   <node-group
                     v-else
-                    :nodeData="node"
+                    :node="node"
                     :openContextMenu="openContextMenu"
+                    :editMode="editMode"
                   />
                 </div>
               </draggable>
-              <div class="my-auto mr-auto">
+              <div
+                v-if="editMode"
+                class="my-auto mr-auto"
+              >
                 <v-btn
                   icon
                   class="d-flex"
@@ -69,6 +77,7 @@
         </div>
       </div>
       <div
+        v-if="editMode"
         slot="footer"
         class="d-flex justify-center"
       >
@@ -83,7 +92,10 @@
       </div>
     </draggable>
 
-    <context-menu ref="contextMenu" />
+    <context-menu
+      ref="contextMenu"
+      :editMode="editMode"
+    />
   </div>
 </template>
 
@@ -97,8 +109,11 @@
       cursor: move;
       z-index: 100;
     }
+    .network-editor__layer__reorder + .network-editor__layer__contents {
+      width: calc(100% - 40px) !important;
+    }
     .network-editor__layer__contents {
-      width: calc(100% - 40px);
+      width: 100%;
 
       .network-editor__layer__blur {
         position: relative;
@@ -180,8 +195,12 @@ export default {
     ContextMenu
   },
   props: {
-    networkData: {
+    network: {
       type: Array,
+      required: true
+    },
+    editMode: {
+      type: Boolean,
       required: true
     }
   },
@@ -189,15 +208,15 @@ export default {
     dragOptions() {
       return {
         animation: 200,
-        disabled: false,
+        disabled: !this.editMode,
         ghostClass: 'ghost'
       };
     }
   },
   methods: {
     addLayer() {
-      this.networkData.push({
-        id: `layer${this.networkData.length + 1}`,
+      this.network.push({
+        id: `layer${this.network.length + 1}`,
         nodes: []
       });
     },

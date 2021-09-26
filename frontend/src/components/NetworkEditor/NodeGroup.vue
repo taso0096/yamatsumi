@@ -1,46 +1,54 @@
 <template>
   <div class="node-group">
     <v-sheet class="d-flex align-center pa-3">
-      <v-icon class="node__reorder mr-3">mdi-drag</v-icon>
-      <span>{{ nodeData.id }}</span>
+      <v-icon
+        v-if="editMode"
+        class="node__reorder mr-3"
+      >mdi-drag</v-icon>
+      <span>{{ node.id }}</span>
     </v-sheet>
     <div class="d-flex px-3">
       <draggable
         v-bind="dragOptions"
-        :list="nodeData.nodes"
+        :list="node.nodes"
         :group="{ name: 'network' }"
         handle=".node__reorder"
         class="node-group__draggable d-flex my-3"
       >
         <div
-          v-for="(node, i) in nodeData.nodes"
+          v-for="(childNode, i) in node.nodes"
           :key="`nodes-group__${node.id}_${i}`"
           class="node-group__node-wrapper d-flex mx-3 my-auto"
-          @contextmenu.stop="openContextMenu($event, nodeData.nodes, i)"
+          @contextmenu.stop="openContextMenu($event, node.nodes, i)"
         >
           <node-block
-            v-if="!node.nodes"
-            :nodeData="node"
+            v-if="!childNode.nodes"
+            :node="childNode"
+            :editMode="editMode"
           />
           <node-group
             v-else
-            :nodeData="node"
+            :node="childNode"
             :openContextMenu="openContextMenu"
+            :editMode="editMode"
           />
         </div>
       </draggable>
-      <div class="my-auto ml-auto">
+      <div
+        v-if="editMode"
+        class="my-auto ml-auto"
+      >
         <v-btn
           icon
           class="d-flex"
-          @click="addNode(nodeData.nodes)"
+          @click="addNode(node.nodes)"
         >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
         <v-btn
           icon
           class="d-flex"
-          @click="addGroup(nodeData.nodes)"
+          @click="addGroup(node.nodes)"
         >
           <v-icon>mdi-shape-square-plus</v-icon>
         </v-btn>
@@ -80,12 +88,16 @@ export default {
     NodeGroup
   },
   props: {
-    nodeData: {
+    node: {
       type: Object,
       required: true
     },
     openContextMenu: {
       type: Function,
+      required: true
+    },
+    editMode: {
+      type: Boolean,
       required: true
     }
   },
@@ -93,7 +105,7 @@ export default {
     dragOptions() {
       return {
         animation: 200,
-        disabled: false,
+        disabled: !this.editMode,
         ghostClass: 'ghost'
       };
     }

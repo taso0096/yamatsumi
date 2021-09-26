@@ -15,7 +15,10 @@
         <v-list-item @click="openDetailsDialog">
           <v-list-item-title>Details</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="deleteNode">
+        <v-list-item
+          v-if="editMode"
+          @click="deleteNode"
+        >
           <v-list-item-title class="error--text">Delete</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -54,6 +57,12 @@ export default {
   name: 'ContextMenu',
   components: {
     DetailsCard
+  },
+  props: {
+    editMode: {
+      type: Boolean,
+      required: true
+    }
   },
   data: () => ({
     contextMenu: {
