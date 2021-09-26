@@ -85,7 +85,7 @@ export default {
     detailsDialog(val) {
       if (!val) {
         for (const key in this.selectedNodeCopy) {
-          this.selectedNode[key] = this.selectedNodeCopy[key];
+          this.$set(this.selectedNode, key, this.selectedNodeCopy[key]);
         }
       }
     }
