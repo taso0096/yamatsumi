@@ -212,5 +212,5 @@ export default {
       }
     });
   }
-}
+};
 </script>

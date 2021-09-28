@@ -119,7 +119,7 @@
 </style>
 
 <script>
-import axios from '@/axios'
+import axios from '@/axios';
 import { validate } from 'jsonschema';
 import cyberspaceSchema from '@/assets/CyberspaceSchema.json';
 
@@ -227,7 +227,7 @@ export default {
         .catch(err => {
           console.log(err);
           this.$_pushNotice('An error occurred.', 'error');
-        })
+        });
       this.isLoading.createCyberspace = false;
     },
     uploadCyberspace() {
@@ -254,5 +254,5 @@ export default {
       inputEl.click();
     }
   }
-}
+};
 </script>

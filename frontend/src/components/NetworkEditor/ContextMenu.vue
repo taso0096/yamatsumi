@@ -102,7 +102,7 @@ export default {
             continue;
           }
           this.routingTable[this.selectedNodeCopy.id] = [];
-          this.routingTable[this.selectedNodeCopy.id].push(...this.selectedNodeCopy[key])
+          this.routingTable[this.selectedNodeCopy.id].push(...this.selectedNodeCopy[key]);
         }
       }
     }

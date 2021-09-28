@@ -22,9 +22,9 @@
 </template>
 
 <script>
-import LayerForm from './LayerForm.vue'
-import NodeForm from './NodeForm.vue'
-import GroupForm from './GroupForm.vue'
+import LayerForm from './LayerForm.vue';
+import NodeForm from './NodeForm.vue';
+import GroupForm from './GroupForm.vue';
 
 export default {
   name: 'DetailsCard',

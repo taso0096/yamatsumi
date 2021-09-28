@@ -468,5 +468,5 @@ export default {
       this.isLoading.delete = false;
     }
   }
-}
+};
 </script>

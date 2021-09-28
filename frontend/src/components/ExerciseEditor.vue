@@ -158,7 +158,7 @@ export default {
         .catch(err => {
           console.log(err);
           this.$_pushNotice('An error occurred.', 'error');
-        })
+        });
       this.isLoading.upload = false;
     },
     async deleteExercise() {
@@ -185,5 +185,5 @@ export default {
       this.isLoading.delete = false;
     }
   }
-}
+};
 </script>
