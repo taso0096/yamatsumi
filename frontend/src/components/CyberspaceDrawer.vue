@@ -36,7 +36,7 @@
             </template>
 
             <v-list class="pa-0">
-              <v-list-item @click="switchEditMode">
+              <v-list-item @click="enableEditMode">
                 <v-list-item-title>Edit</v-list-item-title>
               </v-list-item>
               <v-list-item
@@ -54,7 +54,7 @@
               text
               tile
               class="my-auto mr-3"
-              @click="switchEditMode"
+              @click="disableEditMode(true)"
             >
               <span>Cancel</span>
             </v-btn>
@@ -158,15 +158,26 @@ export default {
     this.$store.dispatch('updateEditState', false);
   },
   methods: {
-    switchEditMode() {
-      this.editMode = !this.editMode;
-      this.$store.dispatch('updateEditState', this.editMode);
-      if (!this.editMode) {
-        this.copyCyberspace('original', 'visualize');
-        this.copyCyberspace('original', 'edit');
-        clearInterval(this.editIntervalId);
-        return;
+    async disableEditMode(needConfirm = false) {
+      if (needConfirm) {
+        const isConfirmed = await this.$_appRefs.confirmDialog.open({
+          message: 'Are you sure you want to cancel editing Cyberspace?',
+          confirmText: 'Cancel',
+          color: 'error'
+        });
+        if (!isConfirmed) {
+          return;
+        }
       }
+      this.editMode = false;
+      this.$store.dispatch('updateEditState', false);
+      this.copyCyberspace('original', 'visualize');
+      this.copyCyberspace('original', 'edit');
+      clearInterval(this.editIntervalId);
+    },
+    async enableEditMode() {
+      this.editMode = true;
+      this.$store.dispatch('updateEditState', true);
       this.editIntervalId = setInterval(() => {
         if (this.isChangedForm) {
           this.copyCyberspace('edit', 'visualize');
@@ -198,7 +209,7 @@ export default {
           }
           this.copyCyberspace('edit', 'visualize');
           this.copyCyberspace('edit', 'original');
-          this.switchEditMode();
+          this.disableEditMode();
           this.$_pushNotice('Saved the Cyberspace.', 'success');
           if (this.cyberspace.id !== id) {
             this.$router.push({
