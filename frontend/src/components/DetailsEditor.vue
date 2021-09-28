@@ -1,5 +1,9 @@
 <template>
-  <v-card flat tile>
+  <v-card
+    flat
+    tile
+    height="auto"
+  >
     <v-card-text>
       <v-text-field
         v-model="cyberspace.id"

@@ -73,10 +73,13 @@
       </v-toolbar>
     </v-sheet>
 
-    <v-form :readonly="!editMode">
+    <v-form
+      :readonly="!editMode"
+      class="cyberspace-drawer__tab-items-wrapper mt-3"
+    >
       <v-tabs-items
         v-model="drawerTab"
-        class="cyberspace-drawer__tab-items mt-3"
+        class="cyberspace-drawer__tab-items"
       >
         <v-tab-item>
           <details-editor :cyberspace="cyberspace" />
@@ -87,7 +90,6 @@
             :network="cyberspace.layers"
             :routingTable="cyberspace.routingTable"
             :editMode="editMode"
-            class="ma-3"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -97,8 +99,18 @@
 
 <style lang="scss" scoped>
 .cyberspace-drawer {
-  .cyberspace-drawer__tab-items {
-    background: transparent !important;
+  .cyberspace-drawer__tab-items-wrapper {
+    height: calc(100% - 64px - 24px);
+
+    .cyberspace-drawer__tab-items {
+      height: 100%;
+      background: transparent !important;
+      overflow: scroll;
+
+      div {
+        height: 100%;
+      }
+    }
   }
 }
 </style>
