@@ -26,7 +26,7 @@
             :node="childNode"
             :editMode="editMode"
           />
-          <node-group
+          <group-block
             v-else
             :node="childNode"
             :openContextMenu="openContextMenu"
@@ -78,14 +78,14 @@
 <script>
 import draggable from 'vuedraggable';
 import NodeBlock from './NodeBlock.vue';
-import NodeGroup from './NodeGroup.vue';
+import GroupBlock from './GroupBlock.vue';
 
 export default {
-  name: 'NodeGroup',
+  name: 'GroupBlock',
   components: {
     draggable,
     NodeBlock,
-    NodeGroup
+    GroupBlock
   },
   props: {
     node: {

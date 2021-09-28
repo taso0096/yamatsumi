@@ -35,7 +35,7 @@
                 :node="node"
                 :editMode="editMode"
               />
-              <node-group
+              <group-block
                 v-else
                 :node="node"
                 :openContextMenu="openContextMenu"
@@ -151,14 +151,14 @@
 <script>
 import draggable from 'vuedraggable';
 import NodeBlock from './NodeBlock.vue';
-import NodeGroup from './NodeGroup.vue';
+import GroupBlock from './GroupBlock.vue';
 
 export default {
   name: 'LayerBlock',
   components: {
     draggable,
     NodeBlock,
-    NodeGroup
+    GroupBlock
   },
   props: {
     layer: {
