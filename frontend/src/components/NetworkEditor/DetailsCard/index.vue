@@ -12,6 +12,7 @@
     <node-form
       v-else-if="!node.nodes"
       :node="node"
+      :editMode="editMode"
     />
     <group-form
       v-else
@@ -40,6 +41,10 @@ export default {
     isLayer: {
       type: Boolean,
       default: false,
+      require: true
+    },
+    editMode: {
+      type: Boolean,
       require: true
     }
   }

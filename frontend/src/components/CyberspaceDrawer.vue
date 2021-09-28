@@ -85,6 +85,7 @@
         <v-tab-item>
           <network-editor
             :network="cyberspace.layers"
+            :routingTable="cyberspace.routingTable"
             :editMode="editMode"
             class="ma-3"
           />
@@ -140,12 +141,21 @@ export default {
     }
   }),
   watch: {
+    'cyberspace.routingTable': {
+      handler() {
+        this.isChangedForm = true;
+      },
+      deep: true
+    },
     'cyberspace.layers': {
       handler() {
         this.isChangedForm = true;
       },
       deep: true
     }
+  },
+  destroyed() {
+    this.$store.dispatch('updateEditState', false);
   },
   methods: {
     switchEditMode() {

@@ -12,6 +12,31 @@
       v-model="node.parentId"
       label="Parent ID"
     />
+    <v-combobox
+      v-model="node.ipaddresses"
+      label="IP addresses"
+      hide-selected
+      multiple
+      append-icon=""
+    >
+      <template v-slot:selection="{ attrs, item, parent, selected }">
+        <v-chip
+          v-bind="attrs"
+          :input-value="selected"
+          label
+          small
+          :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3'"
+        >
+          <span>{{ item }}</span>
+          <v-icon
+            v-if="editMode"
+            small
+            class="ml-2"
+            @click="parent.selectItem(item)"
+          >mdi-close</v-icon>
+        </v-chip>
+      </template>
+    </v-combobox>
 
     <div>
       <span class="subtitle-1 grey--text text--darken-1">Node Options</span>
@@ -62,6 +87,10 @@ export default {
   props: {
     node: {
       type: Object,
+      require: true
+    },
+    editMode: {
+      type: Boolean,
       require: true
     }
   },

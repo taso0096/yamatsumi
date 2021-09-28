@@ -32,6 +32,7 @@
       <details-card
         :node="selectedNodeCopy"
         :isLayer="contextMenu.isLayer"
+        :editMode="editMode"
       >
         <template #header>
           <v-card-title>
@@ -59,6 +60,10 @@ export default {
     DetailsCard
   },
   props: {
+    routingTable: {
+      type: Object,
+      required: true
+    },
     editMode: {
       type: Boolean,
       required: true
@@ -84,8 +89,20 @@ export default {
   watch: {
     detailsDialog(val) {
       if (!val) {
+        if (this.selectedNode.id !== this.selectedNodeCopy.id) {
+          delete this.routingTable[this.selectedNode.id];
+        }
         for (const key in this.selectedNodeCopy) {
-          this.$set(this.selectedNode, key, this.selectedNodeCopy[key]);
+          if (key !== 'ipaddresses') {
+            this.$set(this.selectedNode, key, this.selectedNodeCopy[key]);
+            continue;
+          }
+          if (!this.selectedNodeCopy[key].length) {
+            delete this.routingTable[this.selectedNodeCopy.id];
+            continue;
+          }
+          this.routingTable[this.selectedNodeCopy.id] = [];
+          this.routingTable[this.selectedNodeCopy.id].push(...this.selectedNodeCopy[key])
         }
       }
     }
@@ -112,10 +129,12 @@ export default {
       if (!isConfirmed) {
         return;
       }
+      delete this.routingTable[this.selectedNode.id];
       this.contextMenu.array.splice(this.contextMenu.index, 1);
     },
     openDetailsDialog() {
       this.selectedNodeCopy = JSON.parse(JSON.stringify(this.selectedNode));
+      this.selectedNodeCopy.ipaddresses = [...(this.routingTable[this.selectedNode.id] || [])];
       this.detailsDialog = true;
     }
   }

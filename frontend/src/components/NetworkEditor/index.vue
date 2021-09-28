@@ -94,6 +94,7 @@
 
     <context-menu
       ref="contextMenu"
+      :routingTable="routingTable"
       :editMode="editMode"
     />
   </div>
@@ -197,6 +198,10 @@ export default {
   props: {
     network: {
       type: Array,
+      required: true
+    },
+    routingTable: {
+      type: Object,
       required: true
     },
     editMode: {
