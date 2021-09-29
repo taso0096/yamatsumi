@@ -166,8 +166,9 @@ export default {
       deep: true
     }
   },
-  destroyed() {
+  beforeDestroy() {
     this.$store.dispatch('updateEditState', false);
+    clearInterval(this.editIntervalId);
   },
   methods: {
     async disableEditMode(needConfirm = false) {

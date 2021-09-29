@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card flat tile>
     <slot name="header">
       <v-card-title>
         <span>Details</span>

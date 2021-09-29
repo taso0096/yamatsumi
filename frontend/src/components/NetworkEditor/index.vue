@@ -1,69 +1,74 @@
 <template>
   <div class="network-editor d-flex flex-column">
-    <context-menu
-      ref="contextMenu"
-      :routingTable="routingTable"
-      :editMode="editMode"
-    />
-
-    <draggable
-      v-if="selectedLayerIndex === null"
-      :list="network"
-      v-bind="dragOptions"
-      handle=".layer-block__reorder"
-      class="network-editor__draggable"
-    >
-      <div
-        v-for="(layer, i) in network"
-        :key="`layer__${layer.id}_${i}`"
-        class="mb-3"
-        @contextmenu.stop="openContextMenu($event, network, i, true)"
+    <template v-if="selectedLayerIndex === null">
+      <context-menu
+        ref="contextMenu"
+        :routingTable="routingTable"
+        :editMode="editMode"
+      />
+      <draggable
+        :list="network"
+        v-bind="dragOptions"
+        handle=".layer-block__reorder"
+        class="network-editor__draggable"
       >
-        <layer-block
-          :layer="layer"
-          :openContextMenu="openContextMenu"
-          :editMode="editMode"
+        <div
+          v-for="(layer, i) in network"
+          :key="`layer__${layer.id}_${i}`"
+          class="mb-3"
+          @contextmenu.stop="openContextMenu($event, network, i, true)"
         >
-          <template #header>
-            <v-badge
-              :content="i + 1"
-              overlap
-              bottom
-              color="secondary"
-              class="mr-5"
-            >
-              <v-icon>mdi-layers</v-icon>
-            </v-badge>
-            <span>{{ layer.id }}</span>
-            <v-spacer />
-            <v-btn
-              icon
-              @click="selectLayer(i)"
-            >
-              <v-icon>mdi-crosshairs</v-icon>
-            </v-btn>
-          </template>
-        </layer-block>
-      </div>
-      <div
-        v-if="editMode"
-        slot="footer"
-        class="d-flex justify-center"
-      >
-        <v-btn
-          depressed
-          color="secondary"
-          class="ma-3"
-          @click="addLayer"
+          <layer-block
+            :layer="layer"
+            :openContextMenu="openContextMenu"
+            :editMode="editMode"
+          >
+            <template #header>
+              <v-badge
+                :content="i + 1"
+                overlap
+                bottom
+                color="secondary"
+                class="mr-5"
+              >
+                <v-icon>mdi-layers</v-icon>
+              </v-badge>
+              <span>{{ layer.id }}</span>
+              <v-spacer />
+              <v-btn
+                icon
+                @click="selectLayer(i)"
+              >
+                <v-icon>mdi-crosshairs</v-icon>
+              </v-btn>
+            </template>
+          </layer-block>
+        </div>
+        <div
+          v-if="editMode"
+          slot="footer"
+          class="d-flex justify-center"
         >
-          <span>Add Layer</span>
-        </v-btn>
-      </div>
-    </draggable>
+          <v-btn
+            depressed
+            color="secondary"
+            class="ma-3"
+            @click="addLayer"
+          >
+            <span>Add Layer</span>
+          </v-btn>
+        </div>
+      </draggable>
+    </template>
     <template v-else>
+      <select-mode-details-card
+        ref="selectModeDetailsCard"
+        :routingTable="routingTable"
+        :editMode="editMode"
+      />
       <layer-block
         :layer="network[selectedLayerIndex]"
-        :openContextMenu="openContextMenu"
+        :openContextMenu="openSelectModeContextMenu"
         :editMode="editMode"
         class="mt-auto"
       >
@@ -91,22 +96,19 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-.network-editor {
-}
-</style>
-
 <script>
 import draggable from 'vuedraggable';
 import LayerBlock from './LayerBlock.vue';
 import ContextMenu from './ContextMenu.vue';
+import SelectModeDetailsCard from './SelectModeDetailsCard.vue';
 
 export default {
   name: 'NetworkEditor',
   components: {
     draggable,
     LayerBlock,
-    ContextMenu
+    ContextMenu,
+    SelectModeDetailsCard
   },
   props: {
     network: {
@@ -144,12 +146,18 @@ export default {
     openContextMenu(e, array, index, isLayer = false) {
       this.$refs.contextMenu.open(e, array, index, isLayer);
     },
+    openSelectModeContextMenu(e, array, index, isLayer = false) {
+      this.$refs.selectModeDetailsCard.openMenu(e, array, index, isLayer);
+    },
     selectLayer(i) {
       if (this.selectedLayerIndex !== null) {
         this.selectedLayerIndex = null;
         return;
       }
       this.selectedLayerIndex = i;
+      this.$nextTick(() => {
+        this.$refs.selectModeDetailsCard.init(this.network, i);
+      });
     }
   }
 };
