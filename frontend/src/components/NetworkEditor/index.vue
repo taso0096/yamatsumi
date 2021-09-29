@@ -1,8 +1,8 @@
 <template>
   <div class="network-editor d-flex flex-column">
     <template v-if="selectedLayerIndex === null">
-      <context-menu
-        ref="contextMenu"
+      <details-dialog
+        ref="detailsDialog"
         :routingTable="routingTable"
         :editMode="editMode"
       />
@@ -99,7 +99,7 @@
 <script>
 import draggable from 'vuedraggable';
 import LayerBlock from './LayerBlock.vue';
-import ContextMenu from './ContextMenu.vue';
+import DetailsDialog from './DetailsDialog.vue';
 import SelectModeDetailsCard from './SelectModeDetailsCard.vue';
 
 export default {
@@ -107,7 +107,7 @@ export default {
   components: {
     draggable,
     LayerBlock,
-    ContextMenu,
+    DetailsDialog,
     SelectModeDetailsCard
   },
   props: {
@@ -144,7 +144,7 @@ export default {
       });
     },
     openContextMenu(e, array, index, isLayer = false) {
-      this.$refs.contextMenu.open(e, array, index, isLayer);
+      this.$refs.detailsDialog.open(e, array, index, isLayer);
     },
     openSelectModeContextMenu(e, array, index, isLayer = false) {
       this.$refs.selectModeDetailsCard.openMenu(e, array, index, isLayer);

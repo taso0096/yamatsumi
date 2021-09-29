@@ -55,7 +55,7 @@
 import DetailsCard from './DetailsCard';
 
 export default {
-  name: 'ContextMenu',
+  name: 'DetailsDialog',
   components: {
     DetailsCard
   },
