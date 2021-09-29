@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="selectedNodeCopy.id">
     <details-card
       v-if="selectedNodeCopy.id"
       :node="selectedNodeCopy"

@@ -32,13 +32,16 @@ export default {
       type: Function,
       required: true
     },
+    routingTable: {
+      type: Object,
+      required: true
+    },
     editMode: {
       type: Boolean,
       required: true
     }
   },
   data: () => ({
-    resolve: null,
     contextMenu: false,
     position: {
       x: 0,
@@ -57,18 +60,15 @@ export default {
   },
   methods: {
     open(e, array, index, isLayer = false) {
-      return new Promise(resolve => {
-        this.resolve = resolve;
-        e.preventDefault();
-        this.contextMenu = false;
-        this.position.x = e.clientX;
-        this.position.y = e.clientY;
-        this.node.array = array;
-        this.node.index = index;
-        this.node.isLayer = isLayer;
-        this.$nextTick(() => {
-          this.contextMenu = true;
-        });
+      e.preventDefault();
+      this.contextMenu = false;
+      this.position.x = e.clientX;
+      this.position.y = e.clientY;
+      this.node.array = array;
+      this.node.index = index;
+      this.node.isLayer = isLayer;
+      this.$nextTick(() => {
+        this.contextMenu = true;
       });
     },
     async deleteNode() {
@@ -81,8 +81,7 @@ export default {
         return;
       }
       delete this.routingTable[this.selectedNode.id];
-      this.contextMenu.array.splice(this.contextMenu.index, 1);
-      this.resolve();
+      this.node.array.splice(this.node.index, 1);
     }
   }
 };

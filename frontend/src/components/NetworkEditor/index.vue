@@ -1,17 +1,18 @@
 <template>
   <div class="network-editor d-flex flex-column">
+    <context-menu
+      ref="contextMenu"
+      :openDetails="selectedLayerIndex === null ? openDetailsDialog : openDetailsCard"
+      :routingTable="routingTable"
+      :editMode="editMode"
+    />
+
     <template v-if="selectedLayerIndex === null">
-      <context-menu
-        ref="contextMenu"
-        :openDetails="openDetailsDialog"
-        :editMode="editMode"
-      />
       <details-dialog
         ref="detailsDialog"
         :routingTable="routingTable"
         :editMode="editMode"
       />
-
       <draggable
         :list="network"
         v-bind="dragOptions"
@@ -68,17 +69,11 @@
     </template>
 
     <template v-else>
-      <context-menu
-        ref="contextMenu"
-        :openDetails="openDetailsCard"
-        :editMode="editMode"
-      />
       <select-mode-details-card
         ref="selectModeDetailsCard"
         :routingTable="routingTable"
         :editMode="editMode"
       />
-
       <div
         class="mt-auto"
         @contextmenu.stop="openContextMenu($event, network, selectedLayerIndex, true)"
