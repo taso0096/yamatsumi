@@ -99,7 +99,7 @@
               icon
               @click="selectLayer"
             >
-              <v-icon>mdi-crosshairs</v-icon>
+              <v-icon>mdi-crosshairs-gps</v-icon>
             </v-btn>
           </template>
         </layer-block>

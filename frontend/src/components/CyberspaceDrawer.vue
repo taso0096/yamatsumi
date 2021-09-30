@@ -14,7 +14,7 @@
       <v-toolbar flat color="transparent">
         <v-tabs v-model="drawerTab">
           <v-tab>Details</v-tab>
-          <v-tab disabled>Contest</v-tab>
+          <v-tab disabled>Exercise</v-tab>
           <v-tab>Network</v-tab>
           <v-spacer />
 
@@ -84,7 +84,7 @@
         <v-tab-item>
           <details-editor :cyberspace="cyberspace" />
         </v-tab-item>
-        <v-tab-item>Contest</v-tab-item>
+        <v-tab-item>Exercise</v-tab-item>
         <v-tab-item>
           <network-editor
             :network="cyberspace.layers"
@@ -174,8 +174,8 @@ export default {
     async disableEditMode(needConfirm = false) {
       if (needConfirm) {
         const isConfirmed = await this.$_appRefs.confirmDialog.open({
-          message: 'Are you sure you want to cancel editing Cyberspace?',
-          confirmText: 'Cancel',
+          message: 'Are you sure you want to discard changes?',
+          confirmText: 'Discard',
           color: 'error'
         });
         if (!isConfirmed) {

@@ -1,13 +1,13 @@
 <template>
-  <v-card
+  <v-sheet
     :id="`node__${node.id}`"
-    class="node-block"
+    class="node-block pa-3"
     :class="{
       node__reorder: editMode
     }"
   >
-    <v-card-title>{{ node.id }}</v-card-title>
-  </v-card>
+    <span>{{ node.id }}</span>
+  </v-sheet>
 </template>
 
 <style lang="scss" scoped>
@@ -15,6 +15,14 @@
   width: 100px;
   height: 100px;
   outline: 2px solid #bdbdbd;
+
+  span {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-all;
+  }
 }
 .node__reorder {
   cursor: move;
