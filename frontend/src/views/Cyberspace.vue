@@ -1,22 +1,11 @@
 <template>
-  <div class="cyberspace">
-    <v-navigation-drawer
-      v-model="editDrawer"
-      app
-      clipped
-      floating
-      right
-      mobile-breakpoint="960"
-      color="transparent"
-      width="1024"
-      class="pt-3 pr-3"
-    >
-      <cyberspace-editor
+  <div class="cyberspace-v2">
+    <cyberspace-drawer
         v-if="cyberspace.original.id"
+      :drawer="cyberspaceDrawer"
         :cyberspace="cyberspace.edit"
         :copyCyberspace="copyCyberspace"
       />
-    </v-navigation-drawer>
 
     <v-card
       tile
@@ -34,9 +23,10 @@
           <v-btn
             icon
             small
-            @click="editDrawer = !editDrawer"
+            :disabled="!cyberspace.original.id"
+            @click="cyberspaceDrawer = !cyberspaceDrawer"
           >
-            <v-icon v-if="!editDrawer">mdi-settings</v-icon>
+            <v-icon v-if="!cyberspaceDrawer">mdi-settings</v-icon>
             <v-icon v-else>mdi-arrow-right</v-icon>
           </v-btn>
         </template>
@@ -50,7 +40,14 @@
       height="calc(100% - 64px)"
     >
       <a-scene embedded>
-        <a-camera position='0 1.5 5' />
+        <a-camera v-if="!isEditMode" position='0 1.5 5' />
+        <a-camera
+          v-else
+          position='0 3 0'
+          rotation="-90 0 0"
+          look-controls="enabled: false"
+          wasd-controls="enabled: false"
+        />
         <a-sky color='#000' />
         <a-entity oculus-touch-controls="hand: left"></a-entity>
         <a-entity oculus-touch-controls="hand: right"></a-entity>
@@ -63,7 +60,7 @@
 </template>
 
 <style lang="scss" scoped>
-.cyberspace {
+.cyberspace-v2 {
   height: 100%;
 
   a-scene {
@@ -75,7 +72,7 @@
 <script>
 import CyberspaceEntity from '@/components/Cyberspace/CyberspaceEntity.vue';
 import LineEntity from '@/components/LineEntity.vue';
-import CyberspaceEditor from '@/components/CyberspaceEditor/CyberspaceEditor.vue';
+import CyberspaceDrawer from '@/components/CyberspaceDrawer.vue';
 
 import axios from '@/axios';
 
@@ -84,10 +81,9 @@ export default {
   components: {
     CyberspaceEntity,
     LineEntity,
-    CyberspaceEditor
+    CyberspaceDrawer
   },
   data: () => ({
-    editDrawer: false,
     socket: {
       status: null
     },
@@ -101,7 +97,9 @@ export default {
     scoreData: {},
     isLoading: {
       cyberspace: true
-    }
+    },
+    cyberspaceDrawer: false,
+    isEditMode: false
   }),
   watch: {
     $route() {

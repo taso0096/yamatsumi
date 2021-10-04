@@ -6,7 +6,6 @@ import Login from '@/views/Login.vue';
 import Logout from '@/views/Logout.vue';
 import CyberspaceList from '@/views/CyberspaceList.vue';
 import Cyberspace from '@/views/Cyberspace.vue';
-import CyberspaceV2 from '@/views/CyberspaceV2.vue';
 
 Vue.use(VueRouter);
 
@@ -43,15 +42,6 @@ const routes = [
     component: Cyberspace,
     meta: {
       title: `Cyberspace - ${appName}`,
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/cyberspace/v2/:id',
-    name: 'CyberspaceV2',
-    component: CyberspaceV2,
-    meta: {
-      title: `CyberspaceV2 - ${appName}`,
       requiresAuth: true
     }
   },
