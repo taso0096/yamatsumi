@@ -82,6 +82,7 @@
           :layer="network[selectedLayerIndex]"
           :openContextMenu="openContextMenu"
           :editMode="editMode"
+          :selectMode="true"
         >
           <template #header>
             <v-badge
@@ -154,6 +155,11 @@ export default {
     }
   },
   watch: {
+    editMode() {
+      if (this.selectedLayer) {
+        this.openDetailsCard(this.network, this.selectedLayerIndex, true);
+      }
+    },
     selectedLayer(layer, beforeLayer) {
       if (beforeLayer?.id && layer?.id !== beforeLayer?.id) {
         this.deselectLayer();

@@ -1,7 +1,7 @@
 <template>
   <div class="layer-block d-flex">
     <v-sheet
-      v-if="editMode"
+      v-if="editMode && !selectMode"
       class="layer-block__reorder d-flex align-center"
     >
       <v-icon class="my-auto mx-2">mdi-reorder-horizontal</v-icon>
@@ -172,6 +172,10 @@ export default {
     editMode: {
       type: Boolean,
       required: true
+    },
+    selectMode: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
