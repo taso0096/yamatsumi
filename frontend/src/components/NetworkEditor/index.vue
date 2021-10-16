@@ -24,10 +24,12 @@
           :key="`layer__${layer.id}_${i}`"
           class="mb-3"
           @contextmenu.stop="openContextMenu($event, network, i, true)"
+          @dblclick.stop="openDetailsDialog(network, i, true)"
         >
           <layer-block
             :layer="layer"
             :openContextMenu="openContextMenu"
+            :openDetails="openDetailsDialog"
             :editMode="editMode"
           >
             <template #header>
@@ -77,10 +79,12 @@
       <div
         class="mt-auto"
         @contextmenu.stop="openContextMenu($event, network, selectedLayerIndex, true)"
+        @dblclick.stop="openDetailsCard(network, selectedLayerIndex, true)"
       >
         <layer-block
           :layer="network[selectedLayerIndex]"
           :openContextMenu="openContextMenu"
+          :openDetails="openDetailsCard"
           :editMode="editMode"
           :selectMode="true"
         >

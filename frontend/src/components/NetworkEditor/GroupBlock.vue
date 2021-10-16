@@ -20,6 +20,7 @@
           :key="`nodes-group__${node.id}_${i}`"
           class="node-group__node-wrapper d-flex mx-3 my-auto"
           @contextmenu.stop="openContextMenu($event, node.nodes, i)"
+          @dblclick.stop="openDetails(node.nodes, i)"
         >
           <node-block
             v-if="!childNode.nodes"
@@ -30,6 +31,7 @@
             v-else
             :node="childNode"
             :openContextMenu="openContextMenu"
+            :openDetails="openDetails"
             :editMode="editMode"
           />
         </div>
@@ -93,6 +95,10 @@ export default {
       required: true
     },
     openContextMenu: {
+      type: Function,
+      required: true
+    },
+    openDetails: {
       type: Function,
       required: true
     },

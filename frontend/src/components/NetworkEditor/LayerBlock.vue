@@ -29,6 +29,7 @@
               :key="`layer__${node.id}_${j}`"
               class="network-editor__node-wrapper d-flex mx-3 my-auto"
               @contextmenu.stop="openContextMenu($event, layer.nodes, j)"
+              @dblclick.stop="openDetails(layer.nodes, j)"
             >
               <node-block
                 v-if="!node.nodes"
@@ -39,6 +40,7 @@
                 v-else
                 :node="node"
                 :openContextMenu="openContextMenu"
+                :openDetails="openDetails"
                 :editMode="editMode"
               />
             </div>
@@ -166,6 +168,10 @@ export default {
       required: true
     },
     openContextMenu: {
+      type: Function,
+      required: true
+    },
+    openDetails: {
       type: Function,
       required: true
     },
