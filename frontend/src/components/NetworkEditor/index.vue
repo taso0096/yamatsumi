@@ -68,7 +68,7 @@
       </draggable>
     </template>
 
-    <template v-else>
+    <template v-else-if="selectedLayer">
       <select-mode-details-card
         ref="selectModeDetailsCard"
         :routingTable="routingTable"
@@ -97,7 +97,7 @@
             <v-spacer />
             <v-btn
               icon
-              @click="selectLayer"
+              @click="deselectLayer"
             >
               <v-icon>mdi-crosshairs-gps</v-icon>
             </v-btn>
@@ -148,6 +148,16 @@ export default {
         disabled: !this.editMode,
         ghostClass: 'ghost'
       };
+    },
+    selectedLayer() {
+      return this.network[this.selectedLayerIndex];
+    }
+  },
+  watch: {
+    selectedLayer(layer, beforeLayer) {
+      if (beforeLayer?.id && layer?.id !== beforeLayer?.id) {
+        this.deselectLayer();
+      }
     }
   },
   methods: {
@@ -167,14 +177,13 @@ export default {
       this.$refs.selectModeDetailsCard.open(array, index, isLayer);
     },
     selectLayer(i) {
-      if (this.selectedLayerIndex !== null) {
-        this.selectedLayerIndex = null;
-        return;
-      }
       this.selectedLayerIndex = i;
       this.$nextTick(() => {
         this.openDetailsCard(this.network, i, true);
       });
+    },
+    deselectLayer() {
+      this.selectedLayerIndex = null;
     }
   }
 };
