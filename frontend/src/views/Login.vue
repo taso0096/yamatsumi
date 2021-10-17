@@ -113,7 +113,7 @@ export default {
               accessToken,
               ...res.data
             });
-            this.$router.push(this.$route.query.redirect || { name: 'ExerciseList' });
+            this.$router.push(this.$route.query.redirect || { name: 'CyberspaceList' });
             console.log(res.data);
           })
           .catch(() => {

@@ -176,7 +176,7 @@ export default {
         .delete(`/exercises/${exerciseId}/`)
         .then(() => {
           this.$_pushNotice('Deleted the Exercise', 'success');
-          this.$router.push({ name: 'ExerciseList' });
+          this.$router.push({ name: 'CyberspaceList' });
         })
         .catch(err => {
           console.log(err);
