@@ -9,7 +9,6 @@
         'intranet-nodes': isIntranetNode(node)
       }"
       :position="node.position"
-      :rotation="layer.layoutOptions && layer.layoutOptions.shape === 'square' && '0 180 0'"
       :look-center="(!layer.layoutOptions || layer.layoutOptions && layer.layoutOptions.shape !== 'square') && (!layer.parentId || `parentSelector: #node-${layer.parentId}`)"
     >
       <layer-entity
@@ -57,11 +56,15 @@ export default {
   },
   methods: {
     async init() {
+      if (!this.layer.nodes) {
+        this.notParentNodes.push(this.layer);
+        return;
+      }
       this.notParentNodes = this.layer.nodes.filter(n => !n.parentId);
       const hasParentNodes = this.layer.nodes.filter(n => n.parentId);
       this.calcPosition(this.layer.layoutOptions?.shape);
       await this.$_sleep(1000);
-      hasParentNodes.forEach((node, i) => {
+      hasParentNodes.forEach(node => {
         const parentEl = document.querySelector(`#node-${node.parentId}`);
         const LayerEntityConstructor = Vue.extend(LayerEntity);
         const layerEntityComponent = new LayerEntityConstructor({

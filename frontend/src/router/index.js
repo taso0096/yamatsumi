@@ -4,8 +4,8 @@ import store from '@/store';
 
 import Login from '@/views/Login.vue';
 import Logout from '@/views/Logout.vue';
-import Network from '@/views/Network.vue';
-import Visualize from '@/views/Visualize.vue';
+import CyberspaceList from '@/views/CyberspaceList.vue';
+import Cyberspace from '@/views/Cyberspace.vue';
 
 Vue.use(VueRouter);
 
@@ -28,26 +28,26 @@ const routes = [
     }
   },
   {
-    path: '/network',
-    name: 'Network',
-    component: Network,
+    path: '/cyberspace',
+    name: 'CyberspaceList',
+    component: CyberspaceList,
     meta: {
       title: appName,
       requiresAuth: true
     }
   },
   {
-    path: '/network/:networkId',
-    name: 'Visualize',
-    component: Visualize,
+    path: '/cyberspace/:id',
+    name: 'Cyberspace',
+    component: Cyberspace,
     meta: {
-      title: `Visualize - ${appName}`,
+      title: `Cyberspace - ${appName}`,
       requiresAuth: true
     }
   },
   {
     path: '*',
-    redirect: '/network'
+    redirect: '/cyberspace'
   }
 ];
 
@@ -59,14 +59,18 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const userData = store.state.userData;
+  if (userData.isEdit && !confirm('Are you sure you want to cancel editing Cyberspace?')) {
+    next(false);
+    return;
+  }
   if (to.matched.some(record => !record.meta.requiresAuth) || ((to.matched.some(record => !record.meta.requiresSuperuser) || userData.isSuperuser) && userData.isAuthed)) {
     if ((to.name === 'Login' && userData.isAuthed)) {
-      next({ name: 'Network' });
+      next({ name: 'CyberspaceList' });
     } else {
       next();
     }
   } else if (userData.isAuthed) {
-    next({ name: 'Network' });
+    next({ name: 'CyberspaceList' });
   } else {
     next({
       name: 'Login',

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.6",
+  "version": "0.1.10",
   "type": "object",
   "required": [
     "id",
@@ -9,17 +9,17 @@
   "additionalProperties": false,
   "properties": {
     "id": {
-      "title": "ネットワークID",
-      "description": "ネットワークID",
+      "title": "サイバー空間ID",
+      "description": "サイバー空間ID",
       "type": ["integer", "string"],
-      "pattern": ".+",
+      "pattern": "^[a-zA-Z0-9_-]+$",
       "examples": [
         "example_network"
       ]
     },
     "label": {
-      "title": "ネットワーク表示名",
-      "description": "ネットワーク表示名",
+      "title": "サイバー空間表示名",
+      "description": "サイバー空間表示名",
       "type": "string",
       "examples": [
         "Example Network"
@@ -27,7 +27,7 @@
     },
     "desc": {
       "title": "説明",
-      "description": "ネットワークの説明",
+      "description": "サイバー空間の説明",
       "type": "string",
       "examples": [
         "This is an example of a network."
@@ -76,7 +76,7 @@
             "title": "レイヤーID",
             "description": "レイヤーID",
             "type": ["integer", "string"],
-            "pattern": ".+",
+            "pattern": "^[a-zA-Z0-9_-]+$",
             "examples": [
               "layer_1"
             ]
@@ -161,7 +161,7 @@
                   "title": "ノードID",
                   "description": "ノードID",
                   "type": ["integer", "string"],
-                  "pattern": ".+",
+                  "pattern": "^[a-zA-Z0-9_-]+$",
                   "examples": [
                     "server_a"
                   ]
@@ -192,7 +192,9 @@
                         "desktop",
                         "laptop",
                         "internet",
-                        "intranet"
+                        "intranet",
+                        "team",
+                        "question"
                       ],
                       "default": "sphere",
                       "examples": [

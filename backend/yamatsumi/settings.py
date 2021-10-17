@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'django_extensions',
     'users',
-    'networks',
+    'cyberspaces',
+    'exercises',
     'socketio_app',
 ]
 

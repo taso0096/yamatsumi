@@ -119,12 +119,12 @@
 
     <v-main
       :style="{
-        background: $vuetify.theme.dark ? '#000' : '#f5f5f5'
+        background: $vuetify.theme.dark ? '#303030' : '#eee'
       }"
     >
       <v-container
         :style="{
-          height: $route.name === 'Visualize' && '100%'
+          height: ['Cyberspace', 'CyberspaceV2'].includes($route.name) && '100%'
         }"
       >
         <router-view />
@@ -162,10 +162,10 @@ export default {
     appDrawer: window.innerWidth >= 960,
     drawerTabs: [
       {
-        title: 'Network',
+        title: 'Cyberspaces',
         icon: 'mdi-wan',
         route: {
-          name: 'Network'
+          name: 'CyberspaceList'
         },
         requiresAuth: true
       },
@@ -212,5 +212,5 @@ export default {
       }
     });
   }
-}
+};
 </script>

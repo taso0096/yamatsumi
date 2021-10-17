@@ -1,20 +1,20 @@
 <template>
   <div>
     <v-dialog
-      v-model="networkCreateDialog"
+      v-model="cyberspaceCreateDialog"
       max-width="400"
     >
       <v-card>
-        <v-card-title>Create Network{{ newNetwork.data.id ? ' (Upload JSON)' : '' }}</v-card-title>
+        <v-card-title>Create Cyberspace{{ newCyberspace.data.id ? ' (Upload JSON)' : '' }}</v-card-title>
         <v-card-text>
           <v-text-field
-            v-model="newNetwork.id"
-            label="Network ID"
+            v-model="newCyberspace.id"
+            label="Cyberspace ID"
             placeholder="If empty, UUID will be set."
             hide-details
           />
           <v-text-field
-            v-model="newNetwork.label"
+            v-model="newCyberspace.label"
             label="Label"
             hide-details
           />
@@ -24,16 +24,16 @@
           <v-btn
             tile
             text
-            @click="networkCreateDialog = false"
+            @click="cyberspaceCreateDialog = false"
           >
             <span>Cancel</span>
           </v-btn>
           <v-btn
             tile
             depressed
-            :loading="isLoading.createNetwork"
+            :loading="isLoading.createCyberspace"
             color="primary"
-            @click="createNetwork"
+            @click="createCyberspace"
           >
             <span>Create</span>
           </v-btn>
@@ -50,8 +50,8 @@
             label="Search"
             hide-details
             clearable
-            @click:append="searchNetwork"
-            @keyup.enter="searchNetwork"
+            @click:append="searchCyberspace"
+            @keyup.enter="searchCyberspace"
           />
         </v-col>
         <v-spacer />
@@ -73,15 +73,15 @@
                 small
                 color="primary"
               >
-                <span>Create Network</span>
+                <span>Create Cyberspace</span>
               </v-btn>
             </template>
 
             <v-list class="pa-0">
-              <v-list-item @click="networkCreateDialog = true">
+              <v-list-item @click="cyberspaceCreateDialog = true">
                 <v-list-item-title>Create New</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="uploadNetwork">
+              <v-list-item @click="uploadCyberspace">
                 <v-list-item-title>Upload JSON</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -90,16 +90,16 @@
       </v-row>
       <v-data-table
         :headers="headers"
-        :items="networks"
+        :items="cyberspaces"
         :items-per-page="10"
-        :loading="isLoading.getNetworks"
+        :loading="isLoading.getCyberspaces"
       >
         <template v-slot:[`item.label`]="{ item }">
           <router-link
-            :to="{ name: 'Visualize', params: { networkId: item.networkId } }"
+            :to="{ name: 'Cyberspace', params: { id: item.id } }"
             class="text-decoration-none"
           >
-            {{ item.label || item.networkId }}
+            {{ item.label || item.id }}
           </router-link>
         </template>
         <template v-slot:[`item.updatedAt`]="{ item }">
@@ -119,28 +119,26 @@
 </style>
 
 <script>
-import axios from '@/axios'
+import axios from '@/axios';
 import { validate } from 'jsonschema';
-import networkSchema from '@/assets/NetworkSchema.json';
+import cyberspaceSchema from '@/assets/CyberspaceSchema.json';
 
 export default {
-  name: 'Network',
+  name: 'CyberspaceList',
   data: () => ({
     headers: [
       { text: 'Label', value: 'label', sortable: false },
-      { text: 'Layers', value: 'layerCount', sortable: false, align: 'center' },
-      { text: 'Nodes', value: 'nodeCount', sortable: false, align: 'center' },
       { text: 'Username', value: 'username', sortable: false, align: 'center' },
       { text: 'UpdatedAt', value: 'updatedAt', align: 'center' }
     ],
-    networks: [],
+    cyberspaces: [],
     isLoading: {
-      getNetworks: false,
-      createNetwork: false
+      getCyberspaces: false,
+      createCyberspace: false
     },
     searchWord: '',
-    networkCreateDialog: false,
-    newNetwork: {
+    cyberspaceCreateDialog: false,
+    newCyberspace: {
       id: '',
       label: '',
       data: {}
@@ -148,41 +146,41 @@ export default {
   }),
   watch: {
     $route() {
-      this.getNetworks();
+      this.getCyberspaces();
     },
-    networkCreateDialog(val) {
+    cyberspaceCreateDialog(val) {
       if (!val) {
-        this.newNetwork.id = '';
-        this.newNetwork.label = '';
-        this.newNetwork.data = {};
+        this.newCyberspace.id = '';
+        this.newCyberspace.label = '';
+        this.newCyberspace.data = {};
       }
     }
   },
   mounted() {
-    this.getNetworks();
+    this.getCyberspaces();
   },
   methods: {
-    async getNetworks() {
-      this.isLoading.getNetworks = true;
+    async getCyberspaces() {
+      this.isLoading.getCyberspaces = true;
       this.searchWord = this.$route.query.search;
       await axios
-        .get('/networks/', {
+        .get('/cyberspaces/', {
           params: {
             search: this.searchWord
           }
         })
         .then(res => {
-          this.networks = res.data;
+          this.cyberspaces = res.data;
         })
         .catch(err => {
           console.log(err);
-          this.$_pushNotice('Failed to retrieve network list.', 'error');
+          this.$_pushNotice('Failed to retrieve cyberspace list.', 'error');
         });
-      this.isLoading.getNetworks = false;
+      this.isLoading.getCyberspaces = false;
     },
-    searchNetwork() {
+    searchCyberspace() {
       if (this.searchWord === this.$route.query.search) {
-        this.getNetworks();
+        this.getCyberspaces();
         return;
       }
       this.$router.push({
@@ -191,23 +189,23 @@ export default {
         }
       });
     },
-    async createNetwork() {
-      if (!this.newNetwork.id) {
+    async createCyberspace() {
+      if (!this.newCyberspace.id) {
         const isConfirmed = await this.$_appRefs.confirmDialog.open({
-          message: 'The Network ID was not set.\nDo you want to set UUID automatically?'
+          message: 'The Cyberspace ID was not set.\nDo you want to set UUID automatically?'
         });
         if (!isConfirmed) {
           return;
         }
       }
-      this.isLoading.createNetwork = true;
+      this.isLoading.createCyberspace = true;
       await axios
-        .post('/networks/', {
+        .post('/cyberspaces/', {
           data: {
             layers: [],
-            ...this.newNetwork.data,
-            id: this.newNetwork.id,
-            label: this.newNetwork.label
+            ...this.newCyberspace.data,
+            id: this.newCyberspace.id,
+            label: this.newCyberspace.label
           }
         },
         {
@@ -215,24 +213,24 @@ export default {
         })
         .then(res => {
           if (res.status !== 201) {
-            this.$_pushNotice('This Network ID is already in use.', 'error');
+            this.$_pushNotice('This Cyberspace ID is already in use.', 'error');
             return;
           }
-          this.$_pushNotice('Created a new network.', 'success');
+          this.$_pushNotice('Created a new cyberspace.', 'success');
           this.$router.push({
-            name: 'Visualize',
+            name: 'Cyberspace',
             params: {
-              networkId: res.data.networkId
+              id: res.data.id
             }
           });
         })
         .catch(err => {
           console.log(err);
           this.$_pushNotice('An error occurred.', 'error');
-        })
-      this.isLoading.createNetwork = false;
+        });
+      this.isLoading.createCyberspace = false;
     },
-    uploadNetwork() {
+    uploadCyberspace() {
       const inputEl = document.createElement('input');
       inputEl.type = 'file';
       inputEl.accept = '.json';
@@ -240,21 +238,21 @@ export default {
         const reader = new FileReader();
         reader.readAsText(e.target.files[0]);
         reader.addEventListener('load', () => {
-          const network = JSON.parse(reader.result);
-          const networkValidate = validate(network, networkSchema);
-          if (!networkValidate.valid) {
-            console.error('JSON Schema Validate ERROR', networkValidate.errors);
+          const cyberspace = JSON.parse(reader.result);
+          const cyberspaceValidate = validate(cyberspace, cyberspaceSchema);
+          if (!cyberspaceValidate.valid) {
+            console.error('JSON Schema Validate ERROR', cyberspaceValidate.errors);
             this.$_pushNotice('An error occurred during JSON validation.', 'error');
             return;
           }
-          this.newNetwork.id = network.id;
-          this.newNetwork.label = network.label;
-          this.newNetwork.data = network;
-          this.networkCreateDialog = true;
+          this.newCyberspace.id = cyberspace.id;
+          this.newCyberspace.label = cyberspace.label;
+          this.newCyberspace.data = cyberspace;
+          this.cyberspaceCreateDialog = true;
         });
       });
       inputEl.click();
     }
   }
-}
+};
 </script>

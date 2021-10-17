@@ -4,7 +4,8 @@ import { mapState } from 'vuex';
 Vue.mixin({
   computed: {
     ...mapState({
-      $_userData: state => state.userData
+      $_userData: state => state.userData,
+      $_visualizeData: state => state.visualizeData
     }),
     $_appRefs() {
       return this.$root.$children[0].$refs;

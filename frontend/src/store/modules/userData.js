@@ -1,13 +1,18 @@
 import axios from '@/axios/index';
 import Cookies from 'js-cookie';
 
+const beforeunloadHandler = e => {
+  e.returnValue = 'Are you sure you want to cancel editing Cyberspace?';
+};
+
 const defaultState = {
   isLoaded: false,
   isAuthed: false,
   accessToken: null,
   username: null,
   isSuperuser: false,
-  interceptorId: null
+  interceptorId: null,
+  isEdit: false
 };
 
 const state = Object.assign({}, defaultState);
@@ -36,6 +41,14 @@ const mutations = {
     state.accessToken = accessToken;
     state.username = username;
     state.isSuperuser = !!isSuperuser;
+  },
+  UPDATE_EDIT_STATE(state, isEdit) {
+    state.isEdit = isEdit;
+    if (isEdit) {
+      window.addEventListener('beforeunload', beforeunloadHandler);
+    } else {
+      window.removeEventListener('beforeunload', beforeunloadHandler);
+    }
   }
 };
 
@@ -45,6 +58,9 @@ const actions = {
   },
   updateAuthState: ({ commit }, userData) => {
     commit('UPDATE_AUTH_STATE', userData);
+  },
+  updateEditState: ({ commit }, isEdit) => {
+    commit('UPDATE_EDIT_STATE', isEdit);
   }
 };
 
