@@ -64,7 +64,7 @@ class CyberspacesView(GenericAPIView):
             'label': loads_data.get('label'),
             'desc': loads_data.get('desc'),
             'version': loads_data.get('version'),
-            'routing_table': loads_data.get('routingTable'),
+            'routing_table': loads_data.get('routingTable') or {},
             'layers': loads_data['layers']
         }
         try:
