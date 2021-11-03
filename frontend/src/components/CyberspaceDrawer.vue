@@ -14,7 +14,7 @@
       <v-toolbar flat color="transparent">
         <v-tabs v-model="drawerTab">
           <v-tab>Details</v-tab>
-          <v-tab disabled>Exercise</v-tab>
+          <v-tab>Exercise</v-tab>
           <v-tab>Network</v-tab>
           <v-spacer />
 
@@ -84,7 +84,9 @@
         <v-tab-item>
           <details-editor :cyberspace="cyberspace" />
         </v-tab-item>
-        <v-tab-item>Exercise</v-tab-item>
+        <v-tab-item>
+          <exercise-editor :cyberspace="cyberspace" />
+        </v-tab-item>
         <v-tab-item>
           <network-editor
             :network="cyberspace.layers"
@@ -119,12 +121,14 @@
 import axios from '@/axios';
 
 import DetailsEditor from '@/components/DetailsEditor.vue';
+import ExerciseEditor from '@/components/ExerciseEditor';
 import NetworkEditor from '@/components/NetworkEditor';
 
 export default {
   name: 'CyberspaceDrawer',
   components: {
     DetailsEditor,
+    ExerciseEditor,
     NetworkEditor
   },
   props: {
