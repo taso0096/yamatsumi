@@ -23,4 +23,5 @@ urlpatterns = [
     path('exercises/', include('exercises.urls')),
     path('sio/', include('socketio_app.urls')),
     path('', include('socketio_app.urls')),
+    path('example/', include('example.urls')),
 ]

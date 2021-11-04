@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'cyberspaces',
     'exercises',
     'socketio_app',
+    'example',
 ]
 
 MIDDLEWARE = [
