@@ -33,12 +33,12 @@
         "This is an example of a network."
       ]
     },
-    "scoreUrl": {
+    "scoresUrl": {
       "title": "スコアURL",
       "description": "演習システム側のスコア一覧API",
       "type": "string",
       "examples": [
-        "http://localhost:8080/score"
+        "http://localhost:8080/scores"
       ]
     },
     "questionsUrl": {

@@ -6,9 +6,9 @@
   >
     <v-card-text>
       <v-text-field
-        v-model="cyberspace.scoreUrl"
+        v-model="cyberspace.scoresUrl"
         label="Score URL"
-        :placeholder="scoreUrlExample"
+        :placeholder="scoresUrlExample"
       />
       <v-text-field
         v-model="cyberspace.questionsUrl"
@@ -31,8 +31,8 @@ export default {
     }
   },
   computed: {
-    scoreUrlExample() {
-      return String(cyberspaceSchema.properties.scoreUrl.examples[0]) || '';
+    scoresUrlExample() {
+      return String(cyberspaceSchema.properties.scoresUrl.examples[0]) || '';
     },
     questionsUrlExample() {
       return String(cyberspaceSchema.properties.questionsUrl.examples[0]) || '';
