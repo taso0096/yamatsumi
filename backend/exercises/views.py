@@ -71,7 +71,12 @@ class ExerciseDetailView(GenericAPIView):
         if cyberspace.questions_url:
             res = requests.get(cyberspace.questions_url)
             questions_data = res.json()
-        return Response(data={ **score_data, **questions_data }, status=status.HTTP_200_OK)
+        res = {
+            'id': cyberspace_id,
+            'scores': score_data,
+            **questions_data
+        }
+        return Response(data=res, status=status.HTTP_200_OK)
 
     def put(self, request, cyberspace_id):
         cyberspace = Cyberspace.objects.get(cyberspace_id=cyberspace_id)

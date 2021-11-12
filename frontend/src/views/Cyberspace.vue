@@ -139,7 +139,7 @@ export default {
     // exercise読み込み
     this.exercise = await axios
       .get(`/exercises/${id}/`)
-      .then(res => res.data.data)
+      .then(res => res.data)
       .catch(() => undefined);
     if (this.exercise?.scoreUrl) {
       this.scoreData = await fetch(this.exercise.scoreUrl)
