@@ -6,7 +6,7 @@ from cyberspaces.models import Cyberspace
 from .models import Exercise
 
 import json
-
+import requests
 
 def return_exercise_detail_data(exercise):
     data = {
@@ -61,10 +61,17 @@ class ExercisesView(GenericAPIView):
 
 
 class ExerciseDetailView(GenericAPIView):
-    def get(self, request, cyberspace_id):
+    def get(self, _, cyberspace_id):
         cyberspace = Cyberspace.objects.get(cyberspace_id=cyberspace_id)
-        exercise = Exercise.objects.get(cyberspace=cyberspace)
-        return Response(data=return_exercise_detail_data(exercise), status=status.HTTP_200_OK)
+        score_data = {}
+        questions_data = {}
+        if cyberspace.scores_url:
+            res = requests.get(cyberspace.scores_url)
+            score_data = res.json()
+        if cyberspace.questions_url:
+            res = requests.get(cyberspace.questions_url)
+            questions_data = res.json()
+        return Response(data={ **score_data, **questions_data }, status=status.HTTP_200_OK)
 
     def put(self, request, cyberspace_id):
         cyberspace = Cyberspace.objects.get(cyberspace_id=cyberspace_id)
