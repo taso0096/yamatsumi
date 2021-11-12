@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "object",
   "required": [
     "id"
@@ -16,118 +16,39 @@
         "example_network"
       ]
     },
-    "scoreUrl": {
-      "title": "スコアURL",
-      "description": "演習システム側のスコア一覧API",
-      "type": "string",
-      "examples": [
-        "http://localhost:8080/score"
-      ]
-    },
-    "version": {
-      "title": "バージョン",
-      "description": "競技情報のバージョン",
-      "type": ["integer", "string"],
-      "examples": [
-        "0.0.1"
-      ]
-    },
-    "teams": {
+    "scores": {
       "title": "チーム一覧",
       "description": "チーム一覧",
-      "type": "array",
-      "additionalItems": false,
-      "items": {
-        "type": "object",
-        "required": [
-          "id"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "title": "チームID",
-            "description": "チームID",
-            "type": ["integer", "string"],
-            "pattern": "^[a-zA-Z0-9_-]+$",
-            "examples": [
-              "team_a"
-            ]
-          },
-          "label": {
-            "title": "チーム名",
-            "description": "チーム名",
-            "type": "string",
-            "examples": [
-              "Team A"
-            ]
-          },
-          "teamOptions": {
-            "title": "チームオプション",
-            "description": "チームオプション",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "color": {
-                "title": "チーム色",
-                "description": "チーム色",
-                "type": "string",
-                "default": "#fff",
-                "examples": [
-                  "#fff"
-                ]
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "title": "チーム",
+          "description": "チーム",
+          "type": "object",
+          "properties": {
+            "score": {
+              "title": "チームスコア",
+              "description": "チームスコア",
+              "type": "integer",
+              "examples": [
+                100
+              ]
+            },
+            "users": {
+              "title": "ユーザ一覧",
+              "description": "ユーザ一覧",
+              "type": "object",
+              "patternProperties": {
+                ".+": {
+                  "title": "ユーザスコア",
+                  "description": "ユーザスコア",
+                  "type": ["integer", "null"],
+                  "examples": [
+                    100
+                  ]
+                }
               }
             }
-          }
-        }
-      }
-    },
-    "users": {
-      "title": "ユーザ一覧",
-      "description": "ユーザ一覧",
-      "type": "array",
-      "additionalItems": false,
-      "items": {
-        "type": "object",
-        "required": [
-          "id",
-          "nodeId"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "title": "ユーザID",
-            "description": "ユーザID",
-            "type": ["integer", "string"],
-            "pattern": "^[a-zA-Z0-9_-]+$",
-            "examples": [
-              "user_a"
-            ]
-          },
-          "label": {
-            "title": "ユーザ名",
-            "description": "ユーザ名",
-            "type": "string",
-            "examples": [
-              "User A"
-            ]
-          },
-          "nodeId": {
-            "title": "ノードID",
-            "description": "ノードID",
-            "type": "string",
-            "pattern": "^[a-zA-Z0-9_-]+$",
-            "examples": [
-              "server_a"
-            ]
-          },
-          "teamId": {
-            "title": "チームID",
-            "description": "チームID",
-            "type": "string",
-            "pattern": "^[a-zA-Z0-9_-]+$",
-            "examples": [
-              "team_a"
-            ]
           }
         }
       }
