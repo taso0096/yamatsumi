@@ -53,20 +53,18 @@ export default {
   mounted() {
     if (this.node.nodeOptions?.type === 'question') {
       const questions = JSON.parse(JSON.stringify(this.$_visualizeData.exercise.questions));
+      const nodeQuestions = [];
       const tags = this.node.id.split('__');
       tags.forEach(tag => {
         const levelId = tag.split(/^level-/)[1];
         const categoryId = tag.split(/^category-/)[1];
-        const tmpQuestions = JSON.parse(JSON.stringify(questions));
         if (levelId) {
-          questions.length = 0;
-          questions.push(...tmpQuestions.filter(q => q.levelId === levelId));
+          nodeQuestions.push(...questions.filter(q => q.levelId === levelId));
         } else if (categoryId) {
-          questions.length = 0;
-          questions.push(...tmpQuestions.filter(q => q.categoryId === categoryId));
+          nodeQuestions.push(...questions.filter(q => q.categoryId === categoryId));
         }
       });
-      this.$set(this.validNode, 'questions', questions);
+      this.$set(this.validNode, 'questions', nodeQuestions);
       return;
     };
     try {
