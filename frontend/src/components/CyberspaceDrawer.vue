@@ -36,6 +36,9 @@
             </template>
 
             <v-list class="pa-0">
+              <v-list-item @click="downloadCyberspace">
+                <v-list-item-title>Download</v-list-item-title>
+              </v-list-item>
               <v-list-item @click="enableEditMode">
                 <v-list-item-title>Edit</v-list-item-title>
               </v-list-item>
@@ -263,6 +266,13 @@ export default {
           this.$_pushNotice('An error occurred.', 'error');
         });
       this.isLoading.delete = false;
+    },
+    async downloadCyberspace() {
+      const data = JSON.stringify(this.cyberspace, null, '  ');
+      const link = document.createElement('a');
+      link.href = `data:text/plain,${encodeURIComponent(data)}`;
+      link.download = `${this.cyberspace.id}.json`;
+      link.click();
     }
   }
 };
