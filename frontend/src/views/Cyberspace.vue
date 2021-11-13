@@ -191,8 +191,9 @@ export default {
         return;
       }
       const routingTable = this.cyberspace.visualize.routingTable;
-      const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))];
-      const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))];
+      const usersRoutingTable = this.exercise.routingTable;
+      const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))] || Object.keys(usersRoutingTable)[Object.values(usersRoutingTable).findIndex(n => n.includes(data.srcIP))];
+      const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))] || Object.keys(usersRoutingTable)[Object.values(usersRoutingTable).findIndex(n => n.includes(data.dstIP))];
       const srcNode = srcNodeId ? `#node-${srcNodeId}` : data.srcIsGlobal ? '.internet-nodes' : '.intranet-nodes';
       const dstNode = dstNodeId ? `#node-${dstNodeId}` : data.dstIsGlobal ? '.internet-nodes' : '.intranet-nodes';
       this.$refs.lineEntity.emit3(srcNode, dstNode, port?.color || '#fff');

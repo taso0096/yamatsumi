@@ -15,6 +15,11 @@
         label="Questions URL"
         :placeholder="questionsUrlExample"
       />
+      <v-text-field
+        v-model="cyberspace.userRoutingUrl"
+        label="User Routing URL"
+        :placeholder="userRoutingUrlExample"
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -36,6 +41,9 @@ export default {
     },
     questionsUrlExample() {
       return String(cyberspaceSchema.properties.questionsUrl.examples[0]) || '';
+    },
+    userRoutingUrlExample() {
+      return String(cyberspaceSchema.properties.userRoutingUrl.examples[0]) || '';
     }
   }
 };

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "object",
   "required": [
     "id"
@@ -162,6 +162,24 @@
             "pattern": "^[a-zA-Z0-9_-]+$",
             "examples": [
               "web"
+            ]
+          }
+        }
+      }
+    },
+    "routingTable": {
+      "title": "ユーザルーティングテーブル",
+      "description": "ユーザのルーティングテーブル",
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "title": "IPアドレス",
+          "description": "IPアドレス",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "examples": [
+              "192.168.1.1"
             ]
           }
         }
