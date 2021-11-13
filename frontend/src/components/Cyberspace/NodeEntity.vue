@@ -1,6 +1,12 @@
 <template>
+  <UserEntity
+    v-if="validNode.users"
+    :node="node"
+    :users="validNode.users"
+    :shape="validNode.shape"
+  />
   <QuestionEntity
-    v-if="validNode.questions"
+    v-else-if="validNode.questions"
     :node="node"
     :questions="validNode.questions"
   />
@@ -18,25 +24,18 @@
         :position="`0 ${-sphereRadius*validNode.size - sphereRadius} 0`"
         wrap-count="50"
       />
-      <a-text
-        v-if="validNode.userId"
-        :value="$_visualizeData.score.users[validNode.userId]"
-        align="center"
-        :color="validNode.labelColor"
-        side="double"
-        :position="`0 ${sphereRadius*validNode.size + sphereRadius} 0`"
-        wrap-count="50"
-      />
     </a-sphere>
   </a-entity>
 </template>
 
 <script>
+import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
 
 export default {
   name: 'NodeEntity',
   components: {
+    UserEntity,
     QuestionEntity
   },
   props: {
@@ -51,6 +50,18 @@ export default {
     sphereRadius: () => 0.2
   },
   mounted() {
+    if (this.node.nodeOptions?.type === 'user') {
+      const scores = this.$_visualizeData.exercise.scores;
+      const users = [];
+      for (const [teamId, team] of Object.entries(scores)) {
+        users.push(
+          ...Object.entries(team.users).map(([id, score]) => ({ id, score, teamId }))
+        );
+      }
+      this.$set(this.validNode, 'users', users);
+      this.$set(this.validNode, 'shape', this.node.id.split('__').slice(-1)[0] || 'circle');
+      return;
+    };
     if (this.node.nodeOptions?.type === 'question') {
       const questions = JSON.parse(JSON.stringify(this.$_visualizeData.exercise.questions));
       const nodeQuestions = [];
@@ -67,13 +78,6 @@ export default {
       this.$set(this.validNode, 'questions', nodeQuestions);
       return;
     };
-    try {
-      const users = this.$_visualizeData.exercise.users;
-      if (users) {
-        this.$set(this.validNode, 'userId', users.find(u => u.nodeId === this.node.id)?.id);
-      }
-    } catch {
-    }
     this.$set(this.validNode, 'label', this.validNode.userId || this.node.label || this.node.id);
     this.$set(this.validNode, 'type', this.node.nodeOptions?.type || 'sphere');
     this.$set(this.validNode, 'size', this.node.nodeOptions?.size || 1);
