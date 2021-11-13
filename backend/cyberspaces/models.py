@@ -11,6 +11,7 @@ class Cyberspace(models.Model):
     desc = models.CharField(max_length=400, blank=True, null=True)
     scores_url = models.CharField(max_length=100, blank=True, null=True)
     questions_url = models.CharField(max_length=100, blank=True, null=True)
+    user_routing_url = models.CharField(max_length=100, blank=True, null=True)
     version = models.CharField(max_length=10, blank=True, null=True)
     routing_table = models.JSONField(default=dict, blank=True, null=True)
     layers = models.JSONField()

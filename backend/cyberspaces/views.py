@@ -27,6 +27,7 @@ def return_cyberspace_detail_data(cyberspace):
         'desc': cyberspace.desc,
         'scoresUrl': cyberspace.scores_url,
         'questionsUrl': cyberspace.questions_url,
+        'userRoutingUrl': cyberspace.user_routing_url,
         'version': cyberspace.version,
         'routingTable': cyberspace.routing_table,
         'layers': cyberspace.layers
@@ -67,6 +68,7 @@ class CyberspacesView(GenericAPIView):
             'desc': loads_data.get('desc'),
             'scores_url': loads_data.get('scoresUrl'),
             'questions_url': loads_data.get('questionsUrl'),
+            'user_routing_url': loads_data.get('userRoutingUrl'),
             'version': loads_data.get('version'),
             'routing_table': loads_data.get('routingTable') or {},
             'layers': loads_data['layers']
@@ -98,6 +100,7 @@ class CyberspaceDetailView(GenericAPIView):
             'desc': loads_data.get('desc'),
             'scores_url': loads_data.get('scoresUrl'),
             'questions_url': loads_data.get('questionsUrl'),
+            'user_routing_url': loads_data.get('userRoutingUrl'),
             'version': loads_data.get('version'),
             'routing_table': loads_data.get('routingTable'),
             'layers': loads_data['layers']

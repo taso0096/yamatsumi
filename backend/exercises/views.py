@@ -71,10 +71,14 @@ class ExerciseDetailView(GenericAPIView):
         if cyberspace.questions_url:
             res = requests.get(cyberspace.questions_url)
             questions_data = res.json()
+        if cyberspace.user_routing_url:
+            res = requests.get(cyberspace.user_routing_url)
+            user_routing_data = res.json()
         res = {
             'id': cyberspace_id,
             'scores': score_data,
-            **questions_data
+            **questions_data,
+            'routingTable': user_routing_data
         }
         return Response(data=res, status=status.HTTP_200_OK)
 

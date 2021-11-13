@@ -144,3 +144,32 @@ class QuestionsView(GenericAPIView):
             ]
         }
         return Response(data=questions_data, status=status.HTTP_200_OK)
+
+
+class IpAddressesView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, _):
+        ip_data = {
+            'user_1': ['192.168.0.1'],
+            'user_2': ['192.168.0.2'],
+            'user_3': ['192.168.0.3'],
+            'user_4': ['192.168.0.4'],
+            'user_5': ['192.168.0.5'],
+            'user_6': ['192.168.0.6'],
+            'user_7': ['192.168.0.7'],
+            'user_8': ['192.168.0.8'],
+            'user_9': ['192.168.0.9'],
+            'user_10': ['192.168.0.10'],
+            'user_11': ['192.168.0.11'],
+            'user_12': ['192.168.0.12'],
+            'user_13': ['192.168.0.13'],
+            'user_14': ['192.168.0.14'],
+            'user_15': ['192.168.0.15'],
+            'user_16': ['192.168.0.16'],
+            'user_17': ['192.168.0.17'],
+            'user_18': ['192.168.0.18'],
+            'user_19': ['192.168.0.19'],
+            'user_20': ['192.168.0.20']
+        }
+        return Response(data=ip_data, status=status.HTTP_200_OK)
