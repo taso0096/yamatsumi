@@ -1,9 +1,8 @@
+from cyberspaces.models import Cyberspace
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-
-from exercises.models import Exercise
 
 import socketio
 from urllib.parse import parse_qs
@@ -19,17 +18,12 @@ class AnswerView(GenericAPIView):
 
     def post(self, request, exercise_id):
         try:
-            Exercise.objects.get(exercise_id=exercise_id)
-            response_data = {
-                "uid": request.data['uid'],
-                "qid": request.data['qid'],
-                "isCorrect": request.data['isCorrect']
-            }
+            Cyberspace.objects.get(cyberspace_id=exercise_id)
         except Exception as e:
             print(e)
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        sio.emit('answer', response_data, room=exercise_id)
-        return Response(status=status.HTTP_200_OK)
+        sio.emit('answer', request.data.get('data'), room=exercise_id)
+        return Response(data=request.data.get('data') ,status=status.HTTP_200_OK)
 
 
 @sio.event

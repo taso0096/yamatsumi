@@ -154,9 +154,8 @@ export default {
         nextGeometry.dispose();
       };
     },
-    emitAnswer(uid, qid, isCorrect, endFunc = () => {}) {
-      const user = this.$_visualizeData.exercise.users.find(u => u.id === uid);
-      this.emit1(`#node-${user.nodeId}`, `#question__${qid}`, isCorrect ? '#00ff00' : '#ff0000', endFunc, true);
+    emitAnswer(targetId, questionId, isSuccess, endFunc = () => {}) {
+      this.emit1(`#node-${targetId}`, `#question__${questionId}`, isSuccess ? '#00ff00' : '#ff0000', endFunc, true);
     },
     emit3(source, target, color = '#fff', endFunc = () => {}, isAnswer = false) {
       if (Object.keys(this.animationFunctions).length > 100) {

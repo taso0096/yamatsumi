@@ -199,23 +199,36 @@ export default {
       this.$refs.lineEntity.emit3(srcNode, dstNode, port?.color || '#fff');
     });
     this.socket.on('answer', data => {
-      this.$refs.lineEntity.emitAnswer(data.uid, data.qid, data.isCorrect, () => {
-        if (!data.isCorrect) {
-          return;
-        }
-        const levelId = (this.exercise.questions || []).find(q => String(q.id) === String(data.qid))?.levelId;
-        const targetScore = this.scoreData.users[data.uid] + (this.exercise.levels || []).find(l => String(l.id) === String(levelId))?.score;
-        if (!targetScore) {
-          return;
-        }
-        const scoreIntervalId = setInterval(() => {
-          const score = this.scoreData.users[data.uid];
-          if (score < targetScore) {
-            this.$set(this.scoreData.users, data.uid, score + 5);
-          } else {
-            clearInterval(scoreIntervalId);
+      const answerData = JSON.parse(data);
+      Object.entries(answerData.scores.teams).forEach(([teamId, targetScore]) => {
+        this.$refs.lineEntity.emitAnswer(teamId, answerData.questionId, answerData.isSuccess, () => {
+          if (!answerData.isSuccess) {
+            return;
           }
-        }, 20);
+          const scoreIntervalId = setInterval(() => {
+            const score = this.exercise.scores[teamId].score;
+            if (score < targetScore) {
+              this.$set(this.exercise.scores[teamId], 'score', score + 5);
+            } else {
+              clearInterval(scoreIntervalId);
+            }
+          }, 20);
+        });
+      });
+      Object.entries(answerData.scores.users).forEach(([userId, targetScore]) => {
+        this.$refs.lineEntity.emitAnswer(userId, answerData.questionId, answerData.isSuccess, () => {
+          if (!answerData.isSuccess) {
+            return;
+          }
+          const scoreIntervalId = setInterval(() => {
+            const score = this.exercise.scores[answerData.teamId].users[userId];
+            if (score < targetScore) {
+              this.$set(this.exercise.scores[answerData.teamId].users, userId, score + 5);
+            } else {
+              clearInterval(scoreIntervalId);
+            }
+          }, 20);
+        });
       });
     });
     this.socket.on('notice', data => {
