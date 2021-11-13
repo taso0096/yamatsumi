@@ -5,7 +5,7 @@
       :key="user.id"
       :id="`node-${user.id}`"
       :position="user.position"
-      :look-center="`parentSelector: #node-${node.id}`"
+      :look-center="shape !== 'square' && `parentSelector: #node-${node.id}`"
     >
       <a-sphere
         :radius="node.nodeOptions.size"
@@ -69,7 +69,7 @@ export default {
     calcSquarePosition() {
       const nodeCount = this.users.length;
       const edgeMaxLength = Math.ceil(Math.sqrt(nodeCount)) - 1;
-      const gap = 1;
+      const gap = 1.5;
       this.users.forEach((_, i) => {
         const x = (edgeMaxLength - i%(edgeMaxLength + 1))*gap - edgeMaxLength*gap/2;
         const z = (edgeMaxLength - Math.floor(i/(edgeMaxLength + 1)))*gap - (edgeMaxLength - (nodeCount/(edgeMaxLength + 1) - 1)/2)*gap;
