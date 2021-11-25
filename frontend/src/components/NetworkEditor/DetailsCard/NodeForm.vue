@@ -47,6 +47,7 @@
           v-model="node.nodeOptions.type"
           label="Type"
           :items="schemaNodeOptions.type.enum"
+          @change="changeNodeType"
         />
       </v-col>
       <v-col class="py-0">
@@ -76,6 +77,37 @@
         />
       </v-col>
     </v-row>
+    <template v-if="node.nodeOptions.type === 'user'">
+      <v-row>
+        <v-col class="py-0">
+          <v-select
+            v-model="node.nodeOptions.users"
+            :items="users"
+            label="Selected Users"
+            multiple
+          >
+            <template v-slot:prepend-item>
+              <v-list-item
+                ripple
+                @click="toggleSelectAllUsers"
+              >
+                <v-list-item-action>
+                  <v-icon :color="node.nodeOptions.users.length > 0 ? 'primary' : ''">
+                    {{ userSelectAllIcon() }}
+                  </v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Select All
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider class="mt-2"></v-divider>
+            </template>
+          </v-select>
+        </v-col>
+      </v-row>
+    </template>
   </v-card-text>
 </template>
 
@@ -103,11 +135,46 @@ export default {
     },
     schemaNodeOptions() {
       return this.schemaNode.nodeOptions.properties;
+    },
+    users() {
+      return Object.values(this.$_visualizeData.exercise.scores).reduce((users, team) => {
+        users.push(...Object.keys(team.users).map((id) => (id)));
+        return users;
+      }, []);
     }
   },
   created() {
     if (!this.node.nodeOptions) {
       this.node.nodeOptions = {};
+    }
+  },
+  methods: {
+    changeNodeType(type) {
+      if (type === 'user') {
+        this.node.nodeOptions.users = [];
+      } else if (this.node.nodeOptions.users) {
+        delete this.node.nodeOptions.users;
+      }
+    },
+    userSelectAllIcon () {
+      switch (this.node.nodeOptions.users.length/this.users.length) {
+        case 1:
+          return 'mdi-close-box';
+        case 0:
+          return 'mdi-checkbox-blank-outline';
+        default:
+          return 'mdi-minus-box';
+      }
+    },
+    toggleSelectAllUsers () {
+      this.$nextTick(() => {
+        if (this.node.nodeOptions.users.length/this.users.length === 1) {
+          this.node.nodeOptions.users.splice(0, this.node.nodeOptions.users.length);
+        } else {
+          this.node.nodeOptions.users.splice(0, this.node.nodeOptions.users.length);
+          this.node.nodeOptions.users.push(...this.users);
+        }
+      })
     }
   }
 };
