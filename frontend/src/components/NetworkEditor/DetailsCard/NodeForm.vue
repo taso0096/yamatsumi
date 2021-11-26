@@ -77,54 +77,29 @@
         />
       </v-col>
     </v-row>
-    <v-row v-if="node.nodeOptions.type === 'user'">
-      <v-col class="py-0">
-        <v-select
-          v-model="node.nodeOptions.users"
-          label="Selected Users"
-          :items="users"
-          multiple
-        >
-          <template v-slot:prepend-item>
-            <v-list-item
-              ripple
-              @click="toggleSelectAll('users')"
-            >
-              <v-list-item-action>
-                <v-icon :color="node.nodeOptions.users.length > 0 ? 'primary' : ''">
-                  {{ selectAllIcon('users') }}
-                </v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>
-                  Select All
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider class="mt-2"></v-divider>
-          </template>
-        </v-select>
-      </v-col>
-    </v-row>
-    <template v-if="node.nodeOptions.type === 'question'">
-      <v-row>
+
+    <template v-if="['user', 'question'].includes(node.nodeOptions.type)">
+      <v-row
+        v-for="option in nodeTypeOptions(node.nodeOptions.type)"
+        :key="option"
+      >
         <v-col class="py-0">
           <v-select
-            v-model="node.nodeOptions.levels"
-            label="Selected Levels"
-            :items="levels"
-            multiple
+            v-model="node.nodeOptions[option]"
+            :label="`Selected ${option[0].toUpperCase()}${option.slice(1)}`"
+            :items="exercise[option]"
             item-text="label"
             item-value="id"
+            multiple
           >
             <template v-slot:prepend-item>
               <v-list-item
                 ripple
-                @click="toggleSelectAll('levels')"
+                @click="toggleSelectAll(option)"
               >
                 <v-list-item-action>
-                  <v-icon :color="node.nodeOptions.levels.length > 0 ? 'primary' : ''">
-                    {{ selectAllIcon('levels') }}
+                  <v-icon :color="node.nodeOptions[option].length > 0 ? 'primary' : ''">
+                    {{ selectAllIcon(option) }}
                   </v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
@@ -138,35 +113,36 @@
           </v-select>
         </v-col>
       </v-row>
-      <v-row>
+      <div>
+        <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
+      </div>
+      <v-row v-if="node.nodeOptions.layoutOptions">
         <v-col class="py-0">
           <v-select
-            v-model="node.nodeOptions.categories"
-            label="Selected Categories"
-            :items="categories"
-            multiple
-            item-text="label"
-            item-value="id"
-          >
-            <template v-slot:prepend-item>
-              <v-list-item
-                ripple
-                @click="toggleSelectAll('categories')"
-              >
-                <v-list-item-action>
-                  <v-icon :color="node.nodeOptions.categories.length > 0 ? 'primary' : ''">
-                    {{ selectAllIcon('categories') }}
-                  </v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    Select All
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider class="mt-2"></v-divider>
-            </template>
-          </v-select>
+            v-model="node.nodeOptions.layoutOptions.shape"
+            label="Shape"
+            :items="schemaLayoutOptions.shape.enum"
+          />
+        </v-col>
+        <v-col class="py-0">
+          <v-text-field
+            v-model.number="node.nodeOptions.layoutOptions.scale"
+            label="Scale"
+            type="number"
+            min="0"
+            step="0.1"
+            :placeholder="String(schemaLayoutOptions.scale.default || '')"
+          />
+        </v-col>
+        <v-col class="py-0">
+          <v-text-field
+            v-model.number="node.nodeOptions.layoutOptions.fixedDistance"
+            label="Fixed Distance"
+            type="number"
+            min="0"
+            step="0.1"
+            :placeholder="String(schemaLayoutOptions.fixedDistance.default || '')"
+          />
         </v-col>
       </v-row>
     </template>
@@ -198,17 +174,19 @@ export default {
     schemaNodeOptions() {
       return this.schemaNode.nodeOptions.properties;
     },
-    users() {
-      return Object.values(this.$_visualizeData.exercise.scores).reduce((users, team) => {
-        users.push(...Object.keys(team.users).map((id) => (id)));
-        return users;
-      }, []);
+    schemaLayoutOptions() {
+      return this.schemaLayer.layoutOptions.properties;
     },
-    levels() {
-      return this.$_visualizeData.exercise.levels;
-    },
-    categories() {
-      return this.$_visualizeData.exercise.categories;
+    exercise() {
+      return {
+        users: Object.values(this.$_visualizeData.exercise.scores)
+          .reduce((users, team) => {
+            users.push(...Object.keys(team.users).map(id => id));
+            return users;
+          }, []),
+        levels: this.$_visualizeData.exercise.levels,
+        categories: this.$_visualizeData.exercise.categories
+      }
     }
   },
   created() {
@@ -221,21 +199,24 @@ export default {
       delete this.node.nodeOptions.users;
       delete this.node.nodeOptions.levels;
       delete this.node.nodeOptions.categories;
+      delete this.node.nodeOptions.layoutOptions;
       switch (type) {
         case 'user':
           this.node.nodeOptions.users = [];
+          this.node.nodeOptions.layoutOptions = {};
           break;
         case 'question':
           this.node.nodeOptions.levels = [];
           this.node.nodeOptions.categories = [];
+          this.node.nodeOptions.layoutOptions = {};
           break;
       }
     },
-    selectAllIcon(item) {
-      if (!this.node.nodeOptions[item] || !this[item]) {
+    selectAllIcon(option) {
+      if (!this.node.nodeOptions[option] || !this.exercise[option]) {
         return 'mdi-checkbox-blank-outline';
       }
-      switch (this.node.nodeOptions[item].length/this[item].length) {
+      switch (this.node.nodeOptions[option].length/this.exercise[option].length) {
         case 1:
           return 'mdi-close-box';
         case 0:
@@ -244,18 +225,26 @@ export default {
           return 'mdi-minus-box';
       }
     },
-    toggleSelectAll(item) {
-      if (!this.node.nodeOptions[item] || !this[item]) {
+    toggleSelectAll(option) {
+      if (!this.node.nodeOptions[option] || !this.exercise[option]) {
         return;
       }
       this.$nextTick(() => {
-        if (this.node.nodeOptions[item].length/this[item].length === 1) {
-          this.node.nodeOptions[item].splice(0, this.node.nodeOptions[item].length);
+        if (this.node.nodeOptions[option].length/this.exercise[option].length === 1) {
+          this.node.nodeOptions[option].splice(0, this.node.nodeOptions[option].length);
         } else {
-          this.node.nodeOptions[item].splice(0, this.node.nodeOptions[item].length);
-          this.node.nodeOptions[item].push(...this[item]);
+          this.node.nodeOptions[option].splice(0, this.node.nodeOptions[option].length);
+          this.node.nodeOptions[option].push(...this.exercise[option]);
         }
       });
+    },
+    nodeTypeOptions(type) {
+      switch (type) {
+        case 'user':
+          return ['users'];
+        case 'question':
+          return ['levels', 'categories'];
+      }
     }
   }
 };
