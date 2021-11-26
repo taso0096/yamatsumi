@@ -77,23 +77,85 @@
         />
       </v-col>
     </v-row>
-    <template v-if="node.nodeOptions.type === 'user'">
+    <v-row v-if="node.nodeOptions.type === 'user'">
+      <v-col class="py-0">
+        <v-select
+          v-model="node.nodeOptions.users"
+          label="Selected Users"
+          :items="users"
+          multiple
+        >
+          <template v-slot:prepend-item>
+            <v-list-item
+              ripple
+              @click="toggleSelectAll('users')"
+            >
+              <v-list-item-action>
+                <v-icon :color="node.nodeOptions.users.length > 0 ? 'primary' : ''">
+                  {{ selectAllIcon('users') }}
+                </v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Select All
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider class="mt-2"></v-divider>
+          </template>
+        </v-select>
+      </v-col>
+    </v-row>
+    <template v-if="node.nodeOptions.type === 'question'">
       <v-row>
         <v-col class="py-0">
           <v-select
-            v-model="node.nodeOptions.users"
-            :items="users"
-            label="Selected Users"
+            v-model="node.nodeOptions.levels"
+            label="Selected Levels"
+            :items="levels"
             multiple
+            item-text="label"
+            item-value="id"
           >
             <template v-slot:prepend-item>
               <v-list-item
                 ripple
-                @click="toggleSelectAllUsers"
+                @click="toggleSelectAll('levels')"
               >
                 <v-list-item-action>
-                  <v-icon :color="node.nodeOptions.users.length > 0 ? 'primary' : ''">
-                    {{ userSelectAllIcon() }}
+                  <v-icon :color="node.nodeOptions.levels.length > 0 ? 'primary' : ''">
+                    {{ selectAllIcon('levels') }}
+                  </v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Select All
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider class="mt-2"></v-divider>
+            </template>
+          </v-select>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="py-0">
+          <v-select
+            v-model="node.nodeOptions.categories"
+            label="Selected Categories"
+            :items="categories"
+            multiple
+            item-text="label"
+            item-value="id"
+          >
+            <template v-slot:prepend-item>
+              <v-list-item
+                ripple
+                @click="toggleSelectAll('categories')"
+              >
+                <v-list-item-action>
+                  <v-icon :color="node.nodeOptions.categories.length > 0 ? 'primary' : ''">
+                    {{ selectAllIcon('categories') }}
                   </v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
@@ -141,6 +203,12 @@ export default {
         users.push(...Object.keys(team.users).map((id) => (id)));
         return users;
       }, []);
+    },
+    levels() {
+      return this.$_visualizeData.exercise.levels;
+    },
+    categories() {
+      return this.$_visualizeData.exercise.categories;
     }
   },
   created() {
@@ -150,14 +218,24 @@ export default {
   },
   methods: {
     changeNodeType(type) {
-      if (type === 'user') {
-        this.node.nodeOptions.users = [];
-      } else if (this.node.nodeOptions.users) {
-        delete this.node.nodeOptions.users;
+      delete this.node.nodeOptions.users;
+      delete this.node.nodeOptions.levels;
+      delete this.node.nodeOptions.categories;
+      switch (type) {
+        case 'user':
+          this.node.nodeOptions.users = [];
+          break;
+        case 'question':
+          this.node.nodeOptions.levels = [];
+          this.node.nodeOptions.categories = [];
+          break;
       }
     },
-    userSelectAllIcon () {
-      switch (this.node.nodeOptions.users.length/this.users.length) {
+    selectAllIcon(item) {
+      if (!this.node.nodeOptions[item] || !this[item]) {
+        return 'mdi-checkbox-blank-outline';
+      }
+      switch (this.node.nodeOptions[item].length/this[item].length) {
         case 1:
           return 'mdi-close-box';
         case 0:
@@ -166,15 +244,18 @@ export default {
           return 'mdi-minus-box';
       }
     },
-    toggleSelectAllUsers () {
+    toggleSelectAll(item) {
+      if (!this.node.nodeOptions[item] || !this[item]) {
+        return;
+      }
       this.$nextTick(() => {
-        if (this.node.nodeOptions.users.length/this.users.length === 1) {
-          this.node.nodeOptions.users.splice(0, this.node.nodeOptions.users.length);
+        if (this.node.nodeOptions[item].length/this[item].length === 1) {
+          this.node.nodeOptions[item].splice(0, this.node.nodeOptions[item].length);
         } else {
-          this.node.nodeOptions.users.splice(0, this.node.nodeOptions.users.length);
-          this.node.nodeOptions.users.push(...this.users);
+          this.node.nodeOptions[item].splice(0, this.node.nodeOptions[item].length);
+          this.node.nodeOptions[item].push(...this[item]);
         }
-      })
+      });
     }
   }
 };
