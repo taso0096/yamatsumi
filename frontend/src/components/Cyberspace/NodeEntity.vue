@@ -1,9 +1,7 @@
 <template>
   <UserEntity
-    v-if="validNode.users"
-    :node="node"
-    :users="validNode.users"
-    :shape="validNode.shape"
+    v-if="(validNode.nodeOptions || {}).type === 'user'"
+    :node="validNode"
   />
   <QuestionEntity
     v-else-if="validNode.questions"
@@ -13,15 +11,15 @@
   <a-entity v-else-if="!validNode.label"></a-entity>
   <a-entity v-else>
     <a-sphere
-      :radius="sphereRadius*validNode.size"
+      :radius="sphereRadius*validNode.nodeOptions.size"
       :color="validNode.nodeColor"
     >
       <a-text
         :value="validNode.label"
         align="center"
-        :color="validNode.labelColor"
+        :color="validNode.nodeOptions.labelColor"
         side="double"
-        :position="`0 ${-sphereRadius*validNode.size - sphereRadius} 0`"
+        :position="`0 ${-sphereRadius*validNode.nodeOptions.size - sphereRadius} 0`"
         wrap-count="50"
       />
     </a-sphere>
@@ -50,18 +48,6 @@ export default {
     sphereRadius: () => 0.2
   },
   mounted() {
-    if (this.node.nodeOptions?.type === 'user') {
-      const scores = this.$_visualizeData.exercise.scores;
-      const users = [];
-      for (const [teamId, team] of Object.entries(scores)) {
-        users.push(
-          ...Object.entries(team.users).map(([id, score]) => ({ id, score, teamId }))
-        );
-      }
-      this.$set(this.validNode, 'users', users);
-      this.$set(this.validNode, 'shape', this.node.id.split('__').slice(-1)[0] || 'circle');
-      return;
-    };
     if (this.node.nodeOptions?.type === 'question') {
       const questions = JSON.parse(JSON.stringify(this.$_visualizeData.exercise.questions));
       const nodeQuestions = [];
@@ -78,11 +64,18 @@ export default {
       this.$set(this.validNode, 'questions', nodeQuestions);
       return;
     };
-    this.$set(this.validNode, 'label', this.validNode.userId || this.node.label || this.node.id);
-    this.$set(this.validNode, 'type', this.node.nodeOptions?.type || 'sphere');
-    this.$set(this.validNode, 'size', this.node.nodeOptions?.size || 1);
-    this.$set(this.validNode, 'nodeColor', this.node.nodeOptions?.nodeColor || '#fff');
-    this.$set(this.validNode, 'labelColor', this.node.nodeOptions?.labelColor || '#fff');
+    const nodeOptions = this.node.nodeOptions || {};
+    this.validNode = {
+      id: this.node.id,
+      label: this.node.label || this.node.id,
+      nodeOptions: {
+        ...nodeOptions,
+        type: nodeOptions.type || 'sphere',
+        size: nodeOptions.size || 1,
+        nodeColor: nodeOptions.nodeColor || '#fff',
+        labelColor: nodeOptions.labelColor || '#fff'
+      }
+    };
   }
 };
 </script>

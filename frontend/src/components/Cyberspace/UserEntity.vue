@@ -1,21 +1,21 @@
 <template>
   <a-entity>
     <a-entity
-      v-for="user in users"
+      v-for="user in (node.nodeOptions.users || [])"
       :key="user.id"
       :id="`node-${user.id}`"
       :position="user.position"
-      :look-center="shape !== 'square' && `parentSelector: #node-${node.id}`"
+      :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: #node-${node.id}`"
     >
       <a-sphere
-        :radius="node.nodeOptions.size"
+        :radius="sphereRadius*node.nodeOptions.size"
       >
         <a-text
           :value="user.id"
           align="center"
           :color="node.nodeOptions.labelColor"
           side="double"
-          :position="`0 ${-node.nodeOptions.size - sphereRadius} 0`"
+          :position="`0 ${-sphereRadius*node.nodeOptions.size - sphereRadius} 0`"
           wrap-count="50"
         />
         <a-text
@@ -24,7 +24,7 @@
           align="center"
           :color="node.nodeOptions.labelColor"
           side="double"
-          :position="`0 ${node.nodeOptions.size + sphereRadius} 0`"
+          :position="`0 ${sphereRadius*node.nodeOptions.size + sphereRadius} 0`"
           wrap-count="50"
         />
       </a-sphere>
@@ -39,14 +39,6 @@ export default {
     node: {
       type: Object,
       required: true
-    },
-    users: {
-      type: Array,
-      required: true
-    },
-    shape: {
-      type: String,
-      required: true
     }
   },
   computed: {
@@ -57,9 +49,25 @@ export default {
   },
   methods: {
     async init() {
-      this.calcPosition(this.shape);
+      const nodeOptions = this.node.nodeOptions;
+      const scores = this.$_visualizeData.exercise.scores;
+      const users = [];
+      for (const [teamId, team] of Object.entries(scores)) {
+        users.push(
+          ...Object.entries(team.users)
+            .filter(([id]) => nodeOptions?.users.includes(id))
+            .map(([id, score]) => ({ id, score, teamId }))
+        );
+      }
+      this.$set(nodeOptions, 'users', users);
+      this.$set(nodeOptions, 'layoutOptions', {
+        shape: nodeOptions.layoutOptions.shape || 'circle',
+        scale: nodeOptions.layoutOptions.scale || 1,
+        fixedDistance: nodeOptions.layoutOptions.fixedDistance
+      });
+      this.calcPosition(nodeOptions.layoutOptions.shape);
     },
-    calcPosition(shape = 'circle') {
+    calcPosition(shape) {
       const calcFunctions = {
         square: this.calcSquarePosition,
         circle: this.calcCirclePosition
@@ -67,23 +75,23 @@ export default {
       calcFunctions[shape]();
     },
     calcSquarePosition() {
-      const nodeCount = this.users.length;
+      const nodeCount = this.node.nodeOptions.users.length;
       const edgeMaxLength = Math.ceil(Math.sqrt(nodeCount)) - 1;
       const gap = 1.5;
-      this.users.forEach((_, i) => {
+      this.node.nodeOptions.users.forEach((_, i) => {
         const x = (edgeMaxLength - i%(edgeMaxLength + 1))*gap - edgeMaxLength*gap/2;
         const z = (edgeMaxLength - Math.floor(i/(edgeMaxLength + 1)))*gap - (edgeMaxLength - (nodeCount/(edgeMaxLength + 1) - 1)/2)*gap;
-        this.$set(this.users[i], 'position', new THREE.Vector3(x, 0, z));
+        this.$set(this.node.nodeOptions.users[i], 'position', new THREE.Vector3(x, 0, z));
       });
     },
     calcCirclePosition() {
-      const nodeCount = this.users.length;
-      const radius = nodeCount === 1 ? 1e-100 : this.node.nodeOptions.size*nodeCount*0.8;
-      this.users.forEach((_, i) => {
+      const nodeCount = this.node.nodeOptions.users.length;
+      const radius = nodeCount === 1 ? 1e-100 : this.node.nodeOptions.layoutOptions.scale*nodeCount*0.8;
+      this.node.nodeOptions.users.forEach((_, i) => {
         const theta = 2*Math.PI*i/nodeCount + Math.PI/2;
         const x = radius*Math.cos(theta);
         const z = radius*Math.sin(theta);
-        this.$set(this.users[i], 'position', new THREE.Vector3(x, 0, z));
+        this.$set(this.node.nodeOptions.users[i], 'position', new THREE.Vector3(x, 0, z));
       });
     }
   }
