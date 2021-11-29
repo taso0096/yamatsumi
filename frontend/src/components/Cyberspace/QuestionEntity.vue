@@ -1,14 +1,13 @@
 <template>
   <a-entity
     :id="`question-entity__${node.id}`"
-    :scale="`${node.nodeOptions.size} ${node.nodeOptions.size} ${node.nodeOptions.size}`"
   >
     <a-text
       :value="node.label"
       align="center"
       :color="node.nodeOptions.labelColor"
       side="double"
-      :position="`0 ${-sphereRadius*node.nodeOptions.size - sphereRadius} 0`"
+      :position="`0 ${-sphereRadius*node.nodeOptions.layoutOptions.scale - sphereRadius/2} 0`"
       wrap-count="50"
     />
     <a-circle
@@ -52,18 +51,32 @@ export default {
     node: {
       type: Object,
       required: true
-    },
-    questions: {
-      type: Array,
-      required: true
     }
   },
+  data: () => ({
+    questions: []
+  }),
   computed: {
-    sphereRadius: () => 0.45
+    sphereRadius: () => 0.65
   },
   mounted() {
+    const nodeOptions = this.node.nodeOptions;
+    const allQuestions = JSON.parse(JSON.stringify(this.$_visualizeData.exercise.questions));
+    nodeOptions.levels.forEach(levelId => {
+      this.questions.push(...allQuestions.filter(q => q.levelId === levelId));
+    });
+    nodeOptions.categories.forEach(categoryId => {
+      this.questions.push(...allQuestions.filter(q => q.categoryId === categoryId));
+    });
+
+    this.$set(nodeOptions, 'layoutOptions', {
+      shape: nodeOptions.layoutOptions.shape || 'circle',
+      scale: nodeOptions.layoutOptions.scale || 1,
+      fixedDistance: nodeOptions.layoutOptions.fixedDistance
+    });
+
     const questionCount = this.questions.length;
-    const questionRadius = 0.65;
+    const questionRadius = this.sphereRadius*nodeOptions.layoutOptions.scale;
     for (const i of [...Array(questionCount).keys()]) {
       const theta = Math.acos(-1 + 2*(i + 1)/(questionCount + 1)); // 仰角
       const phi = Math.sqrt((questionCount + 1)*Math.PI)*theta; // 俯角

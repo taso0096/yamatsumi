@@ -4,9 +4,8 @@
     :node="validNode"
   />
   <QuestionEntity
-    v-else-if="validNode.questions"
-    :node="node"
-    :questions="validNode.questions"
+    v-else-if="(validNode.nodeOptions || {}).type === 'question'"
+    :node="validNode"
   />
   <a-entity v-else-if="!validNode.label"></a-entity>
   <a-entity v-else>
@@ -48,22 +47,6 @@ export default {
     sphereRadius: () => 0.2
   },
   mounted() {
-    if (this.node.nodeOptions?.type === 'question') {
-      const questions = JSON.parse(JSON.stringify(this.$_visualizeData.exercise.questions));
-      const nodeQuestions = [];
-      const tags = this.node.id.split('__');
-      tags.forEach(tag => {
-        const levelId = tag.split(/^level-/)[1];
-        const categoryId = tag.split(/^category-/)[1];
-        if (levelId) {
-          nodeQuestions.push(...questions.filter(q => q.levelId === levelId));
-        } else if (categoryId) {
-          nodeQuestions.push(...questions.filter(q => q.categoryId === categoryId));
-        }
-      });
-      this.$set(this.validNode, 'questions', nodeQuestions);
-      return;
-    };
     const nodeOptions = this.node.nodeOptions || {};
     this.validNode = {
       id: this.node.id,
