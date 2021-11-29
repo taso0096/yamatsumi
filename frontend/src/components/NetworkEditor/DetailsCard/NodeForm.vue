@@ -181,12 +181,12 @@ export default {
       return {
         users: Object.values(this.$_visualizeData.exercise.scores)
           .reduce((users, team) => {
-            users.push(...Object.keys(team.users).map(id => id));
+            users.push(...Object.keys(team.users).map(id => ({ id, label: id })));
             return users;
           }, []),
         levels: this.$_visualizeData.exercise.levels,
         categories: this.$_visualizeData.exercise.categories
-      }
+      };
     }
   },
   created() {
@@ -234,7 +234,7 @@ export default {
           this.node.nodeOptions[option].splice(0, this.node.nodeOptions[option].length);
         } else {
           this.node.nodeOptions[option].splice(0, this.node.nodeOptions[option].length);
-          this.node.nodeOptions[option].push(...this.exercise[option]);
+          this.node.nodeOptions[option].push(...this.exercise[option].map(v => v.id));
         }
       });
     },
