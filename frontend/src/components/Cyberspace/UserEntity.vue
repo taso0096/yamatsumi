@@ -20,7 +20,7 @@
         />
         <a-text
           v-if="user.score !== null"
-          :value="$_visualizeData.exercise.scores[user.teamId].users[user.id]"
+          :value="getUserScore(user)"
           align="center"
           :color="node.nodeOptions.labelColor"
           side="double"
@@ -93,6 +93,9 @@ export default {
         const z = radius*Math.sin(theta);
         this.$set(this.node.nodeOptions.users[i], 'position', new THREE.Vector3(x, 0, z));
       });
+    },
+    getUserScore(user) {
+      return this.$_visualizeData.exercise.scores[user.teamId]?.users[user.id];
     }
   }
 };
