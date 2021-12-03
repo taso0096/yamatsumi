@@ -200,31 +200,30 @@ export default {
     });
     this.socket.on('answer', data => {
       const answerData = JSON.parse(data);
-      Object.entries(answerData.scores.teams).forEach(([teamId, targetScore]) => {
-        this.$refs.lineEntity.emitAnswer(teamId, answerData.questionId, answerData.isSuccess, () => {
-          if (!answerData.isSuccess) {
-            return;
-          }
+      this.$refs.lineEntity.emitAnswer(answerData.teamId, answerData.questionId, answerData.isSuccess);
+      this.$refs.lineEntity.emitAnswer(answerData.userId, answerData.questionId, answerData.isSuccess, () => {
+        Object.entries(answerData.scores.teams).forEach(([teamId, targetScore]) => {
+          const score = this.exercise.scores[teamId].score;
+          const addScore = ~~((targetScore - score)/50) || (targetScore > score ? 1 : -1);
           const scoreIntervalId = setInterval(() => {
             const score = this.exercise.scores[teamId].score;
-            if (score < targetScore) {
-              this.$set(this.exercise.scores[teamId], 'score', score + 5);
+            if (addScore !== 0 && Math.abs(targetScore - score) > Math.abs(addScore)) {
+              this.$set(this.exercise.scores[teamId], score, ~~score + addScore);
             } else {
+              this.$set(this.exercise.scores[teamId], score, targetScore);
               clearInterval(scoreIntervalId);
             }
           }, 20);
         });
-      });
-      Object.entries(answerData.scores.users).forEach(([userId, targetScore]) => {
-        this.$refs.lineEntity.emitAnswer(userId, answerData.questionId, answerData.isSuccess, () => {
-          if (!answerData.isSuccess) {
-            return;
-          }
+        Object.entries(answerData.scores.users).forEach(([userId, targetScore]) => {
+          const score = this.exercise.scores[answerData.teamId].users[userId];
+          const addScore = ~~((targetScore - score)/50) || (targetScore > score ? 1 : -1);
           const scoreIntervalId = setInterval(() => {
             const score = this.exercise.scores[answerData.teamId].users[userId];
-            if (score < targetScore) {
-              this.$set(this.exercise.scores[answerData.teamId].users, userId, score + 5);
+            if (addScore !== 0 && Math.abs(targetScore - score) > Math.abs(addScore)) {
+              this.$set(this.exercise.scores[answerData.teamId].users, userId, ~~score + addScore);
             } else {
+              this.$set(this.exercise.scores[answerData.teamId].users, userId, targetScore);
               clearInterval(scoreIntervalId);
             }
           }, 20);
