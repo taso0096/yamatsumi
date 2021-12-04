@@ -1,6 +1,7 @@
 <template>
   <a-sphere
     :radius="sphereRadius*node.nodeOptions.size"
+    :color="node.nodeOptions.nodeColor"
   >
     <a-text
       v-if="topLabel !== null"
