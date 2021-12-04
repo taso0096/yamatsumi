@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "type": "object",
   "required": [
     "id",
@@ -209,21 +209,37 @@
                       "description": "ノード種類",
                       "type": "string",
                       "enum": [
+                        "default",
+                        "internet",
+                        "intranet",
+                        "user",
+                        "team",
+                        "question",
+                        "spacer"
+                      ],
+                      "default": "default",
+                      "examples": [
+                        "default"
+                      ]
+                    },
+                    "shape": {
+                      "title": "ノード形状",
+                      "description": "ノード形状",
+                      "type": "string",
+                      "enum": [
                         "sphere",
+                        "circle",
                         "server",
                         "switch",
                         "router",
                         "desktop",
                         "laptop",
-                        "internet",
-                        "intranet",
-                        "user",
-                        "team",
-                        "question"
+                        "label",
+                        "score"
                       ],
                       "default": "sphere",
                       "examples": [
-                        "server"
+                        "sphere"
                       ]
                     },
                     "size": {
@@ -253,6 +269,76 @@
                       "examples": [
                         "#fff"
                       ]
+                    },
+                    "position": {
+                      "title": "座標",
+                      "description": "座標",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "title": "x",
+                          "description": "x",
+                          "type": ["number", "string"],
+                          "default": 0,
+                          "examples": [
+                            0
+                          ]
+                        },
+                        "y": {
+                          "title": "y",
+                          "description": "y",
+                          "type": ["number", "string"],
+                          "default": 0,
+                          "examples": [
+                            0
+                          ]
+                        },
+                        "z": {
+                          "title": "z",
+                          "description": "z",
+                          "type": ["number", "string"],
+                          "default": 0,
+                          "examples": [
+                            0
+                          ]
+                        }
+                      }
+                    },
+                    "rotation": {
+                      "title": "角度",
+                      "description": "角度",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "title": "x",
+                          "description": "x",
+                          "type": ["number", "string"],
+                          "default": 0,
+                          "examples": [
+                            0
+                          ]
+                        },
+                        "y": {
+                          "title": "y",
+                          "description": "y",
+                          "type": ["number", "string"],
+                          "default": 0,
+                          "examples": [
+                            0
+                          ]
+                        },
+                        "z": {
+                          "title": "z",
+                          "description": "z",
+                          "type": ["number", "string"],
+                          "default": 0,
+                          "examples": [
+                            0
+                          ]
+                        }
+                      }
                     }
                   },
                   "if": {
