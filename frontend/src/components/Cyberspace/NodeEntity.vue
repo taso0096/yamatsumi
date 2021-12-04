@@ -1,13 +1,16 @@
 <template>
+  <a-entity v-if="!validNode.label"></a-entity>
   <UserEntity
-    v-if="(validNode.nodeOptions || {}).type === 'user'"
+    v-else-if="validNode.nodeOptions.type === 'user'"
     :node="validNode"
   />
   <QuestionEntity
-    v-else-if="(validNode.nodeOptions || {}).type === 'question'"
+    v-else-if="validNode.nodeOptions.type === 'question'"
     :node="validNode"
   />
-  <a-entity v-else-if="!validNode.label"></a-entity>
+  <SpacerEntity
+    v-else-if="validNode.nodeOptions.type === 'spacer'"
+  />
   <NodeShapeEntity
     v-else
     :node="validNode"
@@ -17,6 +20,7 @@
 <script>
 import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
+import SpacerEntity from './SpacerEntity.vue';
 import NodeShapeEntity from './NodeShapeEntity';
 
 export default {
@@ -24,6 +28,7 @@ export default {
   components: {
     UserEntity,
     QuestionEntity,
+    SpacerEntity,
     NodeShapeEntity
   },
   props: {
