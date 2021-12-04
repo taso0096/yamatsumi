@@ -3,8 +3,8 @@
     :radius="sphereRadius*node.nodeOptions.size"
   >
     <a-text
-      v-if="labelBottom !== null"
-      :value="labelBottom || node.label"
+      v-if="bottomLabel !== null"
+      :value="bottomLabel || node.label"
       align="center"
       :color="node.nodeOptions.labelColor"
       side="double"
@@ -12,8 +12,8 @@
       wrap-count="50"
     />
     <a-text
-      v-if="labelTop !== null"
-      :value="labelTop"
+      v-if="topLabel !== null"
+      :value="topLabel"
       align="center"
       :color="node.nodeOptions.labelColor"
       side="double"
@@ -31,11 +31,11 @@ export default {
       type: Object,
       required: true
     },
-    labelBottom: {
+    bottomLabel: {
       type: [String, Number],
       required: false
     },
-    labelTop: {
+    topLabel: {
       type: [String, Number],
       required: false
     }

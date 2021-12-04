@@ -9,8 +9,8 @@
     >
       <SphereEntity
         :node="node"
-        :labelBottom="user.id"
-        :labelTop="getUserScore(user)"
+        :bottomLabel="user.id"
+        :topLabel="getUserScore(user)"
       />
     </a-entity>
   </a-entity>
