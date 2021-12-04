@@ -53,7 +53,8 @@ export default {
       label: this.node.label || this.node.id,
       nodeOptions: {
         ...nodeOptions,
-        type: nodeOptions.type || 'sphere',
+        type: nodeOptions.type || 'default',
+        shape: nodeOptions.shape || 'sphere',
         size: nodeOptions.size || 1,
         nodeColor: nodeOptions.nodeColor || '#fff',
         labelColor: nodeOptions.labelColor || '#fff'

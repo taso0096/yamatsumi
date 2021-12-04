@@ -46,18 +46,17 @@
         <v-select
           v-model="node.nodeOptions.type"
           label="Type"
+          :placeholder="String(schemaNodeOptions.type.default || '')"
           :items="schemaNodeOptions.type.enum"
           @change="changeNodeType"
         />
       </v-col>
       <v-col class="py-0">
-        <v-text-field
-          v-model.number="node.nodeOptions.size"
-          label="Size"
-          type="number"
-          min="0"
-          step="0.1"
-          :placeholder="String(schemaNodeOptions.size.default || '')"
+        <v-select
+          v-model="node.nodeOptions.shape"
+          label="Shape"
+          :placeholder="String(schemaNodeOptions.shape.default || '')"
+          :items="schemaNodeOptions.shape.enum"
         />
       </v-col>
     </v-row>
@@ -74,6 +73,18 @@
           v-model="node.nodeOptions.labelColor"
           label="Label Color"
           :placeholder="String(schemaNodeOptions.labelColor.default || '')"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="py-0">
+        <v-text-field
+          v-model.number="node.nodeOptions.size"
+          label="Size"
+          type="number"
+          min="0"
+          step="0.1"
+          :placeholder="String(schemaNodeOptions.size.default || '')"
         />
       </v-col>
     </v-row>
