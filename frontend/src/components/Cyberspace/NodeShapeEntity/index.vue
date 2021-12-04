@@ -19,7 +19,7 @@ import SphereEntity from './SphereEntity.vue';
 import CircleEntity from './CircleEntity.vue';
 
 export default {
-  name: 'NodeShape',
+  name: 'NodeShapeEntity',
   components: {
     SphereEntity,
     CircleEntity

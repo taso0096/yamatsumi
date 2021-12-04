@@ -8,7 +8,7 @@
     :node="validNode"
   />
   <a-entity v-else-if="!validNode.label"></a-entity>
-  <NodeShape
+  <NodeShapeEntity
     v-else
     :node="validNode"
   />
@@ -17,14 +17,14 @@
 <script>
 import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
-import NodeShape from './NodeShape';
+import NodeShapeEntity from './NodeShapeEntity';
 
 export default {
   name: 'NodeEntity',
   components: {
     UserEntity,
     QuestionEntity,
-    NodeShape
+    NodeShapeEntity
   },
   props: {
     node: {

@@ -17,7 +17,7 @@
       :position="question.position"
       :look-center="`parentSelector: question-entity__${node.id}`"
     >
-      <NodeShape
+      <NodeShapeEntity
         :node="node"
         :centerLabel="question.id"
       />
@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import NodeShape from './NodeShape';
+import NodeShapeEntity from './NodeShapeEntity';
 
 export default {
   name: 'QuestionEntity',
   components: {
-    NodeShape
+    NodeShapeEntity
   },
   props: {
     node: {

@@ -7,7 +7,7 @@
       :position="user.position"
       :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: #node-${node.id}`"
     >
-      <NodeShape
+      <NodeShapeEntity
         :node="node"
         :topLabel="getUserScore(user)"
         :centerLabel="null"
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import NodeShape from './NodeShape';
+import NodeShapeEntity from './NodeShapeEntity';
 
 export default {
   name: 'UserEntity',
   components: {
-    NodeShape
+    NodeShapeEntity
   },
   props: {
     node: {
