@@ -27,7 +27,7 @@
 <script>
 import Vue from 'vue';
 import LayerEntity from './LayerEntity.vue';
-import NodeEntity from './NodeEntity.vue';
+import NodeEntity from './NodeEntity';
 
 export default {
   name: 'LayerEntity',
