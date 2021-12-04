@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "type": "object",
   "required": [
     "id",
@@ -140,7 +140,8 @@
                 "type": "string",
                 "enum": [
                   "circle",
-                  "square"
+                  "square",
+                  "sphere"
                 ],
                 "default": "circle",
                 "examples": [
@@ -209,7 +210,7 @@
                       "description": "ノード種類",
                       "type": "string",
                       "enum": [
-                        "default",
+                        "(default)",
                         "internet",
                         "intranet",
                         "user",
@@ -217,9 +218,9 @@
                         "question",
                         "spacer"
                       ],
-                      "default": "default",
+                      "default": "(default)",
                       "examples": [
-                        "default"
+                        "(default)"
                       ]
                     },
                     "shape": {
@@ -234,12 +235,56 @@
                         "router",
                         "desktop",
                         "laptop",
-                        "label",
-                        "score"
+                        "text"
                       ],
                       "default": "sphere",
                       "examples": [
                         "sphere"
+                      ]
+                    },
+                    "topLabel": {
+                      "title": "上部ラベル",
+                      "description": "上部ラベル",
+                      "type": "string",
+                      "enum": [
+                        "(none)",
+                        "node_label",
+                        "details_label",
+                        "score"
+                      ],
+                      "default": "(none)",
+                      "examples": [
+                        "(none)"
+                      ]
+                    },
+                    "centerLabel": {
+                      "title": "中部ラベル",
+                      "description": "中部ラベル",
+                      "type": "string",
+                      "enum": [
+                        "(none)",
+                        "node_label",
+                        "details_label",
+                        "score"
+                      ],
+                      "default": "(none)",
+                      "examples": [
+                        "(none)"
+                      ]
+                    },
+                    "bottomLabel": {
+                      "title": "下部ラベル",
+                      "description": "下部ラベル",
+                      "type": "string",
+                      "enum": [
+                        "(none)",
+                        "node_label",
+                        "details_label",
+                        "score"
+                      ],
+                      "default": "node_label",
+                      "examples": [
+                        "node_label"
                       ]
                     },
                     "size": {
