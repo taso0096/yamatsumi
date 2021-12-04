@@ -7,22 +7,23 @@
       :position="user.position"
       :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: #node-${node.id}`"
     >
-      <SphereEntity
+      <NodeShape
         :node="node"
-        :bottomLabel="user.id"
         :topLabel="getUserScore(user)"
+        :centerLabel="null"
+        :bottomLabel="user.id"
       />
     </a-entity>
   </a-entity>
 </template>
 
 <script>
-import SphereEntity from './NodeShape/SphereEntity.vue';
+import NodeShape from './NodeShape';
 
 export default {
-  name: 'LayerEntity',
+  name: 'UserEntity',
   components: {
-    SphereEntity
+    NodeShape
   },
   props: {
     node: {

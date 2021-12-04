@@ -3,21 +3,21 @@
     :radius="sphereRadius*node.nodeOptions.size"
   >
     <a-text
-      v-if="bottomLabel !== null"
-      :value="bottomLabel || node.label"
-      align="center"
-      :color="node.nodeOptions.labelColor"
-      side="double"
-      :position="`0 ${-sphereRadius*node.nodeOptions.size - sphereRadius} 0`"
-      wrap-count="50"
-    />
-    <a-text
       v-if="topLabel !== null"
       :value="topLabel"
       align="center"
       :color="node.nodeOptions.labelColor"
       side="double"
       :position="`0 ${sphereRadius*node.nodeOptions.size + sphereRadius} 0`"
+      wrap-count="50"
+    />
+    <a-text
+      v-if="bottomLabel !== null"
+      :value="bottomLabel || node.label"
+      align="center"
+      :color="node.nodeOptions.labelColor"
+      side="double"
+      :position="`0 ${-sphereRadius*node.nodeOptions.size - sphereRadius} 0`"
       wrap-count="50"
     />
   </a-sphere>
@@ -31,11 +31,11 @@ export default {
       type: Object,
       required: true
     },
-    bottomLabel: {
+    topLabel: {
       type: [String, Number],
       required: false
     },
-    topLabel: {
+    bottomLabel: {
       type: [String, Number],
       required: false
     }

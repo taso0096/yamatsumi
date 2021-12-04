@@ -17,7 +17,7 @@
       :position="question.position"
       :look-center="`parentSelector: question-entity__${node.id}`"
     >
-      <CircleEntity
+      <NodeShape
         :node="node"
         :centerLabel="question.id"
       />
@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import CircleEntity from './NodeShape/CircleEntity.vue';
+import NodeShape from './NodeShape';
 
 export default {
   name: 'QuestionEntity',
   components: {
-    CircleEntity
+    NodeShape
   },
   props: {
     node: {

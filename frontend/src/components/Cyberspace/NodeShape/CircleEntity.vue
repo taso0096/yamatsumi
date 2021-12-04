@@ -17,12 +17,12 @@
       :radius-outer="circleRadius*node.nodeOptions.size*1.175"
     />
     <a-text
-      v-if="bottomLabel !== null"
-      :value="bottomLabel"
+      v-if="topLabel !== null"
+      :value="topLabel"
       align="center"
       :color="node.nodeOptions.labelColor"
       side="double"
-      :position="`0 ${-circleRadius*node.nodeOptions.size - circleRadius} 0`"
+      :position="`0 ${circleRadius*node.nodeOptions.size + circleRadius} 0`"
       wrap-count="50"
     />
     <a-text
@@ -35,12 +35,12 @@
       wrap-count="50"
     />
     <a-text
-      v-if="topLabel !== null"
-      :value="topLabel"
+      v-if="bottomLabel !== null"
+      :value="bottomLabel"
       align="center"
       :color="node.nodeOptions.labelColor"
       side="double"
-      :position="`0 ${circleRadius*node.nodeOptions.size + circleRadius} 0`"
+      :position="`0 ${-circleRadius*node.nodeOptions.size - circleRadius} 0`"
       wrap-count="50"
     />
   </a-circle>
@@ -54,7 +54,7 @@ export default {
       type: Object,
       required: true
     },
-    bottomLabel: {
+    topLabel: {
       type: [String, Number],
       required: false
     },
@@ -62,7 +62,7 @@ export default {
       type: [String, Number],
       required: false
     },
-    topLabel: {
+    bottomLabel: {
       type: [String, Number],
       required: false
     }

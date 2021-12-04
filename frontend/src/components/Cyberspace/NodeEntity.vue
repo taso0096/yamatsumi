@@ -8,22 +8,23 @@
     :node="validNode"
   />
   <a-entity v-else-if="!validNode.label"></a-entity>
-  <a-entity v-else>
-    <SphereEntity :node="validNode" />
-  </a-entity>
+  <NodeShape
+    v-else
+    :node="validNode"
+  />
 </template>
 
 <script>
 import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
-import SphereEntity from './NodeShape/SphereEntity.vue';
+import NodeShape from './NodeShape';
 
 export default {
   name: 'NodeEntity',
   components: {
     UserEntity,
     QuestionEntity,
-    SphereEntity
+    NodeShape
   },
   props: {
     node: {
