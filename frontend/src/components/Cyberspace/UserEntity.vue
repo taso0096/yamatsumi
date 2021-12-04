@@ -7,34 +7,23 @@
       :position="user.position"
       :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: #node-${node.id}`"
     >
-      <a-sphere
-        :radius="sphereRadius*node.nodeOptions.size"
-      >
-        <a-text
-          :value="user.id"
-          align="center"
-          :color="node.nodeOptions.labelColor"
-          side="double"
-          :position="`0 ${-sphereRadius*node.nodeOptions.size - sphereRadius} 0`"
-          wrap-count="50"
-        />
-        <a-text
-          v-if="user.score !== null"
-          :value="getUserScore(user)"
-          align="center"
-          :color="node.nodeOptions.labelColor"
-          side="double"
-          :position="`0 ${sphereRadius*node.nodeOptions.size + sphereRadius} 0`"
-          wrap-count="50"
-        />
-      </a-sphere>
+      <SphereEntity
+        :node="node"
+        :labelBottom="user.id"
+        :labelTop="getUserScore(user)"
+      />
     </a-entity>
   </a-entity>
 </template>
 
 <script>
+import SphereEntity from './NodeShape/SphereEntity.vue';
+
 export default {
   name: 'LayerEntity',
+  components: {
+    SphereEntity
+  },
   props: {
     node: {
       type: Object,

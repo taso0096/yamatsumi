@@ -9,31 +9,21 @@
   />
   <a-entity v-else-if="!validNode.label"></a-entity>
   <a-entity v-else>
-    <a-sphere
-      :radius="sphereRadius*validNode.nodeOptions.size"
-      :color="validNode.nodeColor"
-    >
-      <a-text
-        :value="validNode.label"
-        align="center"
-        :color="validNode.nodeOptions.labelColor"
-        side="double"
-        :position="`0 ${-sphereRadius*validNode.nodeOptions.size - sphereRadius} 0`"
-        wrap-count="50"
-      />
-    </a-sphere>
+    <SphereEntity :node="validNode" />
   </a-entity>
 </template>
 
 <script>
 import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
+import SphereEntity from './NodeShape/SphereEntity.vue';
 
 export default {
   name: 'NodeEntity',
   components: {
     UserEntity,
-    QuestionEntity
+    QuestionEntity,
+    SphereEntity
   },
   props: {
     node: {
@@ -43,9 +33,6 @@ export default {
   data: () => ({
     validNode: {}
   }),
-  computed: {
-    sphereRadius: () => 0.2
-  },
   mounted() {
     const nodeOptions = this.node.nodeOptions || {};
     this.validNode = {
