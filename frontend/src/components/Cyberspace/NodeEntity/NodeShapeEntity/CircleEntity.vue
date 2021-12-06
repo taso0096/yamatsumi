@@ -23,7 +23,7 @@
       align="center"
       :color="node.nodeOptions.labelColor"
       side="double"
-      :position="`0 ${label.positionY} 0`"
+      :position="`${label.position.x} ${label.position.y} ${label.position.z}`"
       wrap-count="50"
     />
   </a-circle>
@@ -52,15 +52,27 @@ export default {
       const labelOptions = [
         {
           place: 'top',
-          positionY: this.circleRadius*this.node.nodeOptions.size + this.circleRadius
+          position: {
+            x: 0,
+            y: this.circleRadius*this.node.nodeOptions.size + this.circleRadius,
+            z: 0
+          }
         },
         {
           place: 'center',
-          positionY: 0.01
+          position: {
+            x: 0,
+            y: 0.01,
+            z: 0
+          }
         },
         {
           place: 'bottom',
-          positionY: -this.circleRadius*this.node.nodeOptions.size - this.circleRadius
+          position: {
+            x: 0,
+            y: -this.circleRadius*this.node.nodeOptions.size - this.circleRadius,
+            z: 0
+          }
         }
       ];
       const labels = [];
@@ -69,7 +81,7 @@ export default {
         if (labelType !== '(none)') {
           labels.push({
             value: this.selectLabel(labelType),
-            positionY: option.positionY
+            position: option.position
           });
         }
       });
