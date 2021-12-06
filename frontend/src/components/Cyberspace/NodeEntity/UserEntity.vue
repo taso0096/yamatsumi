@@ -7,11 +7,10 @@
       :position="user.position"
       :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: #node-${node.id}`"
     >
-      <NodeShapeEntity
+      <node-shape-entity
         :node="node"
-        :topLabel="getUserScore(user)"
-        :centerLabel="null"
-        :bottomLabel="user.id"
+        :detailsLabel="user.id"
+        :score="getUserScore(user)"
       />
     </a-entity>
   </a-entity>

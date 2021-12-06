@@ -78,6 +78,32 @@
     </v-row>
     <v-row>
       <v-col class="py-0">
+        <v-select
+          v-model="node.nodeOptions.topLabel"
+          label="Top Label"
+          :placeholder="String(schemaNodeOptions.topLabel.default || '')"
+          :items="schemaNodeOptions.topLabel.enum"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-select
+          v-model="node.nodeOptions.centerLabel"
+          label="Center Label"
+          :placeholder="String(schemaNodeOptions.centerLabel.default || '')"
+          :items="schemaNodeOptions.centerLabel.enum"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-select
+          v-model="node.nodeOptions.bottomLabel"
+          label="Bottom Label"
+          :placeholder="String(schemaNodeOptions.bottomLabel.default || '')"
+          :items="schemaNodeOptions.bottomLabel.enum"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="py-0">
         <v-text-field
           v-model.number="node.nodeOptions.size"
           label="Size"

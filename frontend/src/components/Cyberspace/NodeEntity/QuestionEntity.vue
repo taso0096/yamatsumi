@@ -17,9 +17,9 @@
       :position="question.position"
       :look-center="`parentSelector: question-entity__${node.id}`"
     >
-      <NodeShapeEntity
+      <node-shape-entity
         :node="node"
-        :centerLabel="question.id"
+        :detailsLabel="question.id"
       />
     </a-entity>
   </a-entity>

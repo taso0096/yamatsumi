@@ -1,16 +1,15 @@
 <template>
-  <CircleEntity
+  <circle-entity
     v-if="node.nodeOptions.shape === 'circle'"
     :node="node"
-    :topLabel="topLabel"
-    :centerLabel="centerLabel"
-    :bottomLabel="bottomLabel"
+    :detailsLabel="detailsLabel"
+    :score="score"
   />
-  <SphereEntity
+  <sphere-entity
     v-else
     :node="node"
-    :topLabel="topLabel"
-    :bottomLabel="bottomLabel"
+    :detailsLabel="detailsLabel"
+    :score="score"
   />
 </template>
 
@@ -28,16 +27,12 @@ export default {
     node: {
       type: Object
     },
-    topLabel: {
+    detailsLabel: {
       type: [String, Number],
       required: false
     },
-    centerLabel: {
-      type: [String, Number],
-      required: false
-    },
-    bottomLabel: {
-      type: [String, Number],
+    score: {
+      type: Number,
       required: false
     }
   }

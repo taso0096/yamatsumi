@@ -1,17 +1,17 @@
 <template>
   <a-entity v-if="!validNode.label"></a-entity>
-  <UserEntity
+  <user-entity
     v-else-if="validNode.nodeOptions.type === 'user'"
     :node="validNode"
   />
-  <QuestionEntity
+  <question-entity
     v-else-if="validNode.nodeOptions.type === 'question'"
     :node="validNode"
   />
-  <SpacerEntity
+  <spacer-entity
     v-else-if="validNode.nodeOptions.type === 'spacer'"
   />
-  <NodeShapeEntity
+  <node-shape-entity
     v-else
     :node="validNode"
   />
