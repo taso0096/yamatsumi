@@ -1,20 +1,22 @@
 <template>
-  <a-entity v-if="!validNode.label"></a-entity>
-  <user-entity
-    v-else-if="validNode.nodeOptions.type === 'user'"
-    :node="validNode"
-  />
-  <question-entity
-    v-else-if="validNode.nodeOptions.type === 'question'"
-    :node="validNode"
-  />
-  <spacer-entity
-    v-else-if="validNode.nodeOptions.type === 'spacer'"
-  />
-  <node-shape-entity
-    v-else
-    :node="validNode"
-  />
+  <a-entity>
+    <template v-if="!validNode.label" />
+    <user-entity
+      v-else-if="validNode.nodeOptions.type === 'user'"
+      :node="validNode"
+    />
+    <question-entity
+      v-else-if="validNode.nodeOptions.type === 'question'"
+      :node="validNode"
+    />
+    <spacer-entity
+      v-else-if="validNode.nodeOptions.type === 'spacer'"
+    />
+    <node-shape-entity
+      v-else
+      :node="validNode"
+    />
+  </a-entity>
 </template>
 
 <script>
