@@ -105,6 +105,64 @@
     <v-row>
       <v-col class="py-0">
         <v-text-field
+          v-model="node.nodeOptions.position.x"
+          label="Position X"
+          type="number"
+          step="0.1"
+          :placeholder="String(0)"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.nodeOptions.position.y"
+          label="Position Y"
+          type="number"
+          step="0.1"
+          :placeholder="String(0)"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.nodeOptions.position.z"
+          label="Position Z"
+          type="number"
+          step="0.1"
+          :placeholder="String(0)"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.nodeOptions.rotation.x"
+          label="Rotation X"
+          type="number"
+          step="0.1"
+          :placeholder="String(0)"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.nodeOptions.rotation.y"
+          label="Rotation Y"
+          type="number"
+          step="0.1"
+          :placeholder="String(0)"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.nodeOptions.rotation.z"
+          label="Rotation Z"
+          type="number"
+          step="0.1"
+          :placeholder="String(0)"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="py-0">
+        <v-text-field
           v-model.number="node.nodeOptions.size"
           label="Size"
           type="number"
@@ -229,6 +287,12 @@ export default {
   created() {
     if (!this.node.nodeOptions) {
       this.node.nodeOptions = {};
+    }
+    if (!this.node.nodeOptions.position) {
+      this.node.nodeOptions.position = {};
+    }
+    if (!this.node.nodeOptions.rotation) {
+      this.node.nodeOptions.rotation = {};
     }
   },
   methods: {
