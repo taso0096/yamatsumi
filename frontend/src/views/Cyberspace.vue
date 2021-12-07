@@ -210,17 +210,17 @@ export default {
     });
     this.socket.on('answer', data => {
       const answerData = JSON.parse(data);
-      this.$refs.lineEntity.emitAnswer(`#team-${answerData.teamId}`, answerData.questionId, answerData.isSuccess);
-      this.$refs.lineEntity.emitAnswer(`#user-${answerData.userId}`, answerData.questionId, answerData.isSuccess, () => {
+      const userQuery = `#user-${answerData.userId}`;
+      const exerciseEndFunc = () => {
         Object.entries(answerData.scores.teams).forEach(([teamId, targetScore]) => {
           const score = this.exercise.scores[teamId].score;
           const addScore = ~~((targetScore - score)/50) || (targetScore > score ? 1 : -1);
           const scoreIntervalId = setInterval(() => {
             const score = this.exercise.scores[teamId].score;
             if (addScore !== 0 && Math.abs(targetScore - score) > Math.abs(addScore)) {
-              this.$set(this.exercise.scores[teamId], score, ~~score + addScore);
+              this.$set(this.exercise.scores[teamId], 'score', ~~score + addScore);
             } else {
-              this.$set(this.exercise.scores[teamId], score, targetScore);
+              this.$set(this.exercise.scores[teamId], 'score', targetScore);
               clearInterval(scoreIntervalId);
             }
           }, 20);
@@ -238,7 +238,12 @@ export default {
             }
           }, 20);
         });
-      });
+      };
+      if (!document.querySelector(userQuery)) {
+        this.$refs.lineEntity.emitAnswer(`#team-${answerData.teamId}`, answerData.questionId, answerData.isSuccess, exerciseEndFunc);
+        return;
+      }
+      this.$refs.lineEntity.emitAnswer(userQuery, answerData.questionId, answerData.isSuccess, exerciseEndFunc);
     });
     this.socket.on('notice', data => {
       this.$_pushNotice(data.text, data.type);
