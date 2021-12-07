@@ -146,6 +146,16 @@ export default {
         .then(res => res.json())
         .catch(() => undefined);
     }
+    if (this.exercise.questions.questions) {
+      const routingTable = {};
+      Object.entries(this.exercise.routingTable[0]).forEach(([userId, val]) => {
+        routingTable[userId] = [val?.ip_address];
+      });
+      this.exercise.levels = this.exercise.questions[0].levels[0];
+      this.exercise.questions = this.exercise.questions[0].questions;
+      this.exercise.scores = this.exercise.scores[0];
+      this.exercise.routingTable = routingTable;
+    }
 
     const lineColor = new Map([
       [22, {
