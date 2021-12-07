@@ -274,10 +274,12 @@ export default {
     },
     exercise() {
       return {
-        users: Object.values(this.$_visualizeData.exercise.scores)
-          .reduce((users, team) => {
-            users.push(...Object.keys(team.users).map(id => ({ id, label: id })));
-            return users;
+        users: Object.entries(this.$_visualizeData.exercise.scores)
+          .reduce((list, [teamId, team]) => {
+            list.push({ header: teamId });
+            list.push(...Object.keys(team.users).map(userId => ({ id: userId, label: userId })));
+            list.push({ divider: true });
+            return list;
           }, []),
         levels: this.$_visualizeData.exercise.levels,
         categories: this.$_visualizeData.exercise.categories
@@ -314,10 +316,11 @@ export default {
       }
     },
     selectAllIcon(option) {
-      if (!this.node.nodeOptions[option] || !this.exercise[option]) {
+      const list = this.exercise[option].filter(v => v.id);
+      if (!this.node.nodeOptions[option] || !list) {
         return 'mdi-checkbox-blank-outline';
       }
-      switch (this.node.nodeOptions[option].length/this.exercise[option].length) {
+      switch (this.node.nodeOptions[option].length/list.length) {
         case 1:
           return 'mdi-close-box';
         case 0:
@@ -327,15 +330,16 @@ export default {
       }
     },
     toggleSelectAll(option) {
-      if (!this.node.nodeOptions[option] || !this.exercise[option]) {
+      const list = this.exercise[option].filter(v => v.id);
+      if (!this.node.nodeOptions[option] || !list) {
         return;
       }
       this.$nextTick(() => {
-        if (this.node.nodeOptions[option].length/this.exercise[option].length === 1) {
+        if (this.node.nodeOptions[option].length/list.length === 1) {
           this.node.nodeOptions[option].splice(0, this.node.nodeOptions[option].length);
         } else {
           this.node.nodeOptions[option].splice(0, this.node.nodeOptions[option].length);
-          this.node.nodeOptions[option].push(...this.exercise[option].map(v => v.id));
+          this.node.nodeOptions[option].push(...list.map(v => v.id));
         }
       });
     },
