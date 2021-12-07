@@ -146,7 +146,7 @@ export default {
         .then(res => res.json())
         .catch(() => undefined);
     }
-    if (this.exercise.questions.questions) {
+    if (Array.isArray(this.exercise.questions)) {
       const routingTable = {};
       Object.entries(this.exercise.routingTable[0]).forEach(([userId, val]) => {
         routingTable[userId] = [val?.ip_address];
