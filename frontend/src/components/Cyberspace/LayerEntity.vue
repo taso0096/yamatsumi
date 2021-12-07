@@ -11,15 +11,22 @@
       :position="node.position"
       :look-center="(!layer.layoutOptions || layer.layoutOptions && layer.layoutOptions.shape !== 'square') && (!layer.parentId || `parentSelector: #node-${layer.parentId}`)"
     >
-      <layer-entity
-        v-if="node.nodes"
-        :layer="node"
-        :depth="0"
-      />
-      <node-entity
-        v-else
-        :node="node"
-      />
+      <a-entity>
+        <a-entity
+          :position="getTreeVecter((layer.nodeOptions || {}).position)"
+          :rotation="getTreeVecter((layer.nodeOptions || {}).rotation)"
+        >
+          <layer-entity
+            v-if="node.nodes"
+            :layer="node"
+            :depth="0"
+          />
+          <node-entity
+            v-else
+            :node="node"
+          />
+        </a-entity>
+      </a-entity>
     </a-entity>
   </a-entity>
 </template>
@@ -130,6 +137,9 @@ export default {
         const z = radius*Math.cos(theta);
         this.$set(this.notParentNodes[i], 'position', new THREE.Vector3(x, y, z));
       });
+    },
+    getTreeVecter(vecter) {
+      return new THREE.Vector3(vecter?.x, vecter?.y, vecter?.z);
     }
   }
 };
