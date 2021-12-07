@@ -210,8 +210,8 @@ export default {
     });
     this.socket.on('answer', data => {
       const answerData = JSON.parse(data);
-      this.$refs.lineEntity.emitAnswer(answerData.teamId, answerData.questionId, answerData.isSuccess);
-      this.$refs.lineEntity.emitAnswer(answerData.userId, answerData.questionId, answerData.isSuccess, () => {
+      this.$refs.lineEntity.emitAnswer(`#team-${answerData.teamId}`, answerData.questionId, answerData.isSuccess);
+      this.$refs.lineEntity.emitAnswer(`#user-${answerData.userId}`, answerData.questionId, answerData.isSuccess, () => {
         Object.entries(answerData.scores.teams).forEach(([teamId, targetScore]) => {
           const score = this.exercise.scores[teamId].score;
           const addScore = ~~((targetScore - score)/50) || (targetScore > score ? 1 : -1);

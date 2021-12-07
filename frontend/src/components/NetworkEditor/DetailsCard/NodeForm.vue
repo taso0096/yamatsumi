@@ -173,6 +173,18 @@
       </v-col>
     </v-row>
 
+    <v-row v-if="node.nodeOptions.type === 'team'">
+      <v-col class="py-0">
+        <v-select
+          v-model="node.nodeOptions.teamId"
+          label="Team ID"
+          :items="exercise.teams"
+          item-text="label"
+          item-value="id"
+        />
+      </v-col>
+    </v-row>
+
     <template v-if="['user', 'question'].includes(node.nodeOptions.type)">
       <v-row
         v-for="option in nodeTypeOptions(node.nodeOptions.type)"
@@ -274,6 +286,7 @@ export default {
     },
     exercise() {
       return {
+        teams: Object.keys(this.$_visualizeData.exercise.scores).map(teamId => ({ id: teamId, label: teamId })),
         users: Object.entries(this.$_visualizeData.exercise.scores)
           .reduce((list, [teamId, team]) => {
             list.push({ header: teamId });
@@ -299,6 +312,7 @@ export default {
   },
   methods: {
     changeNodeType(type) {
+      delete this.node.nodeOptions.teamId;
       delete this.node.nodeOptions.users;
       delete this.node.nodeOptions.levels;
       delete this.node.nodeOptions.categories;

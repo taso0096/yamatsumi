@@ -1,6 +1,10 @@
 <template>
   <a-entity>
     <template v-if="!validNode.label" />
+    <team-entity
+      v-else-if="validNode.nodeOptions.type === 'team'"
+      :node="validNode"
+    />
     <user-entity
       v-else-if="validNode.nodeOptions.type === 'user'"
       :node="validNode"
@@ -20,6 +24,7 @@
 </template>
 
 <script>
+import TeamEntity from './TeamEntity.vue';
 import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
 import SpacerEntity from './SpacerEntity.vue';
@@ -28,6 +33,7 @@ import NodeShapeEntity from './NodeShapeEntity';
 export default {
   name: 'NodeEntity',
   components: {
+    TeamEntity,
     UserEntity,
     QuestionEntity,
     SpacerEntity,

@@ -3,7 +3,7 @@
     <a-entity
       v-for="user in (node.nodeOptions.users || [])"
       :key="user.id"
-      :id="`node-${user.id}`"
+      :id="`user-${user.id}`"
       :position="user.position"
       :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: #node-${node.id}`"
     >
