@@ -15,7 +15,7 @@
       :key="question.id"
       :id="`question__${question.id}`"
       :position="question.position"
-      :look-center="`parentSelector: question-entity__${node.id}`"
+      :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: question-entity__${node.id}`"
     >
       <node-shape-entity
         :node="node"
@@ -60,16 +60,50 @@ export default {
       scale: nodeOptions.layoutOptions.scale || 1,
       fixedDistance: nodeOptions.layoutOptions.fixedDistance
     });
-
-    const questionCount = this.questions.length;
-    const questionRadius = this.sphereRadius*nodeOptions.layoutOptions.scale;
-    for (const i of [...Array(questionCount).keys()]) {
-      const theta = Math.acos(-1 + 2*(i + 1)/(questionCount + 1)); // 仰角
-      const phi = Math.sqrt((questionCount + 1)*Math.PI)*theta; // 俯角
-      const x = questionRadius*Math.sin(theta)*Math.cos(phi);
-      const y = questionRadius*Math.sin(theta)*Math.sin(phi);
-      const z = questionRadius*Math.cos(theta);
-      this.$set(this.questions[i], 'position', new THREE.Vector3(x, y, z));
+    this.calcPosition(nodeOptions.layoutOptions.shape);
+  },
+  methods: {
+    calcPosition(shape = 'circle') {
+      const calcFunctions = {
+        circle: this.calcCirclePosition,
+        square: this.calcSquarePosition,
+        sphere: this.calcSpherePosition
+      };
+      calcFunctions[shape]();
+    },
+    calcCirclePosition() {
+      const questionCount = this.questions.length;
+      const radius = questionCount === 1
+        ? 1e-100
+        : this.node.nodeOptions.layoutOptions.fixedDistance || (questionCount/5)*this.node.nodeOptions.layoutOptions.scale;
+      this.questions.forEach((_, i) => {
+        const theta = 2*Math.PI*i/questionCount + Math.PI/2;
+        const x = radius*Math.cos(theta);
+        const z = radius*Math.sin(theta);
+        this.$set(this.questions[i], 'position', new THREE.Vector3(x, 0, z));
+      });
+    },
+    calcSquarePosition() {
+      const questionCount = this.questions.length;
+      const edgeMaxLength = Math.ceil(Math.sqrt(questionCount)) - 1;
+      const gap = this.node.nodeOptions.layoutOptions.fixedDistance || this.node.nodeOptions.layoutOptions.scale;
+      this.questions.forEach((_, i) => {
+        const x = (edgeMaxLength - i%(edgeMaxLength + 1))*gap - edgeMaxLength*gap/2;
+        const z = (edgeMaxLength - Math.floor(i/(edgeMaxLength + 1)))*gap - (edgeMaxLength - (questionCount/(edgeMaxLength + 1) - 1)/2)*gap;
+        this.$set(this.questions[i], 'position', new THREE.Vector3(x, 0, z));
+      });
+    },
+    calcSpherePosition() {
+      const questionCount = this.questions.length;
+      const questionRadius = this.node.nodeOptions.layoutOptions.fixedDistance || this.sphereRadius*this.node.nodeOptions.layoutOptions.scale;
+      this.questions.forEach((_, i) => {
+        const theta = Math.acos(-1 + 2*(i + 1)/(questionCount + 1)); // 仰角
+        const phi = Math.sqrt((questionCount + 1)*Math.PI)*theta; // 俯角
+        const x = questionRadius*Math.sin(theta)*Math.cos(phi);
+        const y = questionRadius*Math.sin(theta)*Math.sin(phi);
+        const z = questionRadius*Math.cos(theta);
+        this.$set(this.questions[i], 'position', new THREE.Vector3(x, y, z));
+      });
     }
   }
 };

@@ -51,6 +51,9 @@ export default {
   data: () => ({
     notParentNodes: []
   }),
+  computed: {
+    sphereRadius: () => 0.65
+  },
   mounted() {
     this.init();
   },
@@ -88,29 +91,44 @@ export default {
     },
     calcPosition(shape = 'circle') {
       const calcFunctions = {
+        circle: this.calcCirclePosition,
         square: this.calcSquarePosition,
-        circle: this.calcCirclePosition
+        sphere: this.calcSpherePosition
       };
       calcFunctions[shape]();
+    },
+    calcCirclePosition() {
+      const nodeCount = this.notParentNodes.length;
+      const radius = nodeCount === 1
+        ? 1e-100
+        : this.layer.layoutOptions?.fixedDistance || (nodeCount*(2 - !!this.layer.parentId)/5)*(this.layer.layoutOptions?.scale || 1);
+      this.notParentNodes.forEach((_, i) => {
+        const theta = 2*Math.PI*i/nodeCount + Math.PI/2;
+        const x = radius*Math.cos(theta);
+        const z = radius*Math.sin(theta);
+        this.$set(this.notParentNodes[i], 'position', new THREE.Vector3(x, 0, z));
+      });
     },
     calcSquarePosition() {
       const nodeCount = this.notParentNodes.length;
       const edgeMaxLength = Math.ceil(Math.sqrt(nodeCount)) - 1;
       const gap = this.layer.layoutOptions?.fixedDistance || this.layer.layoutOptions?.scale || 1;
-      this.notParentNodes.forEach((node, i) => {
+      this.notParentNodes.forEach((_, i) => {
         const x = (edgeMaxLength - i%(edgeMaxLength + 1))*gap - edgeMaxLength*gap/2;
         const z = (edgeMaxLength - Math.floor(i/(edgeMaxLength + 1)))*gap - (edgeMaxLength - (nodeCount/(edgeMaxLength + 1) - 1)/2)*gap;
         this.$set(this.notParentNodes[i], 'position', new THREE.Vector3(x, 0, z));
       });
     },
-    calcCirclePosition() {
+    calcSpherePosition() {
       const nodeCount = this.notParentNodes.length;
-      const radius = nodeCount === 1 ? 1e-100 : this.layer.layoutOptions?.fixedDistance || (nodeCount*(2 - !!this.layer.parentId)/5)*(this.layer.layoutOptions?.scale || 1);
-      this.notParentNodes.forEach((node, i) => {
-        const theta = 2*Math.PI*i/nodeCount + Math.PI/2;
-        const x = radius*Math.cos(theta);
-        const z = radius*Math.sin(theta);
-        this.$set(this.notParentNodes[i], 'position', new THREE.Vector3(x, 0, z));
+      const radius = this.layer.layoutOptions?.fixedDistance || this.sphereRadius*(this.layer.layoutOptions?.scale || 1);
+      this.notParentNodes.forEach((_, i) => {
+        const theta = Math.acos(-1 + 2*(i + 1)/(nodeCount + 1)); // 仰角
+        const phi = Math.sqrt((nodeCount + 1)*Math.PI)*theta; // 俯角
+        const x = radius*Math.sin(theta)*Math.cos(phi);
+        const y = radius*Math.sin(theta)*Math.sin(phi);
+        const z = radius*Math.cos(theta);
+        this.$set(this.notParentNodes[i], 'position', new THREE.Vector3(x, y, z));
       });
     }
   }
