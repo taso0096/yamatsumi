@@ -49,7 +49,7 @@ export default {
       }
       for (const layer of cyberspace.layers.slice(1)) {
         if (!layer.fixedDepth) {
-          this.totalDepth -= 1.5*(layer.depth || 1);
+          this.totalDepth -= 1.5*(layer.depth ?? 1);
           layer.fixedDepth = this.totalDepth;
         } else {
           if (layer.fixedDepth > this.totalDepth) {
