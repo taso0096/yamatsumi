@@ -71,7 +71,7 @@
 
 <script>
 import CyberspaceEntity from '@/components/Cyberspace/CyberspaceEntity.vue';
-import LineEntity from '@/components/LineEntity.vue';
+import LineEntity from '@/components/Cyberspace/LineEntity.vue';
 import CyberspaceDrawer from '@/components/CyberspaceDrawer.vue';
 
 import axios from '@/axios';
