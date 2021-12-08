@@ -202,10 +202,8 @@ export default {
       }
       const routingTable = this.cyberspace.visualize.routingTable;
       const usersRoutingTable = this.exercise.routingTable;
-      const srcNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.srcIP))] || Object.keys(usersRoutingTable)[Object.values(usersRoutingTable).findIndex(n => n.includes(data.srcIP))];
-      const dstNodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(data.dstIP))] || Object.keys(usersRoutingTable)[Object.values(usersRoutingTable).findIndex(n => n.includes(data.dstIP))];
-      const srcNode = srcNodeId ? `#node-${srcNodeId}` : data.srcIsGlobal ? '.internet-nodes' : '.intranet-nodes';
-      const dstNode = dstNodeId ? `#node-${dstNodeId}` : data.dstIsGlobal ? '.internet-nodes' : '.intranet-nodes';
+      const srcNode = this.getNodeSelector(usersRoutingTable, data.srcIP, data.srcIsGlobal, true) || this.getNodeSelector(routingTable, data.srcIP, data.srcIsGlobal);
+      const dstNode = this.getNodeSelector(usersRoutingTable, data.dstIP, data.dstIsGlobal, true) || this.getNodeSelector(routingTable, data.dstIP, data.dstIsGlobal);
       this.$refs.lineEntity.emit3(srcNode, dstNode, port?.color || '#fff');
     });
     this.socket.on('answer', data => {
@@ -274,6 +272,16 @@ export default {
           score: this.scoreData
         });
       }
+    },
+    getNodeSelector(routingTable, ip, isGlobal, isUser = false) {
+      const nodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(ip))];
+      if (nodeId) {
+        const nodeSelector = `#${isUser ? 'user' : 'node'}-${nodeId}`;
+        if (document.querySelector(nodeSelector)) {
+          return nodeSelector;
+        }
+      }
+      return isGlobal ? '.internet-nodes' : '.intranet-nodes';
     }
   }
 };
