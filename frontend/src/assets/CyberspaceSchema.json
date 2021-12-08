@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "type": "object",
   "required": [
     "id",
@@ -59,7 +59,7 @@
     },
     "version": {
       "title": "バージョン",
-      "description": "ネットワークのバージョン",
+      "description": "サイバー空間のバージョン",
       "type": ["integer", "string"],
       "examples": [
         "0.0.1"
@@ -79,6 +79,113 @@
             "examples": [
               "192.168.1.1"
             ]
+          }
+        }
+      }
+    },
+    "options": {
+      "title": "オプション",
+      "description": "サイバー空間のオプション",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$id": "position",
+          "title": "座標",
+          "description": "座標",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "title": "x",
+              "description": "x",
+              "type": ["number", "string"],
+              "default": 0,
+              "examples": [
+                0
+              ]
+            },
+            "y": {
+              "title": "y",
+              "description": "y",
+              "type": ["number", "string"],
+              "default": 0,
+              "examples": [
+                0
+              ]
+            },
+            "z": {
+              "title": "z",
+              "description": "z",
+              "type": ["number", "string"],
+              "default": 0,
+              "examples": [
+                0
+              ]
+            }
+          }
+        },
+        "rotation": {
+          "$id": "rotation",
+          "title": "角度",
+          "description": "角度",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "title": "x",
+              "description": "x",
+              "type": ["number", "string"],
+              "default": 0,
+              "examples": [
+                0
+              ]
+            },
+            "y": {
+              "title": "y",
+              "description": "y",
+              "type": ["number", "string"],
+              "default": 0,
+              "examples": [
+                0
+              ]
+            },
+            "z": {
+              "title": "z",
+              "description": "z",
+              "type": ["number", "string"],
+              "default": 0,
+              "examples": [
+                0
+              ]
+            }
+          }
+        },
+        "animation": {
+          "$id": "animation",
+          "title": "アニメーション",
+          "description": "アニメーション",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "to": {
+              "title": "回転角度",
+              "description": "回転角度",
+              "type": "string",
+              "default": "0 0 0",
+              "examples": [
+                "0 360 0"
+              ]
+            },
+            "duration": {
+              "title": "回転時間",
+              "description": "1サイクルの回転時間",
+              "type": ["number", "string"],
+              "default": 200000,
+              "examples": [
+                200000
+              ]
+            }
           }
         }
       }
@@ -126,6 +233,15 @@
             "title": "絶対深度",
             "description": "一番上のレイヤーからの深度",
             "type": ["number", "string"]
+          },
+          "position": {
+            "$ref": "position"
+          },
+          "rotation": {
+            "$ref": "rotation"
+          },
+          "animation": {
+            "$ref": "animation"
           },
           "layoutOptions": {
             "$id": "layoutOptions",
@@ -316,74 +432,13 @@
                       ]
                     },
                     "position": {
-                      "title": "座標",
-                      "description": "座標",
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "x": {
-                          "title": "x",
-                          "description": "x",
-                          "type": ["number", "string"],
-                          "default": 0,
-                          "examples": [
-                            0
-                          ]
-                        },
-                        "y": {
-                          "title": "y",
-                          "description": "y",
-                          "type": ["number", "string"],
-                          "default": 0,
-                          "examples": [
-                            0
-                          ]
-                        },
-                        "z": {
-                          "title": "z",
-                          "description": "z",
-                          "type": ["number", "string"],
-                          "default": 0,
-                          "examples": [
-                            0
-                          ]
-                        }
-                      }
+                      "$ref": "position"
                     },
                     "rotation": {
-                      "title": "角度",
-                      "description": "角度",
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "x": {
-                          "title": "x",
-                          "description": "x",
-                          "type": ["number", "string"],
-                          "default": 0,
-                          "examples": [
-                            0
-                          ]
-                        },
-                        "y": {
-                          "title": "y",
-                          "description": "y",
-                          "type": ["number", "string"],
-                          "default": 0,
-                          "examples": [
-                            0
-                          ]
-                        },
-                        "z": {
-                          "title": "z",
-                          "description": "z",
-                          "type": ["number", "string"],
-                          "default": 0,
-                          "examples": [
-                            0
-                          ]
-                        }
-                      }
+                      "$ref": "rotation"
+                    },
+                    "animation": {
+                      "$ref": "animation"
                     }
                   },
                   "if": {
