@@ -160,7 +160,24 @@ export default {
     }
   }),
   watch: {
+    editMode() {
+      if (!this.cyberspace.options.position) {
+        this.cyberspace.options.position = {};
+      }
+      if (!this.cyberspace.options.rotation) {
+        this.cyberspace.options.rotation = {};
+      }
+      if (!this.cyberspace.options.animation) {
+        this.cyberspace.options.animation = {};
+      }
+    },
     'cyberspace.routingTable': {
+      handler() {
+        this.isChangedForm = true;
+      },
+      deep: true
+    },
+    'cyberspace.options': {
       handler() {
         this.isChangedForm = true;
       },
@@ -189,10 +206,10 @@ export default {
           return;
         }
       }
-      this.editMode = false;
       this.$store.dispatch('updateEditState', false);
       this.copyCyberspace('original', 'visualize');
       this.copyCyberspace('original', 'edit');
+      this.editMode = false;
       clearInterval(this.editIntervalId);
     },
     async enableEditMode() {

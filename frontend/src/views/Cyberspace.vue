@@ -127,6 +127,9 @@ export default {
     if (!originalCyberspace) {
       return;
     }
+    if (!originalCyberspace.options) {
+      originalCyberspace.options = {};
+    }
     // 編集等で使用するcyberspaceのコピー
     this.cyberspace = {
       original: JSON.parse(JSON.stringify(originalCyberspace)),

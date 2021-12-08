@@ -1,6 +1,10 @@
 <template>
   <a-entity v-if="!isValidCyberspace" />
-  <a-entity v-else :position="`0 ${-(totalDepth - cyberspace.layers[0].fixedDepth)/2} 0`">
+  <a-entity
+    v-else
+    :position="`0 ${-(totalDepth - cyberspace.layers[0].fixedDepth)/2} 0`"
+    :animation="`property: rotation; to: ${animationOption.to || '0 0 0'}; dur: ${animationOption.duration || 200000}; easing: linear; loop: true`"
+  >
     <layer-entity
       v-for="layer in cyberspace.layers"
       :key="layer.id"
@@ -27,6 +31,11 @@ export default {
     isValidCyberspace: false,
     totalDepth: 0
   }),
+  computed: {
+    animationOption() {
+      return this.cyberspace.options.animation || {};
+    }
+  },
   methods: {
     async set(visualizeData) {
       const { cyberspace, exercise } = visualizeData;
