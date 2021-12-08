@@ -9,6 +9,12 @@
       :detailsLabel="detailsLabel"
       :score="score"
     />
+    <text-entity
+      v-else-if="node.nodeOptions.shape === 'text'"
+      :node="node"
+      :detailsLabel="detailsLabel"
+      :score="score"
+    />
     <sphere-entity
       v-else
       :node="node"
@@ -21,12 +27,14 @@
 <script>
 import SphereEntity from './SphereEntity.vue';
 import CircleEntity from './CircleEntity.vue';
+import TextEntity from './TextEntity.vue';
 
 export default {
   name: 'NodeShapeEntity',
   components: {
     SphereEntity,
-    CircleEntity
+    CircleEntity,
+    TextEntity
   },
   props: {
     node: {
