@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "type": "object",
   "required": [
     "id",
@@ -340,7 +340,9 @@
                         "user",
                         "team",
                         "question",
-                        "spacer"
+                        "spacer",
+                        "timer",
+                        "ranking"
                       ],
                       "default": "(default)",
                       "examples": [
@@ -353,7 +355,10 @@
                       "type": "string",
                       "enum": [
                         "sphere",
+                        "polyhedron",
+                        "ring",
                         "circle",
+                        "polygon",
                         "server",
                         "switch",
                         "router",
@@ -421,6 +426,16 @@
                         1
                       ]
                     },
+                    "fontSize": {
+                      "title": "フォントサイズ",
+                      "description": "フォントサイズ",
+                      "type": ["number", "string"],
+                      "minimum": 0,
+                      "default": 1,
+                      "examples": [
+                        1
+                      ]
+                    },
                     "nodeColor": {
                       "title": "ノード色",
                       "description": "ノード色",
@@ -437,6 +452,31 @@
                       "default": "#fff",
                       "examples": [
                         "#fff"
+                      ]
+                    },
+                    "facesNumber": {
+                      "title": "面の数",
+                      "description": "面の数",
+                      "type": "number",
+                      "enum": [
+                        4,
+                        6,
+                        8,
+                        12,
+                        20
+                      ],
+                      "default": 6,
+                      "examples": [
+                        6
+                      ]
+                    },
+                    "polygonalNumber": {
+                      "title": "多角数",
+                      "description": "多角数",
+                      "type": ["number", "string"],
+                      "default": 4,
+                      "examples": [
+                        4
                       ]
                     },
                     "position": {
