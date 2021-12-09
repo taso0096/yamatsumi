@@ -160,6 +160,27 @@
         />
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.nodeOptions.animation.to"
+          label="Animation To"
+          type="string"
+          placeholder="0 0 0"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.nodeOptions.animation.duration"
+          label="Animation Duration"
+          type="number"
+          step="1"
+          placeholder="200000"
+        />
+      </v-col>
+    </v-row>
+
     <v-row>
       <v-col class="py-0">
         <v-text-field
@@ -252,6 +273,7 @@
           </v-select>
         </v-col>
       </v-row>
+
       <div>
         <span class="subtitle-1 grey--text text--darken-1">Layout Options</span>
       </div>
@@ -340,6 +362,9 @@ export default {
     }
     if (!this.node.nodeOptions.rotation) {
       this.node.nodeOptions.rotation = {};
+    }
+    if (!this.node.nodeOptions.animation) {
+      this.node.nodeOptions.animation = {};
     }
   },
   methods: {
