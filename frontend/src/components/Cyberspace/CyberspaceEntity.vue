@@ -2,14 +2,17 @@
   <a-entity v-if="!isValidCyberspace" />
   <a-entity
     v-else
-    :position="`0 ${-(totalDepth - cyberspace.layers[0].fixedDepth)/2} 0`"
-    :animation="`property: rotation; to: ${animationOption.to || '0 0 0'}; dur: ${animationOption.duration || 200000}; easing: linear; loop: true`"
+    :position="`${cyberspaceOption.position.x || 0} ${-(totalDepth - cyberspace.layers[0].fixedDepth)/2} ${cyberspaceOption.position.z || 0}`"
+    :rotation="`${cyberspaceOption.rotation.x || 0} ${cyberspaceOption.rotation.y || 0} ${cyberspaceOption.rotation.z || 0}`"
+    :animation="`property: rotation; to: ${cyberspaceOption.animation.to || '0 0 0'}; dur: ${cyberspaceOption.animation.duration || 200000}; easing: linear; loop: true`"
   >
-    <layer-entity
-      v-for="layer in cyberspace.layers"
-      :key="layer.id"
-      :layer="layer"
-    />
+    <a-entity :position="`0 ${cyberspaceOption.position.y || 0} 0`">
+      <layer-entity
+        v-for="layer in cyberspace.layers"
+        :key="layer.id"
+        :layer="layer"
+      />
+    </a-entity>
   </a-entity>
 </template>
 
@@ -32,8 +35,13 @@ export default {
     totalDepth: 0
   }),
   computed: {
-    animationOption() {
-      return this.cyberspace.options.animation || {};
+    cyberspaceOption() {
+      const options = this.cyberspace.options;
+      return {
+        position: options.position || {},
+        rotation: options.rotation || {},
+        animation: options.animation || {}
+      };
     }
   },
   methods: {
