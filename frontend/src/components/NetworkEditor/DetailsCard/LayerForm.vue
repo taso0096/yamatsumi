@@ -61,6 +61,25 @@
         />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.animation.to"
+          label="Animation To"
+          type="string"
+          placeholder="0 0 0"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-text-field
+          v-model="node.animation.duration"
+          label="Animation Duration"
+          type="number"
+          step="1"
+          placeholder="200000"
+        />
+      </v-col>
+    </v-row>
   </v-card-text>
 </template>
 
@@ -86,6 +105,9 @@ export default {
   created() {
     if (!this.node.layoutOptions) {
       this.node.layoutOptions = {};
+    }
+    if (!this.node.animation) {
+      this.node.animation = {};
     }
   }
 };
