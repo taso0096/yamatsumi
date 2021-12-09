@@ -28,8 +28,10 @@ def return_cyberspace_detail_data(cyberspace):
         'scoresUrl': cyberspace.scores_url,
         'questionsUrl': cyberspace.questions_url,
         'userRoutingUrl': cyberspace.user_routing_url,
+        'extraUrl': cyberspace.extra_url,
         'version': cyberspace.version,
         'routingTable': cyberspace.routing_table,
+        'options': cyberspace.options,
         'layers': cyberspace.layers
     }
     data = {k: data[k] for k in data if data[k] is not None}
@@ -69,8 +71,10 @@ class CyberspacesView(GenericAPIView):
             'scores_url': loads_data.get('scoresUrl'),
             'questions_url': loads_data.get('questionsUrl'),
             'user_routing_url': loads_data.get('userRoutingUrl'),
+            'extra_url': loads_data.get('extraUrl'),
             'version': loads_data.get('version'),
             'routing_table': loads_data.get('routingTable') or {},
+            'options': loads_data.get('options'),
             'layers': loads_data['layers']
         }
         try:
@@ -101,8 +105,10 @@ class CyberspaceDetailView(GenericAPIView):
             'scores_url': loads_data.get('scoresUrl'),
             'questions_url': loads_data.get('questionsUrl'),
             'user_routing_url': loads_data.get('userRoutingUrl'),
+            'extra_url': loads_data.get('extraUrl'),
             'version': loads_data.get('version'),
             'routing_table': loads_data.get('routingTable'),
+            'options': loads_data.get('options'),
             'layers': loads_data['layers']
         }
         for key, value in cyberspace_data.items():
