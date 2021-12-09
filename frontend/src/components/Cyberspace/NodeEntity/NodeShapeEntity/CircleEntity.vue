@@ -3,6 +3,7 @@
     :color="node.nodeOptions.nodeColor"
     side="double"
     :radius="circleRadius*node.nodeOptions.size"
+    :wireframe="node.nodeOptions.wireframe"
   >
     <a-ring
       :color="node.nodeOptions.nodeColor"

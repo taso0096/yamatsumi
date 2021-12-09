@@ -2,6 +2,7 @@
   <a-sphere
     :radius="sphereRadius*node.nodeOptions.size"
     :color="node.nodeOptions.nodeColor"
+    :wireframe="node.nodeOptions.wireframe"
   >
     <a-text
       v-for="(label, i) in labels"

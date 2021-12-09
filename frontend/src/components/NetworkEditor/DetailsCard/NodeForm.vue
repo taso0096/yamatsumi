@@ -238,6 +238,18 @@
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-col class="py-0">
+        <v-switch
+          v-model="node.nodeOptions.wireframe"
+          label="Wireframe"
+          inset
+          hide-details
+          class="mt-0 mb-5"
+        />
+      </v-col>
+    </v-row>
+
     <template v-if="['user', 'question'].includes(node.nodeOptions.type)">
       <v-row
         v-for="option in nodeTypeOptions(node.nodeOptions.type)"

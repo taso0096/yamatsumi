@@ -5,21 +5,25 @@
         v-if="node.nodeOptions.facesNumber === 4"
         :radius="polyhedronSize*node.nodeOptions.size*1.5"
         :color="node.nodeOptions.nodeColor"
+        :wireframe="node.nodeOptions.wireframe"
       />
       <a-octahedron
         v-else-if="node.nodeOptions.facesNumber === 8"
         :radius="polyhedronSize*node.nodeOptions.size"
         :color="node.nodeOptions.nodeColor"
+        :wireframe="node.nodeOptions.wireframe"
       />
       <a-dodecahedron
         v-else-if="node.nodeOptions.facesNumber === 12"
         :radius="polyhedronSize*node.nodeOptions.size"
         :color="node.nodeOptions.nodeColor"
+        :wireframe="node.nodeOptions.wireframe"
       />
       <a-icosahedron
         v-else-if="node.nodeOptions.facesNumber === 20"
         :radius="polyhedronSize*node.nodeOptions.size"
         :color="node.nodeOptions.nodeColor"
+        :wireframe="node.nodeOptions.wireframe"
       />
       <a-box
         v-else
@@ -27,6 +31,7 @@
         :height="polyhedronSize*node.nodeOptions.size*1.5"
         :depth="polyhedronSize*node.nodeOptions.size*1.5"
         :color="node.nodeOptions.nodeColor"
+        :wireframe="node.nodeOptions.wireframe"
       />
     </a-entity>
     <a-text
