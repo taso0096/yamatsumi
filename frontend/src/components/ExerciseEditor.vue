@@ -20,6 +20,11 @@
         label="User Routing URL"
         :placeholder="userRoutingUrlExample"
       />
+      <v-text-field
+        v-model="cyberspace.extraUrl"
+        label="Extra URL"
+        :placeholder="extraUrlExample"
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -44,6 +49,9 @@ export default {
     },
     userRoutingUrlExample() {
       return String(cyberspaceSchema.properties.userRoutingUrl.examples[0]) || '';
+    },
+    extraUrlExample() {
+      return String(cyberspaceSchema.properties.extraUrl.examples[0]) || '';
     }
   }
 };

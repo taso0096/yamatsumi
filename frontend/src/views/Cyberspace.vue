@@ -158,6 +158,7 @@ export default {
       this.exercise.questions = this.exercise.questions[0].questions;
       this.exercise.scores = this.exercise.scores[0];
       this.exercise.routingTable = routingTable;
+      this.exercise.extra = this.exercise.extra[0];
     }
 
     const lineColor = new Map([

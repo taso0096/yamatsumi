@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "type": "object",
   "required": [
     "id",
@@ -55,6 +55,14 @@
       "type": "string",
       "examples": [
         "http://localhost:8080/ipaddresses"
+      ]
+    },
+    "extraUrl": {
+      "title": "追加データURL",
+      "description": "演習システム側の追加データAPI",
+      "type": "string",
+      "examples": [
+        "http://localhost:8080/extra"
       ]
     },
     "version": {

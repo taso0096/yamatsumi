@@ -65,6 +65,8 @@ class ExerciseDetailView(GenericAPIView):
         cyberspace = Cyberspace.objects.get(cyberspace_id=cyberspace_id)
         score_data = {}
         questions_data = {}
+        user_routing_data = {}
+        extra_data = {}
         res = {}
         if cyberspace.scores_url:
             res = requests.get(cyberspace.scores_url)
@@ -75,19 +77,24 @@ class ExerciseDetailView(GenericAPIView):
         if cyberspace.user_routing_url:
             res = requests.get(cyberspace.user_routing_url)
             user_routing_data = res.json()
+        if cyberspace.extra_url:
+            res = requests.get(cyberspace.extra_url)
+            extra_data = res.json()
         try:
             res = {
                 'id': cyberspace_id,
                 'scores': score_data,
                 **questions_data,
-                'routingTable': user_routing_data
+                'routingTable': user_routing_data,
+                'extra': extra_data
             }
         except Exception:
             res = {
                 'id': cyberspace_id,
                 'scores': score_data,
                 'questions': questions_data,
-                'routingTable': user_routing_data
+                'routingTable': user_routing_data,
+                'extra': extra_data
             }
         return Response(data=res, status=status.HTTP_200_OK)
 
