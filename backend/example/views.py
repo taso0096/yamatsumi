@@ -3,6 +3,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
+import time
+
 
 class ScoresView(GenericAPIView):
     permission_classes = (AllowAny,)
@@ -173,3 +175,15 @@ class IpAddressesView(GenericAPIView):
             'user_20': ['192.168.0.20']
         }
         return Response(data=ip_data, status=status.HTTP_200_OK)
+
+
+class ExtraView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, _):
+        now = time.time()
+        extra_data = {
+            'startTime': int(now*1000),
+            'endTime': int((now + 180*60)*1000)
+        }
+        return Response(data=extra_data, status=status.HTTP_200_OK)
