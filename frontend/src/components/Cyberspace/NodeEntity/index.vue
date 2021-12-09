@@ -16,6 +16,12 @@
     <spacer-entity
       v-else-if="validNode.nodeOptions.type === 'spacer'"
     />
+    <timer-entity
+      v-else-if="validNode.nodeOptions.type === 'timer'"
+      :node="validNode"
+      :startTime="$_visualizeData.exercise.extra.startTime"
+      :endTime="$_visualizeData.exercise.extra.endTime"
+    />
     <node-shape-entity
       v-else
       :node="validNode"
@@ -28,6 +34,7 @@ import TeamEntity from './TeamEntity.vue';
 import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
 import SpacerEntity from './SpacerEntity.vue';
+import TimerEntity from './TimerEntity.vue';
 import NodeShapeEntity from './NodeShapeEntity';
 
 export default {
@@ -37,6 +44,7 @@ export default {
     UserEntity,
     QuestionEntity,
     SpacerEntity,
+    TimerEntity,
     NodeShapeEntity
   },
   props: {
