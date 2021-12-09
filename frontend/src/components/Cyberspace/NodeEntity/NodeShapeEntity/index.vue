@@ -15,6 +15,12 @@
       :detailsLabel="detailsLabel"
       :score="score"
     />
+    <polyhedron-entity
+      v-else-if="node.nodeOptions.shape === 'polyhedron'"
+      :node="node"
+      :detailsLabel="detailsLabel"
+      :score="score"
+    />
     <sphere-entity
       v-else
       :node="node"
@@ -28,13 +34,15 @@
 import SphereEntity from './SphereEntity.vue';
 import CircleEntity from './CircleEntity.vue';
 import TextEntity from './TextEntity.vue';
+import PolyhedronEntity from '@/components/Cyberspace/NodeEntity/NodeShapeEntity/PolyhedronEntity.vue';
 
 export default {
   name: 'NodeShapeEntity',
   components: {
     SphereEntity,
     CircleEntity,
-    TextEntity
+    TextEntity,
+    PolyhedronEntity
   },
   props: {
     node: {
