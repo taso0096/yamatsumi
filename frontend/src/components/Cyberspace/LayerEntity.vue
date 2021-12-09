@@ -1,7 +1,7 @@
 <template>
   <a-entity
     :position="`0 ${layer.fixedDepth} 0`"
-    :animation="`property: rotation; to: ${animationOption.to || '0 0 0'}; dur: ${animationOption.duration || 200000}; easing: linear; loop: true`"
+    :animation="`delay: ${delay}; property: rotation; to: ${animationOption.to || '0 0 0'}; dur: ${animationOption.duration || 200000}; easing: linear; loop: true`"
   >
     <group-entity :group="layer" />
   </a-entity>
@@ -18,6 +18,10 @@ export default {
   props: {
     layer: {
       type: Object
+    },
+    delay: {
+      type: Number,
+      default: 0
     }
   },
   computed: {

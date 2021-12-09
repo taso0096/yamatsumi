@@ -1,6 +1,6 @@
 <template>
   <a-entity
-    :id="`question-entity__${node.id}`"
+    :class="`question-entity__${node.id}`"
   >
     <a-text
       :value="node.label"
@@ -13,7 +13,7 @@
     <a-entity
       v-for="question in questions"
       :key="question.id"
-      :id="`question__${question.id}`"
+      :class="`question__${question.id}`"
       :position="question.position"
       :look-center="node.nodeOptions.layoutOptions.shape !== 'square' && `parentSelector: question-entity__${node.id}`"
     >

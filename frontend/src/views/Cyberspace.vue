@@ -53,6 +53,7 @@
         <a-entity oculus-touch-controls="hand: right"></a-entity>
 
         <cyberspace-entity ref="cyberspaceEntity" />
+        <cyberspace-entity ref="cyberspaceEntityDelay600" :delay="600" />
         <line-entity ref="lineEntity" />
       </a-scene>
     </v-card>
@@ -201,18 +202,18 @@ export default {
       const port = lineColor.get(data.srcPort) || lineColor.get(data.dstPort);
       if (userId) {
         const user = this.$_visualizeData.exercise.users.find(u => u.id === userId);
-        this.$refs.lineEntity.emit3(`#node-${user.nodeId}`, '.internet-nodes', port?.color || '#fff');
+        this.$refs.lineEntity.emit3(`.node-${user.nodeId}`, '.internet-nodes', port?.color || '#fff');
         return;
       }
       const routingTable = this.cyberspace.visualize.routingTable;
       const usersRoutingTable = this.exercise.routingTable;
       const srcNode = this.getNodeSelector(usersRoutingTable, data.srcIP, data.srcIsGlobal, true) || this.getNodeSelector(routingTable, data.srcIP, data.srcIsGlobal);
       const dstNode = this.getNodeSelector(usersRoutingTable, data.dstIP, data.dstIsGlobal, true) || this.getNodeSelector(routingTable, data.dstIP, data.dstIsGlobal);
-      this.$refs.lineEntity.emit3(srcNode, dstNode, port?.color || '#fff');
+      this.$refs.lineEntity.emit3(`.delay__600 ${srcNode}`, dstNode, port?.color || '#fff');
     });
     this.socket.on('answer', data => {
       const answerData = JSON.parse(data);
-      const userQuery = `#user-${answerData.userId}`;
+      const userQuery = `.user-${answerData.userId}`;
       const exerciseEndFunc = () => {
         Object.entries(answerData.scores.teams).forEach(([teamId, targetScore]) => {
           const score = this.exercise.scores[teamId].score;
@@ -242,7 +243,7 @@ export default {
         });
       };
       if (!document.querySelector(userQuery)) {
-        this.$refs.lineEntity.emitAnswer(`#team-${answerData.teamId}`, answerData.questionId, answerData.isSuccess, exerciseEndFunc);
+        this.$refs.lineEntity.emitAnswer(`.team-${answerData.teamId}`, answerData.questionId, answerData.isSuccess, exerciseEndFunc);
         return;
       }
       this.$refs.lineEntity.emitAnswer(userQuery, answerData.questionId, answerData.isSuccess, exerciseEndFunc);
@@ -252,6 +253,11 @@ export default {
     });
 
     this.$refs.cyberspaceEntity.set({
+      cyberspace: this.cyberspace.visualize,
+      exercise: this.exercise,
+      score: this.scoreData
+    });
+    this.$refs.cyberspaceEntityDelay600.set({
       cyberspace: this.cyberspace.visualize,
       exercise: this.exercise,
       score: this.scoreData
@@ -275,12 +281,17 @@ export default {
           exercise: this.exercise,
           score: this.scoreData
         });
+        this.$refs.cyberspaceEntityDelay600.set({
+          cyberspace: this.cyberspace.visualize,
+          exercise: this.exercise,
+          score: this.scoreData
+        });
       }
     },
     getNodeSelector(routingTable, ip, isGlobal, isUser = false) {
       const nodeId = Object.keys(routingTable)[Object.values(routingTable).findIndex(n => n.includes(ip))];
       if (nodeId) {
-        const nodeSelector = `#${isUser ? 'user' : 'node'}-${nodeId}`;
+        const nodeSelector = `.${isUser ? 'user' : 'node'}-${nodeId}`;
         if (document.querySelector(nodeSelector)) {
           return nodeSelector;
         }

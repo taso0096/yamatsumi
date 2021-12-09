@@ -3,11 +3,7 @@
     <a-entity
       v-for="node in notParentNodes"
       :key="node.id"
-      :id="`node-${node.id}`"
-      :class="{
-        'internet-nodes': isInternetNode(node),
-        'intranet-nodes': isIntranetNode(node)
-      }"
+      :class="`node-${node.id} ${isInternetNode(node) && 'internet-nodes'} ${isIntranetNode(node) && 'intranet-nodes'}`"
       :position="node.position"
       :look-center="(!group.layoutOptions || group.layoutOptions && group.layoutOptions.shape !== 'square') && (!group.parentId || `parentSelector: #node-${group.parentId}`)"
     >

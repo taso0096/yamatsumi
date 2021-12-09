@@ -1,5 +1,5 @@
 <template>
-  <a-entity :id="`team-${teamId}`">
+  <a-entity :class="`team-${teamId}`">
     <node-shape-entity
       :node="node"
       :detailsLabel="teamId"

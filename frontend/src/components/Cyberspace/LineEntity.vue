@@ -155,7 +155,7 @@ export default {
       };
     },
     emitAnswer(source, questionId, isSuccess, endFunc = () => {}) {
-      this.emit1(source, `#question__${questionId}`, isSuccess ? '#00ff00' : '#ff0000', endFunc, true);
+      this.emit1(source, `.question__${questionId}`, isSuccess ? '#00ff00' : '#ff0000', endFunc, true);
     },
     emit3(source, target, color = '#fff', endFunc = () => {}, isAnswer = false) {
       if (Object.keys(this.animationFunctions).length > 100) {
