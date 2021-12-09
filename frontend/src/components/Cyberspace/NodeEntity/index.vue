@@ -67,7 +67,9 @@ export default {
         size: nodeOptions.size || 1,
         fontSize: nodeOptions.fontSize || 1,
         nodeColor: nodeOptions.nodeColor || '#fff',
-        labelColor: nodeOptions.labelColor || '#fff'
+        labelColor: nodeOptions.labelColor || '#fff',
+        facesNumber: nodeOptions.facesNumber || 4,
+        polygonalNumber: nodeOptions.polygonalNumber || 4
       }
     };
   }

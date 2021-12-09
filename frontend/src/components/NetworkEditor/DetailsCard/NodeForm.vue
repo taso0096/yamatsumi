@@ -183,6 +183,28 @@
       </v-col>
     </v-row>
 
+    <v-row v-if="['polyhedron', 'polygon'].includes(node.nodeOptions.shape)">
+      <v-col class="py-0">
+        <v-select
+          v-if="node.nodeOptions.shape === 'polyhedron'"
+          v-model="node.nodeOptions.facesNumber"
+          label="Faces Number"
+          type="number"
+          :placeholder="String(schemaNodeOptions.facesNumber.default || '')"
+          :items="schemaNodeOptions.facesNumber.enum"
+        />
+        <v-text-field
+          v-if="node.nodeOptions.shape === 'polygon'"
+          v-model.number="node.nodeOptions.polygonalNumber"
+          label="Polygonal Number"
+          type="number"
+          min="0"
+          step="0.1"
+          :placeholder="String(schemaNodeOptions.polygonalNumber.default || '')"
+        />
+      </v-col>
+    </v-row>
+
     <v-row v-if="node.nodeOptions.type === 'team'">
       <v-col class="py-0">
         <v-select
@@ -322,6 +344,8 @@ export default {
   },
   methods: {
     changeNodeType(type) {
+      delete this.node.nodeOptions.facesNumber;
+      delete this.node.nodeOptions.polygonalNumber;
       delete this.node.nodeOptions.teamId;
       delete this.node.nodeOptions.users;
       delete this.node.nodeOptions.levels;
