@@ -1,8 +1,18 @@
 <template>
-  <node-shape-entity
-    :node="node"
-    :detailsLabel="remainingTime"
-  />
+  <a-entity>
+    <node-shape-entity
+      :node="node"
+      :detailsLabel="remainingTime"
+    />
+    <a-text
+      :value="`${formatedTime(startTime)} --> ${formatedTime(endTime)}`"
+      align="center"
+      :color="node.nodeOptions.labelColor"
+      side="double"
+      :position="`0 ${-node.nodeOptions.fontSize*3/25} 0`"
+      :wrap-count="50/node.nodeOptions.fontSize*3"
+    />
+  </a-entity>
 </template>
 
 <script>
@@ -45,12 +55,24 @@ export default {
         clearInterval(this.timerId);
         return;
       }
+      this.remainingTime = this.formatedRemaminingTime(diffTime);
+    },
+    formatedRemaminingTime(time) {
       const rTime = {
-        hour: ('0' + Math.floor(diffTime/(60*60*1000))).slice(-2),
-        min: ('0' + Math.floor(diffTime/(60*1000)%60)).slice(-2),
-        sec: ('0' + Math.floor(diffTime/1000%60)).slice(-2)
+        hour: ('0' + Math.floor(time/(60*60*1000))).slice(-2),
+        min: ('0' + Math.floor(time/(60*1000)%60)).slice(-2),
+        sec: ('0' + Math.floor(time/1000%60)).slice(-2)
       };
-      this.remainingTime = `${rTime.hour}:${rTime.min}:${rTime.sec}`;
+      return `${rTime.hour}:${rTime.min}:${rTime.sec}`;
+    },
+    formatedTime(time) {
+      const date = new Date(time);
+      const rTime = {
+        hour: ('0' + date.getHours()).slice(-2),
+        min: ('0' + date.getMinutes()).slice(-2),
+        sec: ('0' + date.getSeconds()).slice(-2)
+      };
+      return `${rTime.hour}:${rTime.min}:${rTime.sec}`;
     }
   }
 };
