@@ -11,7 +11,7 @@
       :color="node.nodeOptions.labelColor"
       side="double"
       :position="`${label.position.x} ${label.position.y} ${label.position.z}`"
-      wrap-count="50"
+      :wrap-count="50/node.nodeOptions.fontSize"
     />
   </a-sphere>
 </template>

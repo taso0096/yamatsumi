@@ -57,6 +57,7 @@ export default {
         type: nodeOptions.type || 'default',
         shape: nodeOptions.shape || 'sphere',
         size: nodeOptions.size || 1,
+        fontSize: nodeOptions.fontSize || 1,
         nodeColor: nodeOptions.nodeColor || '#fff',
         labelColor: nodeOptions.labelColor || '#fff'
       }

@@ -164,11 +164,21 @@
       <v-col class="py-0">
         <v-text-field
           v-model.number="node.nodeOptions.size"
-          label="Size"
+          label="Node Size"
           type="number"
           min="0"
           step="0.1"
           :placeholder="String(schemaNodeOptions.size.default || '')"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-text-field
+          v-model.number="node.nodeOptions.fontSize"
+          label="Font Size"
+          type="number"
+          min="0"
+          step="0.1"
+          :placeholder="String(schemaNodeOptions.fontSize.default || '')"
         />
       </v-col>
     </v-row>
