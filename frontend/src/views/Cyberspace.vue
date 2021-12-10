@@ -297,7 +297,7 @@ export default {
           return nodeSelector;
         }
       }
-      return isGlobal ? '.internet-nodes' : '.intranet-nodes';
+      return isUser ? false : (isGlobal ? '.internet-nodes' : '.intranet-nodes');
     }
   }
 };
