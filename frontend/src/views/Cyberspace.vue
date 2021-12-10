@@ -209,7 +209,9 @@ export default {
       const usersRoutingTable = this.exercise.routingTable;
       const srcNode = this.getNodeSelector(usersRoutingTable, data.srcIP, data.srcIsGlobal, true) || this.getNodeSelector(routingTable, data.srcIP, data.srcIsGlobal);
       const dstNode = this.getNodeSelector(usersRoutingTable, data.dstIP, data.dstIsGlobal, true) || this.getNodeSelector(routingTable, data.dstIP, data.dstIsGlobal);
-      this.$refs.lineEntity.emit3(`.delay__600 ${srcNode}`, dstNode, port?.color || '#fff');
+      if (srcNode !== dstNode) {
+        this.$refs.lineEntity.emit3(`.delay__600 ${srcNode}`, dstNode, port?.color || '#fff');
+      }
     });
     this.socket.on('answer', data => {
       const answerData = JSON.parse(data);
