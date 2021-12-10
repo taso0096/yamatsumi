@@ -1,35 +1,37 @@
 <template>
-  <a-entity
-    :position="getTreeVecter(node.nodeOptions.position)"
-    :rotation="getTreeVecter(node.nodeOptions.rotation)"
-  >
-    <circle-entity
-      v-if="node.nodeOptions.shape === 'circle'"
-      :node="node"
-      :detailsLabel="detailsLabel"
-      :score="score"
-      :percentage="percentage"
-    />
-    <text-entity
-      v-else-if="node.nodeOptions.shape === 'text'"
-      :node="node"
-      :detailsLabel="detailsLabel"
-      :score="score"
-    />
-    <polyhedron-entity
-      v-else-if="node.nodeOptions.shape === 'polyhedron'"
-      :node="node"
-      :detailsLabel="detailsLabel"
-      :score="score"
-      :percentage="percentage"
-    />
-    <sphere-entity
-      v-else
-      :node="node"
-      :detailsLabel="detailsLabel"
-      :score="score"
-      :percentage="percentage"
-    />
+  <a-entity>
+    <a-entity
+      :position="getTreeVecter(node.nodeOptions.position)"
+      :rotation="getTreeVecter(node.nodeOptions.rotation)"
+    >
+      <circle-entity
+        v-if="node.nodeOptions.shape === 'circle'"
+        :node="node"
+        :detailsLabel="detailsLabel"
+        :score="score"
+        :percentage="percentage"
+      />
+      <text-entity
+        v-else-if="node.nodeOptions.shape === 'text'"
+        :node="node"
+        :detailsLabel="detailsLabel"
+        :score="score"
+      />
+      <polyhedron-entity
+        v-else-if="node.nodeOptions.shape === 'polyhedron'"
+        :node="node"
+        :detailsLabel="detailsLabel"
+        :score="score"
+        :percentage="percentage"
+      />
+      <sphere-entity
+        v-else
+        :node="node"
+        :detailsLabel="detailsLabel"
+        :score="score"
+        :percentage="percentage"
+      />
+    </a-entity>
   </a-entity>
 </template>
 
