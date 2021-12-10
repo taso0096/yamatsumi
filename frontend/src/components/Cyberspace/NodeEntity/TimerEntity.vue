@@ -49,7 +49,8 @@ export default {
   },
   methods: {
     count() {
-      const diffTime = this.endTime - Date.now();
+      const nowTime = Date.now();
+      const diffTime = (this.startTime > nowTime ? this.startTime : this.endTime) - nowTime;
       if (diffTime <= 0) {
         this.remainingTime = '00:00:00';
         clearInterval(this.timerId);
