@@ -1,34 +1,43 @@
 <template>
-  <a-circle
-    :color="node.nodeOptions.nodeColor"
-    side="double"
-    :radius="circleRadius*node.nodeOptions.size"
-    :wireframe="node.nodeOptions.wireframe"
-    :geometry="`thetaLength: ${(1 - percentage)*360}; thetaStart: 90;`"
-  >
-    <a-ring
+  <a-entity>
+    <a-circle
       :color="node.nodeOptions.nodeColor"
       side="double"
-      :radius-inner="circleRadius*node.nodeOptions.size*1.025"
-      :radius-outer="circleRadius*node.nodeOptions.size*1.05"
-    />
-    <a-ring
+      :radius="circleRadius*node.nodeOptions.size"
+      :wireframe="node.nodeOptions.wireframe"
+      :geometry="`thetaLength: ${(1 - percentage)*360}; thetaStart: 90;`"
+    >
+      <a-ring
+        :color="node.nodeOptions.nodeColor"
+        side="double"
+        :radius-inner="circleRadius*node.nodeOptions.size*1.025"
+        :radius-outer="circleRadius*node.nodeOptions.size*1.05"
+      />
+      <a-ring
+        :color="node.nodeOptions.nodeColor"
+        side="double"
+        :radius-inner="circleRadius*node.nodeOptions.size*1.075"
+        :radius-outer="circleRadius*node.nodeOptions.size*1.175"
+      />
+      <a-text
+        v-for="(label, i) in labels"
+        :key="i"
+        :value="label.value"
+        align="center"
+        :color="node.nodeOptions.labelColor"
+        side="double"
+        :position="`${label.position.x} ${label.position.y} ${label.position.z}`"
+        :wrap-count="50/node.nodeOptions.fontSize"
+      />
+    </a-circle>
+    <a-circle
+      v-if="!node.nodeOptions.wireframe && percentage"
       :color="node.nodeOptions.nodeColor"
       side="double"
-      :radius-inner="circleRadius*node.nodeOptions.size*1.075"
-      :radius-outer="circleRadius*node.nodeOptions.size*1.175"
+      :radius="circleRadius*node.nodeOptions.size"
+      opacity="0.4"
     />
-    <a-text
-      v-for="(label, i) in labels"
-      :key="i"
-      :value="label.value"
-      align="center"
-      :color="node.nodeOptions.labelColor"
-      side="double"
-      :position="`${label.position.x} ${label.position.y} ${label.position.z}`"
-      :wrap-count="50/node.nodeOptions.fontSize"
-    />
-  </a-circle>
+  </a-entity>
 </template>
 
 <script>
