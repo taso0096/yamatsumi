@@ -4,7 +4,7 @@
       v-for="(label, i) in labels"
       :key="i"
       :value="label.value"
-      align="center"
+      :align="textAlign"
       :color="node.nodeOptions.labelColor"
       side="double"
       :position="`${label.position.x} ${label.position.y} ${label.position.z}`"
@@ -28,6 +28,10 @@ export default {
     score: {
       type: Number,
       required: false
+    },
+    textAlign: {
+      type: String,
+      default: 'center'
     }
   },
   computed: {

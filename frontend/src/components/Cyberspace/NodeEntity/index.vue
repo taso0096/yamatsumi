@@ -22,6 +22,10 @@
       :startTime="$_visualizeData.exercise.extra.startTime"
       :endTime="$_visualizeData.exercise.extra.endTime"
     />
+    <ranking-entity
+      v-else-if="validNode.nodeOptions.type === 'ranking'"
+      :node="validNode"
+    />
     <node-shape-entity
       v-else
       :node="validNode"
@@ -35,6 +39,7 @@ import UserEntity from './UserEntity.vue';
 import QuestionEntity from './QuestionEntity.vue';
 import SpacerEntity from './SpacerEntity.vue';
 import TimerEntity from './TimerEntity.vue';
+import RankingEntity from './RankingEntity';
 import NodeShapeEntity from './NodeShapeEntity';
 
 export default {
@@ -45,6 +50,7 @@ export default {
     QuestionEntity,
     SpacerEntity,
     TimerEntity,
+    RankingEntity,
     NodeShapeEntity
   },
   props: {

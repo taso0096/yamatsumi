@@ -16,6 +16,7 @@
         :node="node"
         :detailsLabel="detailsLabel"
         :score="score"
+        :textAlign="textAlign"
       />
       <polyhedron-entity
         v-else-if="node.nodeOptions.shape === 'polyhedron'"
@@ -64,6 +65,10 @@ export default {
     percentage: {
       type: Number,
       default: 0
+    },
+    textAlign: {
+      type: String,
+      default: 'center'
     }
   },
   methods: {
