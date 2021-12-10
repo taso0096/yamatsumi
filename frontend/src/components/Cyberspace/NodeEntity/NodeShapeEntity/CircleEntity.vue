@@ -4,6 +4,7 @@
     side="double"
     :radius="circleRadius*node.nodeOptions.size"
     :wireframe="node.nodeOptions.wireframe"
+    :geometry="`thetaLength: ${(1 - percentage)*360}; thetaStart: 90;`"
   >
     <a-ring
       :color="node.nodeOptions.nodeColor"
@@ -45,6 +46,10 @@ export default {
     score: {
       type: Number,
       required: false
+    },
+    percentage: {
+      type: Number,
+      default: 0
     }
   },
   computed: {

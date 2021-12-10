@@ -215,6 +215,7 @@ export default {
       const answerData = JSON.parse(data);
       const userQuery = `.user-${answerData.userId}`;
       const exerciseEndFunc = () => {
+        this.$set(this.exercise.questions.find(q => q.id === answerData.questionId), 'percentage', answerData.percentage);
         Object.entries(answerData.scores.teams).forEach(([teamId, targetScore]) => {
           const score = this.exercise.scores[teamId].score;
           const addScore = ~~((targetScore - score)/50) || (targetScore > score ? 1 : -1);

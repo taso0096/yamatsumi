@@ -3,36 +3,71 @@
     <a-entity :animation="`property: rotation; to: ${animationOption.to || '0 0 0'}; dur: ${animationOption.duration || 200000}; easing: linear; loop: true`">
       <a-tetrahedron
         v-if="node.nodeOptions.facesNumber === 4"
-        :radius="polyhedronSize*node.nodeOptions.size*1.5"
+        :radius="polyhedronSize*node.nodeOptions.size*1.5*((1 - percentage) || 0.01)"
         :color="node.nodeOptions.nodeColor"
         :wireframe="node.nodeOptions.wireframe"
       />
       <a-octahedron
         v-else-if="node.nodeOptions.facesNumber === 8"
-        :radius="polyhedronSize*node.nodeOptions.size"
+        :radius="polyhedronSize*node.nodeOptions.size*((1 - percentage) || 0.01)"
         :color="node.nodeOptions.nodeColor"
         :wireframe="node.nodeOptions.wireframe"
       />
       <a-dodecahedron
         v-else-if="node.nodeOptions.facesNumber === 12"
-        :radius="polyhedronSize*node.nodeOptions.size"
+        :radius="polyhedronSize*node.nodeOptions.size*((1 - percentage) || 0.01)"
         :color="node.nodeOptions.nodeColor"
         :wireframe="node.nodeOptions.wireframe"
       />
       <a-icosahedron
         v-else-if="node.nodeOptions.facesNumber === 20"
-        :radius="polyhedronSize*node.nodeOptions.size"
+        :radius="polyhedronSize*node.nodeOptions.size*((1 - percentage) || 0.01)"
         :color="node.nodeOptions.nodeColor"
         :wireframe="node.nodeOptions.wireframe"
       />
       <a-box
         v-else
-        :width="polyhedronSize*node.nodeOptions.size*1.5"
-        :height="polyhedronSize*node.nodeOptions.size*1.5"
-        :depth="polyhedronSize*node.nodeOptions.size*1.5"
+        :width="polyhedronSize*node.nodeOptions.size*1.5*((1 - percentage) || 0.01)"
+        :height="polyhedronSize*node.nodeOptions.size*1.5*((1 - percentage) || 0.01)"
+        :depth="polyhedronSize*node.nodeOptions.size*1.5*((1 - percentage) || 0.01)"
         :color="node.nodeOptions.nodeColor"
         :wireframe="node.nodeOptions.wireframe"
       />
+      <template v-if="percentage">
+        <a-tetrahedron
+          v-if="node.nodeOptions.facesNumber === 4"
+          :radius="polyhedronSize*node.nodeOptions.size*1.5"
+          :color="node.nodeOptions.nodeColor"
+          wireframe="true"
+        />
+        <a-octahedron
+          v-else-if="node.nodeOptions.facesNumber === 8"
+          :radius="polyhedronSize*node.nodeOptions.size"
+          :color="node.nodeOptions.nodeColor"
+          wireframe="true"
+        />
+        <a-dodecahedron
+          v-else-if="node.nodeOptions.facesNumber === 12"
+          :radius="polyhedronSize*node.nodeOptions.size"
+          :color="node.nodeOptions.nodeColor"
+          wireframe="true"
+        />
+        <a-icosahedron
+          v-else-if="node.nodeOptions.facesNumber === 20"
+          :radius="polyhedronSize*node.nodeOptions.size"
+          :color="node.nodeOptions.nodeColor"
+          wireframe="true"
+        />
+        <a-box
+          v-else
+          :width="polyhedronSize*node.nodeOptions.size*1.5"
+          :height="polyhedronSize*node.nodeOptions.size*1.5"
+          :depth="polyhedronSize*node.nodeOptions.size*1.5"
+          :color="node.nodeOptions.nodeColor"
+          wireframe="true"
+          material="wireframeLinewidth: 4;"
+        />
+      </template>
     </a-entity>
     <a-text
       v-for="(label, i) in labels"
@@ -62,6 +97,10 @@ export default {
     score: {
       type: Number,
       required: false
+    },
+    percentage: {
+      type: Number,
+      default: 0
     }
   },
   computed: {

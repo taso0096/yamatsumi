@@ -1,9 +1,15 @@
 <template>
   <a-sphere
-    :radius="sphereRadius*node.nodeOptions.size"
+    :radius="sphereRadius*node.nodeOptions.size*((1 - percentage) || 0.01)"
     :color="node.nodeOptions.nodeColor"
     :wireframe="node.nodeOptions.wireframe"
   >
+    <a-sphere
+      v-if="percentage"
+      :radius="sphereRadius*node.nodeOptions.size"
+      :color="node.nodeOptions.nodeColor"
+      wireframe="true"
+    />
     <a-text
       v-for="(label, i) in labels"
       :key="i"
@@ -32,6 +38,10 @@ export default {
     score: {
       type: Number,
       required: false
+    },
+    percentage: {
+      type: Number,
+      default: 0
     }
   },
   computed: {

@@ -20,6 +20,7 @@
       <node-shape-entity
         :node="node"
         :detailsLabel="question.id"
+        :percentage="question.percentage"
       />
     </a-entity>
   </a-entity>
@@ -44,6 +45,29 @@ export default {
   }),
   computed: {
     sphereRadius: () => 0.65
+  },
+  watch: {
+    '$_visualizeData.exercise.questions': {
+      handler(newQuestions) {
+        for (const q of this.questions) {
+          const newPercentage = newQuestions.find(nq => nq.id === q.id).percentage;
+          if (q.percentage !== newPercentage) {
+            const addPercentage = 0.05*(newPercentage > q.percentage ? 1 : -1);
+            const percentageIntervalId = setInterval(() => {
+              const percentage = q.percentage;
+              if (addPercentage !== 0 && Math.abs(newPercentage - percentage) > Math.abs(addPercentage)) {
+                this.$set(q, 'percentage', percentage + addPercentage);
+              } else {
+                this.$set(q, 'percentage', newPercentage);
+                clearInterval(percentageIntervalId);
+              }
+            }, 20);
+            return;
+          }
+        }
+      },
+      deep: true
+    }
   },
   mounted() {
     const nodeOptions = this.node.nodeOptions;

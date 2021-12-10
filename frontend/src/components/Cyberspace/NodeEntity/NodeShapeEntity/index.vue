@@ -8,6 +8,7 @@
       :node="node"
       :detailsLabel="detailsLabel"
       :score="score"
+      :percentage="percentage"
     />
     <text-entity
       v-else-if="node.nodeOptions.shape === 'text'"
@@ -20,12 +21,14 @@
       :node="node"
       :detailsLabel="detailsLabel"
       :score="score"
+      :percentage="percentage"
     />
     <sphere-entity
       v-else
       :node="node"
       :detailsLabel="detailsLabel"
       :score="score"
+      :percentage="percentage"
     />
   </a-entity>
 </template>
@@ -55,6 +58,10 @@ export default {
     score: {
       type: Number,
       required: false
+    },
+    percentage: {
+      type: Number,
+      default: 0
     }
   },
   methods: {
