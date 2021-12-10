@@ -7,7 +7,7 @@
     >
       <node-shape-entity
         :node="node"
-        :detailsLabel="`${i + 1} - ${team.id} : ${team.score}`"
+        :detailsLabel="`${getRankLabel(i + 1)} - ${team.id} : ${team.score}`"
         textAlign="left"
       />
     </a-entity>
@@ -32,6 +32,23 @@ export default {
       return Object.entries(this.$_visualizeData.exercise.scores)
         .map(([teamId, team]) => ({ id: teamId, score: team.score }))
         .sort((a, b) => b.score - a.score);
+    }
+  },
+  methods: {
+    getRankLabel(rank) {
+      if (rank >= 4 && rank <= 20) {
+        return `${rank}th`;
+      }
+      switch (String(rank).slice(-1)[0]) {
+        case '1':
+          return `${rank}st`;
+        case '2':
+          return `${rank}nd`;
+        case '3':
+          return `${rank}rd`;
+        default:
+          return `${rank}th`;
+      }
     }
   }
 };
